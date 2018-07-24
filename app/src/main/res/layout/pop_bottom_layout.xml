@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_black_trans"
+    >
+    <TextView
+        android:id="@+id/tv_album"
+        android:text="从相册选择"
+        android:gravity="center"
+        android:layout_above="@id/tv_take_phone"
+        android:textSize="@dimen/text_commen_size"
+        android:textColor="@android:color/black"
+        style="@style/user_config_style" />
+    <TextView
+        android:id="@+id/tv_take_phone"
+        android:text="相机拍照"
+        android:gravity="center"
+        android:textSize="@dimen/text_commen_size"
+        android:textColor="@android:color/black"
+        android:layout_alignParentBottom="true"
+        style="@style/user_config_style" />
+
+</RelativeLayout>

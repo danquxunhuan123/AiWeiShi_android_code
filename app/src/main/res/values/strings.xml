@@ -1,0 +1,100 @@
+<resources>
+    <string name="app_name">艾卫士</string>
+    <string name="app_exit">再次点击退出应用</string>
+    <string name="load_more">加载更多...</string>
+    <string name="no_more">没有更多数据</string>
+    <string name="loading">加载中...</string>
+    <string name="parse_location_desc">数据准备中...</string>
+
+    //picker
+    <string name="title">请选择时间</string>
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="day">日</string>
+    <string name="hour">时</string>
+    <string name="minute">分</string>
+    <!--底部tab-->
+    <string name="tab_home">首页</string>
+    <string name="tab_doctor">艾医</string>
+    <string name="tab_user">我的</string>
+    <!--user-->
+    <string name="collect">我的收藏</string>
+    <string name="news_center">消息中心</string>
+    <string name="feedback">意见反馈</string>
+    <string name="version_update">版本更新</string>
+    <string name="share">推荐给好友</string>
+    <string name="about_us">关于我们</string>
+    <string name="clear">清除缓存</string>
+    <string name="version_name">V%1s 已是最新版本</string>
+
+    <!--detail-->
+    <string name="check_way">检测方式</string>
+    <string name="check_note">检测说明</string>
+    <string name="have_no">暂无</string>
+    <!--<string name="zxwz">咨询问诊</string>-->
+
+    <string name="zxun">咨询</string>
+    <string name="jc">检测</string>
+    <string name="zx">资讯</string>
+    <string name="zs">知识</string>
+    <string name="yy">医药</string>
+    <string name="more">更多</string>
+    <!--<string name="xlfd">心理辅导</string>-->
+    <!--<string name="ypzs">药品知识</string>-->
+    <!--<string name="gwpx">公卫培训</string>-->
+    <!--<string nabg_ngo"ngo">NGO</string>-->
+    <!--<string name="xyx">校园行</string>-->
+    <!--<string name="dcwj">调查问卷</string>-->
+
+    <!--doctor-->
+    <string name="bltl">病例讨论</string>
+    <string name="jsjd">技术解读</string>
+    <string name="dks">大咖说</string>
+    <string name="px">培训</string>
+    <string name="kyjz">科研进展</string>
+    <string name="hy">会议</string>
+    <string name="gg">公告</string>
+    <string name="gkk">公开课</string>
+
+    <!-- login -->
+    <string name="cancle">取消</string>
+    <string name="sure">确定</string>
+    <string name="login">登录</string>
+    <string name="logout">退出账号</string>
+    <string name="phone">请输入手机号</string>
+    <string name="yanzhengma">请输入短信验证码</string>
+    <string name="regist">注册</string>
+    <string name="regist_success">注册成功</string>
+    <string name="regist_psd">设置密码</string>
+    <string name="change_psd_success">重置密码成功</string>
+    <string name="reset_psd">重置密码</string>
+    <string name="psd_des">密码长度6-20位，大小写字母/数字/符号至少两种组合</string>
+    <string name="regist_next">下一步</string>
+    <string name="commit">提交</string>
+    <string name="user_name">请输入用户名</string>
+    <string name="user_psd">设置登录密码</string>
+    <string name="new_psd">新密码</string>
+    <string name="new_psd_sure">确认密码</string>
+    <string name="psd_sure">再次输入登录密码</string>
+    <string name="psd_old">输入旧密码</string>
+    <string name="psd_new">输入新密码</string>
+    <string name="psd_new_sure">确认密码</string>
+    <string name="empty_warn">用户名或密码不能为空</string>
+    <string name="code_empty_warn">手机号或验证码不能为空</string>
+    <string name="phone_psd_empty_warn">手机号或密码不能为空</string>
+    <string name="code_psd_empty_warn">验证码或密码不能为空</string>
+    <string name="psd_empty_warn">密码不能为空</string>
+    <string name="psd_wrong">密码格式不正确</string>
+    <string name="login_success">登录成功</string>
+    <string name="user_login">用户登录</string>
+    <string name="bind_phone">绑定手机号</string>
+    <string name="share_qq">qq</string>
+    <string name="share_zone">qq空间</string>
+    <string name="share_weixin">微信</string>
+    <string name="share_circle_friend">朋友圈</string>
+    <string name="share_sina">微博</string>
+    <string name="share_success">分享成功</string>
+    <string name="tab_ngo">NGO</string>
+    <string name="search_text">请输入关键词</string>
+    <string name="find_psd">找回密码</string>
+</resources>

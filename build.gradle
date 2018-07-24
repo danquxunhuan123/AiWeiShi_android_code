@@ -1,0 +1,91 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+
+    repositories {
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.novoda:bintray-release:0.5.0'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven {
+            url 'https://jitpack.io'
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    // Sdk and tools
+    compileSdkVersion = 27
+    buildToolsVersion = "27.0.3"
+    minSdkVersion = 16
+    targetSdkVersion = 27
+
+    // App dependencies
+    supportLibraryVersion = '27.1.1'
+    constraintVersion = '1.1.0'
+
+    butterknifeVersion = '8.8.1'
+    daggerVersion = '2.11'
+    snappydbVersion = '0.5.2'
+    eventbusVersion = '3.0.0'
+
+    baseRecyclerViewAdapterHelperVersion = 'v1.8.5'
+    recyclerviewAnimatorsVersion = '2.2.6'
+
+    rxjavaVersion = '2.0.6'
+    rxAndroidVersion = '2.0.1'
+
+    retrofit2Version = '2.2.0'
+    converterGsonVersion = '2.3.0'
+
+    okhttpVersion = '3.4.1'
+    okhttp3LoggingVersion = '3.4.1'
+    okioVerison = '1.7.0'
+    gsonVersion = '2.8.2'
+
+    universalImageLoaderVersion = '1.9.3'
+    jpushVersion = '3.0.9'
+    jcoreVersion = '1.1.7'
+    switchButton = '2.0.0'
+    //glide
+    glideVersion = '4.7.1'
+    //youth.banner
+    youthBannerVersion = '1.4.10'
+    //utilcode
+    utilcodeVerison = '1.11.1'
+    //leakcanary
+    leakCanaryVersion = '1.5.4'
+    //Test dependencies
+    junitVerison = '4.12'
+    testRunnerVersion = '1.0.2'
+    testEspressoVersion = '3.0.2'
+    //Jsoup查找img标签
+    jsoupVersion = '1.10.2'
+    //picker
+    pickerViewVerison = '4.1.4'
+    //progress
+    progressVerison = 'V1.1.0'
+    //CompressHelper
+    compressHelperVerison = '1.0.5'
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_black_trans"
+    android:gravity="bottom"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_qq"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/share_qq"
+            android:gravity="center"
+            android:text="@string/share_qq"
+            android:textSize="@dimen/text_commen_size"
+            android:textColor="@color/color_343638"/>
+
+        <TextView
+            android:id="@+id/tv_zone"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/share_zone"
+            android:gravity="center"
+            android:text="@string/share_zone"
+            android:textSize="@dimen/text_commen_size"
+            android:textColor="@color/color_343638"/>
+
+        <TextView
+            android:id="@+id/tv_wecheat"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/share_wechat"
+            android:gravity="center"
+            android:text="@string/share_weixin"
+            android:textSize="@dimen/text_commen_size"
+            android:textColor="@color/color_343638"/>
+
+        <TextView
+            android:id="@+id/tv_circle_friend"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/share_circle_friend"
+            android:gravity="center"
+            android:text="@string/share_circle_friend"
+            android:textSize="@dimen/text_commen_size"
+            android:textColor="@color/color_343638"/>
+
+        <TextView
+            android:id="@+id/tv_sina"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/share_sina"
+            android:gravity="center"
+            android:text="@string/share_sina"
+            android:textSize="@dimen/text_commen_size"
+            android:textColor="@color/color_343638"/>
+    </LinearLayout>
+
+
+</LinearLayout>

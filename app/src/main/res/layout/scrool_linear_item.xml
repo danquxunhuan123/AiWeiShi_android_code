@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:layout_marginRight="10dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_scrool"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="fitXY"/>
+
+    <TextView
+        android:id="@+id/tv_scrool"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textSize="@dimen/text_commen_size"
+        android:textColor="@color/color_343638"
+        />
+
+</LinearLayout>

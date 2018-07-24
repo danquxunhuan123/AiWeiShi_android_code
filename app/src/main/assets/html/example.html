@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<title>小思机器人</title>
+	
+		<!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="ace/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="ace/font-awesome/4.5.0/css/font-awesome.min.css" />
+	
+		<!-- text fonts -->
+		<link rel="stylesheet" href="ace/css/fonts.googleapis.com.css" />
+	
+		<!-- ace styles -->
+		<link rel="stylesheet" href="ace/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+		<link rel="stylesheet" href="ace/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="ace/css/ace-rtl.min.css" />
+	
+	<!--[if lte IE 9]>
+		<link rel="stylesheet" href="ace/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<link rel="stylesheet" href="ace/css/ace-ie.min.css" />
+	<![endif]-->
+	
+		<!-- ace settings handler -->
+		<script src="ace/js/ace-extra.min.js"></script>
+	
+	<!--[if lte IE 8]>
+		<script src="ace/js/html5shiv.min.js"></script>
+		<script src="ace/js/respond.min.js"></script>
+	<![endif]-->
+		<link rel="stylesheet" href="ace/css/jquery-ui.min.css" />
+        <link rel="stylesheet" href="ace/css/style.css"/>
+	</head>
+
+	<body>   
+	    <div class="kfBox">
+          <img src="ace/images/avatars/avatar4.png"/>
+          <div class="kf-txt">
+            <p>客服名称:小思</p>
+            <p>客服编码:12345</p>
+            <a href="#">结束会话</a>
+          </div>
+        </div>
+        
+        <div class="time"><p></p></div>
+        
+		<div class="container-fluid">
+			<div class="row" style="padding-top: 12px;">
+				<div class="">
+					<div class="">
+					
+						<div class="panel-body" style="overflow-x: hidden; overflow-y: auto;" id="obj-view">
+							<div class="row" style="margin-left:0px; margin-right:0">
+                                <img src="ace/images/avatars/avatar4.png" class="panel-img"/>
+								<div class="panel panel-box">
+									<div class="panel-heading" style="word-wrap: break-word;">Hi，我是小思，无所不知。</div>
+									<div class="panel-jiao"></div>
+								</div>
+							</div>
+						</div>
+						<div class="panel-footer">
+							<form class="form-inline row">
+								<input type="text" class="form-control" style="width: 80%; float:left;" id="txt-qu" placeholder="请提问……" />
+								<button type="button" class="btn btn-info"  onclick="qaAsk()">提问</button>
+							</form>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	    
+
+	<!--[if !IE]> -->
+		<script src="ace/js/jquery-2.1.4.min.js"></script>
+	<!-- <![endif]-->
+	
+	<!--[if IE]>
+		<script src="ace/js/jquery-1.11.3.min.js"></script>
+	<![endif]-->
+	
+		<script src="ace/js/bootstrap.min.js"></script>
+	
+		<!-- ace scripts -->
+		<script src="ace/js/ace-elements.min.js"></script>
+		<script src="ace/js/ace.min.js"></script>
+		<script type="text/javascript" src="ace/js/jquery-ui.min.js"></script>
+		<script type="text/javascript">
+		    
+		
+		
+			$.ajaxSetup({ 
+				cache: false 
+			});
+	
+			$(document).ready(function() {
+				
+				$(".panel-body").height($(document).height()-210);
+				var myDate = new Date();
+var year=myDate.getFullYear();
+
+var month=myDate.getMonth()+1;
+
+var date=myDate.getDate(); 
+var h=myDate.getHours();       
+var m=myDate.getMinutes();   
+var s=myDate.getSeconds();
+var now=year+'/'+month+"/"+date+" "+h+':'+m+":"+s;
+$(".time p").text(now);
+				
+				$('#txt-qu').focus();
+	
+				// 防止自动提交
+				$('form').keypress(function(e) {
+					if((e.which || e.keyCode) == 13){
+						return false;
+					}
+				});
+	
+				// 上翻下翻
+				$('form').keyup(function(e) {
+					if ((e.which || e.keyCode) == 13) {
+						qaAsk();
+					} else if ((e.which || e.keyCode) == 38) {
+						$('#txt-qu').val(info.up());
+					} else if ((e.which || e.keyCode) == 40) {
+						$('#txt-qu').val(info.down());
+					}
+				});
+	
+				// 常见与热点问题
+				getFaq();
+				qaHot();
+				qaHotUnknow();
+	
+				// 自动补全
+				var cache = {};
+				$('#txt-qu').autocomplete({
+					position: { my : "left bottom", at: "left top" },
+					source: function(request, response) {
+						var term = request.term;
+						if (term in cache) {
+							response(cache[term]);
+							return;
+						}
+	
+						var param = {
+							term: term
+						}
+						$.post('http://140.143.151.28:8080/ckm-qa//rs/qa/autocomplete', param, function(data, textStatus, jqXHR) {
+							if (jqXHR.status != 200 || data == null || data.result == null) {
+								return;
+							}
+	
+							var result = data.result;
+							cache[term] = result;
+							response(result);
+						}, 'jsonp');
+					},
+					minLength: 2,
+					_resizeMenu: function() {
+						this.menu.element.outerWidth(100);
+					}
+				}).autocomplete('instance')._resizeMenu = function() {
+					this.menu.element.outerWidth(500);
+				};
+			});
+	
+			// 混合原型
+			function Info() {
+				this.htmlQuestionLeft = '<div class="row" style="margin-left:0; margin-right:0"><img src="ace/images/avatars/avatar3.png" class="panel-img2"/><div class="panel panel-box2"><div class="panel-heading" style="word-wrap: break-word;">';
+				this.htmlQuestionRight = '</div><div class="panel-jiao2"></div></div></div>';
+				this.htmlAnswerLeft = '<div class="row" style="margin-left:0; margin-right:0"><img src="ace/images/avatars/avatar4.png" class="panel-img"/><div class="panel panel-box"><div class="panel-heading" style="word-wrap: break-word;">';
+				this.htmlAnswerRight = '</div><div class="panel-jiao"></div></div></div>';
+				this.questionArr = new Array();
+				this.questionIndex = this.questionArr.length;
+			}
+			Info.prototype.push = function(value) {
+				this.questionArr.push(value);
+				this.questionIndex = this.questionArr.length;
+			};
+			Info.prototype.up = function() {
+				this.questionIndex = Math.max(--this.questionIndex, -1);
+				if ((this.questionIndex < 0) || (this.questionIndex > this.questionArr.length - 1)) {
+					return '';
+				}
+				return this.questionArr[this.questionIndex];
+			};
+			Info.prototype.down = function() {
+				this.questionIndex = Math.min(++this.questionIndex, this.questionArr.length);
+				if ((this.questionIndex < 0) || (this.questionIndex > this.questionArr.length - 1)) {
+					return '';
+				}
+				return this.questionArr[this.questionIndex];
+			};
+			var info = new Info();
+	
+			// 提问
+			function qaAsk() {
+				var param = {
+					question: $('#txt-qu').val()
+				}
+				if (param.question == null || param.question == '') {
+					alert ('请提问……');
+					return;
+				}
+	
+				var htmlQuestion = info.htmlQuestionLeft + escapeHTML(param.question) + info.htmlQuestionRight;
+				$('#obj-view').append(htmlQuestion);
+				$('#txt-qu').val('');
+				$('#obj-view').animate({ scrollTop:$('#obj-view')[0].scrollHeight }, 1000);
+				info.push(param.question);
+	
+				$.post('http://140.143.151.28:8080/ckm-qa//rs/qa/ask', param, function(data, textStatus, jqXHR) {
+					if (jqXHR.status != 200 || data == null) {
+						alert ('服务异常，请稍候再试！');
+						return;
+					}
+	
+					if (data == null || data.code == 0 || data.result == null) {
+						alert (data.message);
+						return;
+					}
+	
+					// answer
+					var html = '';
+					if (data.result.answer != null) {
+						html += data.result.answer;
+					}
+					if (data.result.detail != null) {
+						var linkType = data.result.detail.linkType;
+						var link = data.result.detail.link;
+						if (linkType == '图片' && link != null) {
+							html += '<div><img src="' + link + '" width="380px" /></div>'
+						} else if (linkType == '框应用' && link != null) {
+							html += '<div><iframe src="' + link + '" style="max-width: 380px;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowTransparency="true" onload="setIframe(this)"></iframe></div>'
+						}
+					}
+	
+					// guide
+					if (data.result.guideList != null && data.result.guideList.length > 0) {
+						var htmlGuide = '<h5 style="margin-top: 10px;">您可能还想问</h5>';
+						htmlGuide += '<ul>';
+						$.each(data.result.guideList, function(index, element) {
+							htmlGuide += '<li><a href="javascript:void(0);" onclick="selQuestion(this)">' + element + '</a></li>'
+						});
+						htmlGuide += '</ul>';
+						html += htmlGuide;
+					}
+	
+					// relevant
+					if (data.result.relList != null && data.result.relList.length > 0) {
+						var htmlRel = '<h5 style="margin-top: 10px;">相关问题</h5>';
+						htmlRel += '<ul rel-question="' + data.result.question + '">';
+						$.each(data.result.relList, function(index, element) {
+							htmlRel += '<li><a href="javascript:void(0);" rel-db="' + element.db + '" rel-id="' + element.id + '" onclick="selRel(this)">' + element.title + '</a></li>'
+						});
+						htmlRel += '</ul>';
+						html += htmlRel;
+					}
+	
+					// score
+					if (data.result.id != null && data.result.id != '') {
+						var baseUrl = 'http://140.143.151.28:8080/ckm-qa//images/';
+						html += '<div><a href="javascript:void(0);" onclick="doScore(\'' + data.result.id + '\', \'满意\')"><img src="' + baseUrl + 'ico1.png" /></a>&nbsp;<a href="javascript:javascript:void(0);" onclick="doScore(\'' + data.result.id + '\', \'不满意\')"><img src="' + baseUrl + 'ico2.png" /></a></div>';
+					}
+	
+					var htmlAnswer = info.htmlAnswerLeft + html + info.htmlAnswerRight;
+					$('#obj-view').append(htmlAnswer);
+					$('#obj-view').animate({ scrollTop:$('#obj-view')[0].scrollHeight }, 1000);
+				}, 'jsonp');
+			}
+	
+			// 常见问题
+			function getFaq() {
+				$.post('http://140.143.151.28:8080/ckm-qa//rs/qa/faq', function(data, textStatus, jqXHR) {
+					if (jqXHR.status != 200 || data == null) {
+						alert ('服务异常，请稍候再试！');
+						return;
+					}
+	
+					if (data == null || data.result == null) {
+						return;
+					}
+	
+					$('#obj-faq').empty();
+					$.each(data.result, function(index, element) {
+						$('#obj-faq').append('<li><a href="javascript:void(0);" onclick="selQuestion(this)">' + element + '</a></li>');
+					});			
+				}, 'jsonp');
+			}
+	
+			// 热点问题
+			function qaHot() {
+				$.post('http://140.143.151.28:8080/ckm-qa//rs/qa/hot', function(data, textStatus, jqXHR) {
+					if (jqXHR.status != 200 || data == null) {
+						alert ('服务异常，请稍候再试！');
+						return;
+					}
+	
+					if (data == null || data.result == null) {
+						return;
+					}
+	
+					$('#obj-hot').empty();
+					$.each(data.result, function(index, element) {
+						$('#obj-hot').append('<li><a href="javascript:void(0);" onclick="selQuestion(this)">' + element + '</a></li>');
+					});			
+				}, 'jsonp');
+			}
+	
+			function qaHotUnknow() {
+				$.post('http://140.143.151.28:8080/ckm-qa//rs/qa/hot', { state: '无答案' }, function(data, textStatus, jqXHR) {
+					if (jqXHR.status != 200 || data == null) {
+						alert ('服务异常，请稍候再试！');
+						return;
+					}
+	
+					if (data == null || data.result == null) {
+						return;
+					}
+	
+					$('#obj-hot-unknow').empty();
+					$.each(data.result, function(index, element) {
+						$('#obj-hot-unknow').append('<li><a href="javascript:void(0);" onclick="selQuestion(this)">' + element + '</a></li>');
+					});			
+				}, 'jsonp');
+			}
+	
+			// 选中
+			function selQuestion(obj) {
+				var val = $(obj).text();
+				$('#txt-qu').val(val);
+			}
+	
+			// 选择相关问题
+			function selRel(obj) {
+				var val = $(obj).text();
+				$('#txt-qu').val(val);
+	
+				// insert
+				var param = {
+					client: $('#hid-client').val(),
+					question : $(obj).parent().parent().attr('rel-question'),
+					db : $(obj).attr('rel-db'),
+					id : $(obj).attr('rel-id')
+				};
+				$.post('http://140.143.151.28:8080/ckm-qa//rs/console/relevant/insert', param, function(data, textStatus, jqXHR) {
+					if (jqXHR.status != 200 || data == null) {
+						alert ('服务异常，请稍候再试！');
+						return;
+					}
+				}, 'jsonp');
+			}
+	
+			// 评分
+			function doScore(id, score) {
+				$.post('http://140.143.151.28:8080/ckm-qa//rs/qa/score', { id:id, score:score }, function(data, textStatus, jqXHR) {
+					if (jqXHR.status != 200 || data == null) {
+						alert ('系统异常，请稍候再试！');
+						return;
+					}
+	
+					alert ('感谢您对我们的支持');
+				}, 'jsonp');
+			}
+	
+			// 防注入
+			function escapeHTML(val) {
+			    val = val.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+			    return val;
+			}
+	
+			function setIframe(iframe) {
+				if (iframe) {
+					var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+					if (iframeWin.document.body) {
+						iframe.width = iframeWin.document.documentElement.scrollWidth || iframeWin.document.body.scrollWidth;
+						iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+					}
+				}
+			};
+		</script>
+	</body>
+</html>

@@ -1,0 +1,28 @@
+@charset "utf-8";
+/* CSS Document */
+
+.panel-jiao{background:url(../images/jiao.png); width:12px; height:14px;position: absolute; top: 14px; left:-12px}
+.panel-box{max-width: 60%; position: relative;border:1px solid #f00; border-radius:4px; margin-left:60px;}
+.panel-img{float:left; width:40px; height:40px; border-radius:50%;}
+.panel-img2{float:right; width:40px; height:40px; border-radius:50%;}
+.panel-box2{max-width: 60%; position: relative; float: right; background-color:#fc474e; border-radius:4px; color:#fff;margin-right:20px;}
+.panel-jiao2{width: 0px; height: 0px; right: -11px; position: absolute; top: 50%; margin: -11px 0px 0px 0px; border-width: 11px 0px 11px 11px; border-style: solid; border-color: transparent transparent transparent #fc474e;}
+.btn-info, .btn-info.focus, .btn-info:focus {
+	background-color: #fc474e!important;
+	border-color: #fc474e;
+}
+.btn-info.focus:hover, .btn-info:active:hover, .btn-info:focus:active, .btn-info:focus:hover, .btn-info:hover, .open>.btn-info.dropdown-toggle, .open>.btn-info.dropdown-toggle.focus, .open>.btn-info.dropdown-toggle:active, .open>.btn-info.dropdown-toggle:focus, .open>.btn-info.dropdown-toggle:hover {
+	background-color: #fc474e!important;
+	border-color: #fc474e
+}
+.panel-footer{padding:10px 20px}
+.btn{padding:2px 0; width:20%}
+.page-header h4{font-size:16px}
+
+.kfBox{padding:20px 15%;}
+.kfBox img{width:80px; height:80px; border-radius:50%; float:left; margin-right:40px}
+.kfBox p{font-size:14px;}
+.kfBox a{float:right; background:#fc474e; color:#fff; width:70px; height:24px; display:block; text-align:center; line-height:24px; border-radius:5px;}
+.time{text-align:center; margin:20px 20px 0; background:url(../images/lineBg.jpg) repeat-x left center; }
+.time p{background:#f6f6f6; display:block; margin:0 auto; width:140px; color:#a4a4a4}
+.panel-footer{position: absolute;width:100%; bottom:0}

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:text="@string/find_psd"
+                android:textColor="@android:color/black"
+                android:textSize="23sp" />
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gray_corner_shape"
+                android:hint="@string/user_name"
+                android:padding="10dp"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_psd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/gray_corner_shape"
+                android:hint="@string/user_psd"
+                android:inputType="textPassword"
+                android:padding="10dp"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/gray_corner_shape"
+                android:hint="@string/phone"
+                android:padding="15dp"
+                android:textColor="@color/color_343638"
+                android:textColorHint="@color/color_75787b"
+                android:textSize="@dimen/text_commen_size" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/gray_corner_shape"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_yanzhengma"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="7"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:hint="@string/yanzhengma"
+                    android:padding="15dp"
+                    android:textColor="@color/color_343638"
+                    android:textColorHint="@color/color_75787b"
+                    android:textSize="@dimen/text_commen_size" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/darker_gray" />
+
+                <Button
+                    android:id="@+id/but_get_yanzhengma"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:background="@null"
+                    android:onClick="getCode"
+                    android:text="获取验证码"
+                    android:textColor="@color/color_343638"
+                    android:textSize="@dimen/text_commen_size" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/but_find_psd_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/blue_corner_shape"
+                android:onClick="nextFind"
+                android:text="@string/regist_next"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/size_17sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+

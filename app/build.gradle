@@ -1,0 +1,121 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.trs.aiweishi"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.compileSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles 'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles 'proguard-rules.pro'
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('aiweishi.jks')
+            storePassword "123456"
+            keyAlias "aiweishi"
+            keyPassword "123456"
+        }
+        debug {
+            storeFile file('aiweishi.jks')
+            storePassword "123456"
+            keyAlias "aiweishi"
+            keyPassword "123456"
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs 'libs'
+            jni.srcDirs = []
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    //test
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.android.support:support-v4:27.1.1'
+    testImplementation "junit:junit:$rootProject.ext.junitVerison"
+    androidTestImplementation "com.android.support.test:runner:$rootProject.ext.testRunnerVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.ext.testEspressoVersion"
+
+    //noinspection GradleCompatible
+    implementation "com.android.support:design:$rootProject.ext.supportLibraryVersion"
+    implementation "com.android.support:support-v4:$rootProject.ext.supportLibraryVersion"
+    implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
+    implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintVersion"
+    implementation "com.android.support:recyclerview-v7:$rootProject.ext.supportLibraryVersion"
+
+    //butterknife
+    implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
+    implementation "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$rootProject.ext.daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
+
+    //rxjava
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxjavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxAndroidVersion"
+
+    //retrofit
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit2Version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.ext.retrofit2Version"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.converterGsonVersion"
+
+    //okhttp
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.okhttp3LoggingVersion"
+    implementation "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttp3LoggingVersion"
+
+    //glide
+    implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.ext.glideVersion"
+
+    //utilcode
+    implementation "com.blankj:utilcode:$rootProject.ext.utilcodeVerison"
+
+    //banner
+    implementation "com.youth.banner:banner:$rootProject.ext.youthBannerVersion"
+
+    //picker
+    implementation "com.contrarywind:Android-PickerView:$rootProject.ext.pickerViewVerison"
+
+    //progress
+    compile "com.github.maning0303:MNProgressHUD:$rootProject.ext.progressVerison"
+
+    //compress
+    compile "com.github.nanchen2251:CompressHelper:$rootProject.ext.compressHelperVerison"
+
+    //baiduLocation
+    implementation files('libs/BaiduLBS_Android.jar')
+
+    //Jsoup查找img标签
+    compile "org.jsoup:jsoup:$rootProject.ext.jsoupVersion"
+
+    //友盟
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    implementation files('libs/umeng-common-1.5.3.jar')
+    implementation files('libs/umeng-share-core-6.9.2.jar')
+    implementation files('libs/umeng-share-QQ-simplify-6.9.2.jar')
+    implementation files('libs/umeng-share-sina-simplify-6.9.2.jar')
+    implementation files('libs/umeng-share-wechat-simplify-6.9.2.jar')
+    implementation files('libs/umeng-sharetool-6.9.2.jar')
+}
