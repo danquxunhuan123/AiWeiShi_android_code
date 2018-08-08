@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
@@ -89,14 +90,14 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     private ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
     private ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
     private TimePickerView pvTime;
-
+    private AlertDialogUtil dialogUtil;
     private UserData.User user;
 
     private Uri imageUriFromCamera;
     private Thread thread;
     private boolean isLoaded = false;
     private boolean isChanged = false;  //是否修改过信息
-//    private int currOptions1 = 0, currOptions2 = 0, currOptions3 = 0;
+    //    private int currOptions1 = 0, currOptions2 = 0, currOptions3 = 0;
     public static String USER = "user";
     private final int TAKE_PHOTO = 1;
     private final int SHOW_PHOTO = 2;
@@ -143,13 +144,14 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
 
     @Override
     protected void initData() {
+        dialogUtil = AlertDialogUtil.getInstance(this);
         user = getIntent().getParcelableExtra(USER);
         mHandler.sendEmptyMessage(MSG_LOAD_DATA);
         umAuthListener.setOnThirdSucListener(this);
 
         if (spUtils.getInt(AppConstant.AUTH_SITE) != 0) { //三方登录
             GlideUtils.loadCircleUrlImg(this, user.getHeadUrl(), head);
-        }else{
+        } else {
             GlideUtils.loadCircleUrlImg(this, AppConstant.HEAD_URL + user.getHeadUrl(), head);
         }
 
@@ -221,6 +223,11 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     @Override
     public void editHeadSuccess(BaseBean bean) {
 //        if (bean.isResult()){
+        saveInfo();
+//        }
+    }
+
+    private void saveInfo() {
         Map<String, String> param = new HashMap();
         param.put("manageServiceTag", "managerUpdateUser");
         param.put("userName", Base64.encodeToString(spUtils.getString(AppConstant.USER_PHONE).getBytes(), Base64.DEFAULT));
@@ -229,7 +236,6 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
         param.put("province", Base64.encodeToString(address.getText().toString().trim().getBytes(), Base64.DEFAULT));
         param.put("city", Base64.encodeToString(detailAddress.getText().toString().trim().getBytes(), Base64.DEFAULT));
         presenter.saveEdit(param);
-//        }
     }
 
     @Override
@@ -351,6 +357,7 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
             RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
             MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 
+
             String saveHead = AppConstant.BASE_URL + "admin/user/editHeadImg.jsp?"
                     + "loginUserName=" + spUtils.getString(AppConstant.USER_PHONE)
                     + "&appName=" + AppConstant.APP_NAME
@@ -358,7 +365,7 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
                     + "&fileName=" + file;
             presenter.editHeadImg(saveHead, part);
         } catch (Exception e) {
-            e.printStackTrace();
+            saveInfo();
         }
     }
 
@@ -381,14 +388,15 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     }
 
     private void showDialog(final TextView textView) {
-        AlertDialogUtil.getInstance(this)
-                .setContentView(R.layout.editer_dialog_layout)
+        dialogUtil.setContentView(R.layout.editer_dialog_layout)
                 .setEditContent(textView.getText().toString().trim())
                 .setDialogClickListener(new AlertDialogUtil.DialogClickListener() {
                     @Override
                     public void OnSureClick(String content) {
-                        isChanged = true;
-                        textView.setText(content);
+                        if (!TextUtils.isEmpty(content)) {
+                            isChanged = true;
+                            textView.setText(content);
+                        }
                     }
 
                     @Override
@@ -575,5 +583,11 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     private String getTime(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");  // HH:mm:ss
         return format.format(date);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dialogUtil.onDestory();
     }
 }

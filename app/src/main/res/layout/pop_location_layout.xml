@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_black_trans"
+    >
+    <TextView
+        android:id="@+id/tv_baidu"
+        android:text="百度地图"
+        android:gravity="center"
+        android:layout_above="@id/tv_gaode"
+        android:textSize="@dimen/text_commen_size"
+        android:textColor="@android:color/black"
+        style="@style/user_config_style" />
+    <TextView
+        android:id="@+id/tv_gaode"
+        android:text="高德地图"
+        android:gravity="center"
+        android:textSize="@dimen/text_commen_size"
+        android:textColor="@android:color/black"
+        android:layout_alignParentBottom="true"
+        style="@style/user_config_style" />
+
+</RelativeLayout>

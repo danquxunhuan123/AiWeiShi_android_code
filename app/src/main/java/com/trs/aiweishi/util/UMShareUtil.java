@@ -93,6 +93,11 @@ public class UMShareUtil {
         }
     };
 
+    public void onDestory(){
+        instance = null;
+        listener = null;
+    }
+
     private OnShareSuccessListener listener;
 
     public UMShareUtil setOnShareSuccessListener(OnShareSuccessListener listener) {

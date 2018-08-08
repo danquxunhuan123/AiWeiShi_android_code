@@ -50,25 +50,7 @@
                 </LinearLayout>
 
                 <include layout="@layout/zixun_item_layout" />
-
-                <View
-                    android:id="@+id/line_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@android:color/darker_gray" />
-
                 <include layout="@layout/zixun_item_layout1" />
-
-                <View
-                    android:id="@+id/line_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@android:color/darker_gray" />
-
                 <include layout="@layout/zixun_item_layout2" />
 
                 <View
@@ -81,6 +63,7 @@
                 android:id="@+id/tool_bar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="@color/color_f6f6f6"
                 app:contentInsetStart="0dp"
                 app:layout_collapseMode="pin">
 
@@ -100,6 +83,11 @@
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/text_commen_size" />
             </android.support.v7.widget.Toolbar>
+
+            <View
+                android:id="@+id/view_padding"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -120,6 +108,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:scaleType="centerInside"
+                android:visibility="gone"
                 android:src="@mipmap/icon_arrow_down" />
 
             <android.support.design.widget.TabLayout

@@ -112,4 +112,10 @@ public class ForgetPsdActivity extends BaseActivity implements IFindPsdView {
         intent.putExtra(FindPsdNextActivity.CODE, etYanzhengma.getText().toString().trim());
         startActivity(intent);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        instance = null;
+    }
 }

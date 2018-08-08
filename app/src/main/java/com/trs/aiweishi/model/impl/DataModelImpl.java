@@ -118,4 +118,9 @@ public class DataModelImpl implements IDataModel {
         httpHelper.editHeadImg(url,part,callBack);
     }
 
+    @Override
+    public void feedBack(Map<String, String> params, IResponseCallBack callBack) {
+        httpHelper.feedBack(params,callBack);
+    }
+
 }

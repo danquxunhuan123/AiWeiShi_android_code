@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -22,9 +23,14 @@ import com.trs.aiweishi.bean.UserData;
 import com.trs.aiweishi.presenter.IUserPresenter;
 import com.trs.aiweishi.util.DataCleanManager;
 import com.trs.aiweishi.util.GlideUtils;
+import com.trs.aiweishi.util.PopWindowUtil;
+import com.trs.aiweishi.util.UMShareUtil;
 import com.trs.aiweishi.view.IUserCenterView;
+import com.trs.aiweishi.view.ui.activity.DetailActivity;
+import com.trs.aiweishi.view.ui.activity.FeedBackActivity;
 import com.trs.aiweishi.view.ui.activity.LoginActivity;
 import com.trs.aiweishi.view.ui.activity.UserConfigActivity;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,11 +43,15 @@ import butterknife.OnClick;
 /**
  * Created by Liufan on 2018/5/17.
  */
-public class UserFragment extends BaseFragment implements IUserCenterView {
+public class UserFragment extends BaseFragment implements IUserCenterView, UMShareUtil.OnShareSuccessListener {
 
     @Inject
     IUserPresenter presenter;
 
+    @BindView(R.id.ll_user_page)
+    LinearLayout userPage;
+    @BindView(R.id.view_padding)
+    View viewPadding;
     @BindView(R.id.iv_user_pic)
     ImageView ivUserPic;
     @BindView(R.id.tv_user_name)
@@ -68,11 +78,16 @@ public class UserFragment extends BaseFragment implements IUserCenterView {
     public static final String PARAM1 = "param1";
     public static final String PARAM2 = "param2";
     public static final String USER = "user";
-
+    private UMShareUtil shareUtil;
+    private PopWindowUtil sharePopUtil;
     private UserData user;
     private final int RESULT_USER = 100;
     private final int RESULT_CONFIG = 101;
     private SPUtils sp;
+    private String title = "快来下载吧";
+    private String body = "i卫士 您身边的艾防助手";
+    private String thumbUrl = "";
+    private String shareUrl = "https://fir.im/awsAndroid";
 
     public static UserFragment newInstance(String param1, String param2) {
         UserFragment fragment = new UserFragment();
@@ -90,6 +105,14 @@ public class UserFragment extends BaseFragment implements IUserCenterView {
 
     @Override
     public void initData() {
+        shareUtil = UMShareUtil.getInstance()
+                .setOnShareSuccessListener(this);
+        sharePopUtil = PopWindowUtil.getInstance(context);
+
+        LinearLayout.LayoutParams viewParam = (LinearLayout.LayoutParams) viewPadding.getLayoutParams();
+        viewParam.height = BarUtils.getStatusBarHeight();
+        viewPadding.setLayoutParams(viewParam);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(PARAM1);
             mParam2 = getArguments().getString(PARAM2);
@@ -116,7 +139,8 @@ public class UserFragment extends BaseFragment implements IUserCenterView {
         return R.layout.fragment_user;
     }
 
-    @OnClick({R.id.ib_config, R.id.iv_user_pic, R.id.ll_clear_cache})
+    @OnClick({R.id.ib_config, R.id.iv_user_pic, R.id.ll_clear_cache,
+            R.id.tv_feedback,R.id.tv_share})
     public void toConfig(View view) {
         switch (view.getId()) {
             case R.id.ib_config:
@@ -126,6 +150,15 @@ public class UserFragment extends BaseFragment implements IUserCenterView {
                 break;
             case R.id.iv_user_pic:
                 startActivityForResult(new Intent(context, LoginActivity.class), RESULT_USER);
+                break;
+            case R.id.tv_feedback:
+                if (sp.getBoolean(AppConstant.IS_LOGIN))
+                    startActivity(new Intent(context, FeedBackActivity.class));
+                else
+                    ToastUtils.showShort(getResources().getString(R.string.login_warn));
+                break;
+            case R.id.tv_share:
+                shareApp();
                 break;
             case R.id.ll_clear_cache:
                 try {
@@ -137,6 +170,46 @@ public class UserFragment extends BaseFragment implements IUserCenterView {
                 }
                 break;
         }
+    }
+
+    private void shareApp() {
+        sharePopUtil.setContentView(R.layout.share_layout)
+                .getView(R.id.tv_qq, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        shareUtil.share(context, SHARE_MEDIA.QQ,
+                                title, body, thumbUrl, shareUrl);
+                    }
+                })
+                .getView(R.id.tv_zone, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        shareUtil.share(context, SHARE_MEDIA.QZONE,
+                                title, body, thumbUrl, shareUrl);
+                    }
+                })
+                .getView(R.id.tv_wecheat, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        shareUtil.share(context, SHARE_MEDIA.WEIXIN,
+                                title, body, thumbUrl, shareUrl);
+                    }
+                })
+                .getView(R.id.tv_circle_friend, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        shareUtil.share(context, SHARE_MEDIA.WEIXIN_CIRCLE,
+                                title, body, thumbUrl, shareUrl);
+                    }
+                })
+                .getView(R.id.tv_sina, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        shareUtil.share(context, SHARE_MEDIA.SINA,
+                                title, body, thumbUrl, shareUrl);
+                    }
+                })
+                .showAtLocation(userPage);
     }
 
     @Override
@@ -214,5 +287,23 @@ public class UserFragment extends BaseFragment implements IUserCenterView {
     @Override
     public void showSuccess(BaseBean baseBean) {
 
+    }
+
+    @Override
+    public void onShareSuccess(SHARE_MEDIA platform) {
+        sharePopUtil.disMiss();
+        ToastUtils.showShort(getResources().getString(R.string.share_success));
+    }
+
+    @Override
+    public void onShareError(SHARE_MEDIA platform, Throwable t) {
+        sharePopUtil.disMiss();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        sharePopUtil.onDestory();
+        shareUtil.onDestory();
     }
 }

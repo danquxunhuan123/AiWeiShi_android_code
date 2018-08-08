@@ -31,4 +31,5 @@ public interface IUserPresenter {
     void addAccountMapping(Map<String, String> params);
 
     void editHeadImg(String url, MultipartBody.Part part);
+    void feedBack(Map<String, String> params);
 }

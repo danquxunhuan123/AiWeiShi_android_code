@@ -1,9 +1,14 @@
 package com.trs.aiweishi.view.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.DocAdapter;
@@ -30,11 +35,14 @@ public class DocFragment extends BaseFragment implements IHomeView
         , SwipeRefreshLayout.OnRefreshListener {
     @Inject
     IHomePresenter presenter;
+    @BindView(R.id.view_padding)
+    View viewPadding;
     @BindView(R.id.recycleview)
     RecyclerView recycleview;
     @BindView(R.id.refresh)
     SwipeRefreshLayout refreshLayout;
 
+    private final int listCount = 2;
     public static String mParam1;
     private List<ListData> bannerDatas = new ArrayList<>();
     private List<ListData> list = new ArrayList<>();
@@ -62,6 +70,40 @@ public class DocFragment extends BaseFragment implements IHomeView
 
     @Override
     public void initData() {
+        LinearLayout.LayoutParams viewParam = (LinearLayout.LayoutParams) viewPadding.getLayoutParams();
+        viewParam.height = BarUtils.getStatusBarHeight();
+        viewPadding.setLayoutParams(viewParam);
+//        viewPadding.setBackground(getResources().getDrawable(R.mipmap.bg_aiyi));
+        viewPadding.setBackgroundColor(Color.parseColor("#2f79e9"));
+
+        recycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+//                    BarUtils.setStatusBarVisibility(context,true);
+//                }
+//                if (newState == RecyclerView.SCROLL_STATE_SETTLING ){
+//                    BarUtils.setStatusBarVisibility(context,false);
+//                }
+//            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+//                if (!recyclerView.canScrollVertically(-1)){
+//                    if (!BarUtils.isStatusBarVisible(context))
+//                        BarUtils.setStatusBarVisibility(context,true);
+//                }
+//                else{
+//                    if (BarUtils.isStatusBarVisible(context))
+//                        BarUtils.setStatusBarVisibility(context,false);
+//                }
+            }
+        });
+
         refreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
         refreshLayout.setOnRefreshListener(this);
         ListData bean = null;
@@ -125,7 +167,7 @@ public class DocFragment extends BaseFragment implements IHomeView
         title.setUrl(channel_list.get(1).getUrl());
         list.add(title);  //最新活动
 
-        for (int i = 0; i < (list_datas.size() > 2 ? 2 : list_datas.size()); i++) {
+        for (int i = 0; i < (list_datas.size() > listCount ? listCount : list_datas.size()); i++) {
             list.add(list_datas.get(i));
         }
 
@@ -140,12 +182,12 @@ public class DocFragment extends BaseFragment implements IHomeView
         title.setUrl(channel_list.get(2).getUrl());
         list.add(title); //最新新闻
 
-        for (int i = 0; i < (list_datas.size() > 2 ? 2 : list_datas.size()); i++) {
+        for (int i = 0; i < (list_datas.size() > listCount ? listCount : list_datas.size()); i++) {
             list.add(list_datas.get(i));
         }
 
 
-        list = DataHelper.initDocList(context,list);
+        list = DataHelper.initDocList(list,listCount);
 
         adapter = new DocAdapter(list, context,bannerDatas);
         RecycleviewUtil.initGridRecycleView(recycleview, adapter, context, SPAN_COUNT);

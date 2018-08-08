@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
+import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.HomeAdapter;
-import com.trs.aiweishi.base.BaseAdapter;
 import com.trs.aiweishi.base.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
 import com.trs.aiweishi.bean.ListData;
@@ -32,11 +33,14 @@ public class HomeFragment extends BaseFragment implements IHomeView,
         SwipeRefreshLayout.OnRefreshListener {
     @Inject
     IHomePresenter homePresenter;
+    @BindView(R.id.view_padding)
+    View viewPadding;
     @BindView(R.id.recycleview)
     RecyclerView recycleview;
     @BindView(R.id.refresh)
     SwipeRefreshLayout refreshLayout;
 
+    private final int listCount = 2;
     private final int SPAN_COUNT = 3;
     public static String mParam1 = "param1";
     private List<ListData> bannerDatas = new ArrayList<>();
@@ -61,6 +65,43 @@ public class HomeFragment extends BaseFragment implements IHomeView,
 
     @Override
     public void initData() {
+        LinearLayout.LayoutParams viewParam = (LinearLayout.LayoutParams) viewPadding.getLayoutParams();
+        viewParam.height = BarUtils.getStatusBarHeight();
+        viewPadding.setLayoutParams(viewParam);
+
+        recycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                //当前的recycleView不滑动(滑动已经停止时)
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+//                    BarUtils.setStatusBarVisibility(context,true);
+//                }
+                //当前的recycleView被拖动滑动
+//                if (newState == RecyclerView.SCROLL_STATE_DRAGGING ){
+//                    BarUtils.setStatusBarVisibility(context,false);
+//                }
+//                //当前的recycleView在滚动到某个位置的动画过程,但没有被触摸滚动
+//                if (newState == RecyclerView.SCROLL_STATE_SETTLING ){
+//                    BarUtils.setStatusBarVisibility(context,false);
+//                }
+//            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //false 为滑动到顶部
+                if (!recyclerView.canScrollVertically(-1)){
+//                    if (!BarUtils.isStatusBarVisible(context))
+//                        BarUtils.setStatusBarVisibility(context,true);
+                }
+                else{
+//                    if (BarUtils.isStatusBarVisible(context))
+//                        BarUtils.setStatusBarVisibility(context,false);
+                }
+            }
+        });
         refreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
         refreshLayout.setOnRefreshListener(this);
         ListData bean = null;
@@ -147,7 +188,7 @@ public class HomeFragment extends BaseFragment implements IHomeView,
         title.setUrl(channel_list.get(1).getUrl());
         list.add(title);  //最新活动
 
-        for (int i = 0; i < (hudong_datas.size() > 2 ? 2 : hudong_datas.size()); i++) {
+        for (int i = 0; i < (hudong_datas.size() > listCount ? listCount : hudong_datas.size()); i++) {
             list.add(hudong_datas.get(i));
         }
 
@@ -162,11 +203,11 @@ public class HomeFragment extends BaseFragment implements IHomeView,
         title.setUrl(channel_list.get(2).getUrl());
         list.add(title); //最新新闻
 
-        for (int i = 0; i < (list_datas.size() > 2 ? 2 : list_datas.size()); i++) {
+        for (int i = 0; i < (list_datas.size() > listCount ? listCount : list_datas.size()); i++) {
             list.add(list_datas.get(i));
         }
 
-        List<ListData> listData = DataHelper.initHomeList(context, list,hudong_datas);
+        List<ListData> listData = DataHelper.initHomeList(list, listCount);
         adapter = new HomeAdapter(listData, context, bannerDatas);
         RecycleviewUtil.initGridRecycleView(recycleview, adapter, context, SPAN_COUNT);
     }

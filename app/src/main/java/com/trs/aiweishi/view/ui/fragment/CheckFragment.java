@@ -7,10 +7,8 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.baidu.location.BDLocation;
-import com.blankj.utilcode.util.LogUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.CheckAdapter;
-import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseAdapter;
 import com.trs.aiweishi.base.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
@@ -36,22 +34,25 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
 
     public static String PARAM = "parce";
     public static String PARAM1 = "siteType";
+    public static String PARAM2 = "address";
     private CheckAdapter adapter;
     private BDLocation location;
     private List<Site.Monitor> monitors;
-    private String HashLength = "2";
+    private String HashLength = "3";
     private int pageNum = 1;
     private int pageSize = 20;
     private int type = 0;
+    private String address;
 
     public CheckFragment() {
     }
 
-    public static CheckFragment newInstance(Parcelable par, int type) {
+    public static CheckFragment newInstance(Parcelable par, int type, String address) {
         CheckFragment fragment = new CheckFragment();
         Bundle args = new Bundle();
         args.putParcelable(PARAM, par);
         args.putInt(PARAM1, type);
+        args.putString(PARAM2, address);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,6 +67,7 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
         if (getArguments() != null) {
             location = getArguments().getParcelable(PARAM);
             type = getArguments().getInt(PARAM1);
+            address = getArguments().getString(PARAM2);
         }
 
         if (adapter == null) {
@@ -75,6 +77,8 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
         } else {
             adapter.updateData(monitors);
         }
+
+//        if (type == 0)
         requestLocation();
     }
 
@@ -83,26 +87,21 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
         params.put("pageNum", Base64.encodeToString(String.valueOf(pageNum).getBytes(), Base64.DEFAULT));
         params.put("pageSize", Base64.encodeToString(String.valueOf(pageSize).getBytes(), Base64.DEFAULT));
 
-        if (!TextUtils.isEmpty(location.getCity())){
-            //getNearbySites
+        if (location != null) {
             params.put("filterName", Base64.encodeToString("getNearbySites".getBytes(), Base64.DEFAULT));
             params.put("lon", Base64.encodeToString(String.valueOf(location.getLongitude()).getBytes(), Base64.DEFAULT));
             params.put("lat", Base64.encodeToString(String.valueOf(location.getLatitude()).getBytes(), Base64.DEFAULT));
             params.put("geoHashLength", Base64.encodeToString(HashLength.getBytes(), Base64.DEFAULT));   //1-12
             //0,bg_ngo  1,妇幼保健 2，疾病预防控制中心  3，美沙酮门诊 4，性病中心或皮防所  5，其他机构
             params.put("siteType", Base64.encodeToString(String.valueOf(type).getBytes(), Base64.DEFAULT));
-        } else{
-            //listSitesByFilter
+        } else if (!TextUtils.isEmpty(address)) {
+            params.put("filterName", Base64.encodeToString("getSitesInRegion".getBytes(), Base64.DEFAULT));
+            params.put("province", Base64.encodeToString(address.getBytes(), Base64.DEFAULT));
+            params.put("siteType", Base64.encodeToString(String.valueOf(type).getBytes(), Base64.DEFAULT));
+        } else {
             params.put("filterName", Base64.encodeToString("listSitesByFilter".getBytes(), Base64.DEFAULT));
             params.put("siteType", Base64.encodeToString(String.valueOf(type).getBytes(), Base64.DEFAULT));
         }
-
-        //getSitesInRegion
-//        String province = split[0]+split[1]+split[2];
-//        params.put("province", Base64.encodeToString(province.getBytes(), Base64.DEFAULT));  //"安徽省"
-//        params.put("city", Base64.encodeToString(split[1].getBytes(), Base64.DEFAULT));  //"合肥市"
-//        params.put("country", Base64.encodeToString(split[2].getBytes(), Base64.DEFAULT)); //庐阳区  瑶海区
-
         presenter.getLocationData(params);
     }
 
@@ -115,13 +114,13 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
     public void showSuccess(BaseBean baseBean) {
         SiteBean bean = (SiteBean) baseBean;
         if (bean.getResult() != null) {
-            List<Site.Monitor> monitors = DataHelper.fillCheckData(bean.getResult().getMonitoringSites());
+            monitors = DataHelper.fillCheckData(bean.getResult().getMonitoringSites());
             if (pageNum == 1)
                 adapter.updateData(monitors);
             else
                 adapter.addData(monitors);
-        }
-
+        } else
+            adapter.loadMoreEnd();
     }
 
     @Override

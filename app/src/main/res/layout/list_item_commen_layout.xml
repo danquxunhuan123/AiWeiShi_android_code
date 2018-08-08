@@ -16,7 +16,7 @@
             android:id="@+id/iv_pic"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:layout_marginRight="10dp"
             android:visibility="gone" />
 
@@ -29,6 +29,8 @@
                 android:id="@+id/tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:textColor="@color/color_343638"
                 android:textSize="@dimen/text_commen_size" />
 
@@ -39,8 +41,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:gravity="right"
-                android:textColor="@color/color_75787b"
-                android:textSize="@dimen/text_commen_size" />
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/text_small_size" />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

@@ -25,7 +25,7 @@ public class BannerHelper {
         params.height = params.width * 9 / 16;
         banner.setLayoutParams(params);
 
-        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE)
+        banner.setBannerStyle(BannerConfig.NOT_INDICATOR)
                 .setPageTransformer(false, new CustPagerTransformer(context))
                 .setImageLoader(new GlideImageLoader())
                 //设置图片集合

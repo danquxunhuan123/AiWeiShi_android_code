@@ -8,6 +8,7 @@ import com.trs.aiweishi.view.ui.activity.CheckActivity;
 import com.trs.aiweishi.view.ui.activity.CheckDetailActivity;
 import com.trs.aiweishi.view.ui.activity.CheckSearchActivity;
 import com.trs.aiweishi.view.ui.activity.DetailActivity;
+import com.trs.aiweishi.view.ui.activity.FeedBackActivity;
 import com.trs.aiweishi.view.ui.activity.FindPsdNextActivity;
 import com.trs.aiweishi.view.ui.activity.ForgetPsdActivity;
 import com.trs.aiweishi.view.ui.activity.ListDataActivity;
@@ -44,4 +45,5 @@ public interface ActivityComponent {
     void inject(CheckSearchActivity checkSearchActivity);
     void inject(BindPhoneActivity bindPhoneActivity);
     void inject(FindPsdNextActivity findPsdNextActivity);
+    void inject(FeedBackActivity feedBackActivity);
 }

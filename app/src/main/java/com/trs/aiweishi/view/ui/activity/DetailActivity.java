@@ -1,6 +1,5 @@
 package com.trs.aiweishi.view.ui.activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -50,11 +49,13 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
     @BindView(R.id.webview)
     WebView webView;
 
+    public static final String TITLE_NAME = "title_name";
     public static final String URL = "url";
     public static final String TYPE = "type";
     private MDialogConfig config;
     private UMShareUtil shareUtil;
     private PopWindowUtil sharePopUtil;
+    private String toolbarName = "";
     private int type;
     private List<String> imgs;
     private String imgUrl;
@@ -65,7 +66,7 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
 
     @Override
     protected String initToolBarName() {
-        return "";
+        return toolbarName;
     }
 
     @Override
@@ -75,16 +76,17 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
 
     @Override
     protected void initListener() {
-        webView.addJavascriptInterface(new JavaScriptInterface(this), "imagelistner");
         webView.setWebChromeClient(new WebChromeClient());
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollBarSize(5);
         webView.getSettings().setSupportZoom(true); // 可以缩放
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
         webView.getSettings().setNeedInitialFocus(false);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new MyWebViewClient());
-        webView.addJavascriptInterface(new JavaScriptInterface(this), "imagelistner"); //给图片设置点击监听的
+        webView.addJavascriptInterface(new JavaScriptInterface(), "imagelistner"); //给图片设置点击监听的
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webView.getSettings().setLoadWithOverviewMode(true);
@@ -98,22 +100,25 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
                 .setOnShareSuccessListener(this);
         sharePopUtil = PopWindowUtil.getInstance(this);
 
+        toolbarName = getIntent().getStringExtra(TITLE_NAME);
         String url = getIntent().getStringExtra(URL);
         type = getIntent().getIntExtra(TYPE, 2);
-
-        //获取ip地址
-        String[] split = url.split("/");
-        imgUrl = url.substring(0, url.length() - split[split.length - 1].length());
 
         config = new MDialogConfig.Builder()
                 .isCanceledOnTouchOutside(true)
                 .build();
         MProgressDialog.showProgress(this, config);
 
-        if (type == 2){
-            presenter.getDetailData(url);
-        }
-        else{
+        if (type == 2) {
+            if (url.contains(".json")) {
+                //获取ip地址
+                String[] split = url.split("/");
+                imgUrl = url.substring(0, url.length() - split[split.length - 1].length());
+                presenter.getDetailData(url);
+            } else {
+                WebViewUtils.load(webView, new MyWebViewClient(), url, type);
+            }
+        } else {
             share.setVisibility(View.GONE);
             WebViewUtils.load(webView, new MyWebViewClient(), url, type);
         }
@@ -132,9 +137,6 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
     @Override
     public void showSuccess(BaseBean baseBean) {
         MProgressDialog.dismissProgress();
-//        if (type == 2)
-//            webView.loadDataWithBaseURL(null, str, "text/html", "utf-8", null);;
-//        else
         loadUrl(((DetailBean) baseBean).getDatas());
     }
 
@@ -144,35 +146,35 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(DetailActivity.this, SHARE_MEDIA.QQ,
-                                title, body, thumbUrl, shareUrl);
+                                title, title, thumbUrl, shareUrl);
                     }
                 })
                 .getView(R.id.tv_zone, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(DetailActivity.this, SHARE_MEDIA.QZONE,
-                                title, body, thumbUrl, shareUrl);
+                                title, title, thumbUrl, shareUrl);
                     }
                 })
                 .getView(R.id.tv_wecheat, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(DetailActivity.this, SHARE_MEDIA.WEIXIN,
-                                title, body, thumbUrl, shareUrl);
+                                title, title, thumbUrl, shareUrl);
                     }
                 })
                 .getView(R.id.tv_circle_friend, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(DetailActivity.this, SHARE_MEDIA.WEIXIN_CIRCLE,
-                                title, body, thumbUrl, shareUrl);
+                                title, title, thumbUrl, shareUrl);
                     }
                 })
                 .getView(R.id.tv_sina, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(DetailActivity.this, SHARE_MEDIA.SINA,
-                                title, body, thumbUrl, shareUrl);
+                                title, title, thumbUrl, shareUrl);
                     }
                 })
                 .showAtLocation(webView);
@@ -199,10 +201,8 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
         shareUrl = listData.getShareurl();
         title = listData.getTitle();
         String source = listData.getSource();
-        String updatedate = listData.getTime();
+        String updatedate = listData.getTime().split(" ")[0];
         body = listData.getBody();
-
-        body.replaceAll(".jpg/", ".jpg");
 
         imgs = new ArrayList<>();
         List<String> imgSrcList = Utils.getImgSrcList(body);
@@ -229,31 +229,34 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
         } else {
             str = str.replaceAll("#TITLE#", "");
         }
+
         if (!TextUtils.isEmpty(source)) {
-            if (!TextUtils.isEmpty(updatedate)) {
-                str = str.replaceAll("#SOURCE#", source);
-                str = str.replace("#SHUXIAN#", " | ");
-                str = str.replaceAll("#TIME#", "  " + updatedate);
-            } else {
-                str = str.replaceAll("#SOURCE#", source);
-                str = str.replace("#SHUXIAN#", "");
-                str = str.replaceAll("#TIME#", "");
-            }
+            str = str.replaceAll("#SOURCE#", source);
+            str = str.replace("#SHUXIAN#", "来源:");
         } else {
-            if (!TextUtils.isEmpty(updatedate)) {
-                str = str.replace("#SHUXIAN#", "|");
-                str = str.replaceAll("#TIME#", updatedate);
-            } else {
-                str = str.replace("#SHUXIAN#", "");
-                str = str.replaceAll("#TIME#", "");
-            }
+            str = str.replace("#SHUXIAN#", "");
             str = str.replaceAll("#SOURCE#", "");
         }
+        if (!TextUtils.isEmpty(updatedate))
+            str = str.replaceAll("#TIME#", updatedate);
+        else
+            str = str.replaceAll("#TIME#", "");
+
         // webview加载html标签
         webView.loadDataWithBaseURL(null, str, "text/html", "utf-8", null);
     }
 
     class MyWebViewClient extends WebViewClient {
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Intent intent = new Intent(DetailActivity.this, DetailActivity.class);
+            intent.putExtra(DetailActivity.TITLE_NAME, toolbarName);
+            intent.putExtra(DetailActivity.URL, url);
+            startActivity(intent);
+            return true;
+        }
+
         @Override
         public void onPageFinished(WebView view, String url) {
             addImageClickListner(view);
@@ -262,32 +265,28 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
     }
 
     private void addImageClickListner(WebView webView) {
-        // 这段js函数的功能就是，遍历所有的img节点，并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
         webView.loadUrl("javascript:(function(){" +
                 "var objs = document.getElementsByTagName(\"img\"); " +
-                "for(var i=0;i<objs.length;i++)  " +
+                "for(var i=0;i < objs.length; i++)  " +
                 "{"
                 + "    objs[i].onclick=function()  " +
                 "    {  "
-                + "        window.imagelistner.openImage(i,this.src);  " +
+                + "        window.imagelistner.openImage(this.src);  " +
                 "    }  " +
                 "}" +
                 "})()");
     }
 
     private class JavaScriptInterface {
-        private Context context;
-
-        public JavaScriptInterface(Context context) {
-            this.context = context;
+        public JavaScriptInterface() {
         }
 
         //点击图片回调方法
         //必须添加注解,否则无法响应
         @JavascriptInterface
-        public void openImage(int position, String img) {
+        public void openImage(String img) {
             if (ObjectUtils.isNotEmpty(imgs)) {
-                ImgsDialogFragment dialogFragment = ImgsDialogFragment.newInstance(position, imgs);
+                ImgsDialogFragment dialogFragment = ImgsDialogFragment.newInstance(imgs.indexOf(img), imgs);
                 dialogFragment.show(getSupportFragmentManager(), ChannelDialogFragment.TAG);
                 dialogFragment.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -296,5 +295,12 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
                 });
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sharePopUtil.onDestory();
+        shareUtil.onDestory();
     }
 }

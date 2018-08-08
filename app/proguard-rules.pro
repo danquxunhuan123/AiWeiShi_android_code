@@ -20,17 +20,17 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# glide 混淆
+# glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
   **[] $VALUES;
   public *;
 }
-# banner 混淆
+# banner
 -keep class com.youth.banner.** {
     *;
  }
-# 友盟 混淆
+# 友盟
  -dontshrink
  -dontoptimize
  -dontwarn com.google.android.maps.**

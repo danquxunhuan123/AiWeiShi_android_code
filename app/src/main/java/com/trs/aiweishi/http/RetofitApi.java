@@ -106,6 +106,10 @@ public interface RetofitApi {
     @POST("service?idsServiceType=remoteapi&method=checkAccountMapping")
     Observable<BaseBean> checkAccountMapping(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST("service?idsServiceType=remoteapi&method=addFeedBack")
+    Observable<BaseBean> addFeedBack(@FieldMap Map<String, String> params);
+
     @Multipart
     @POST()
     Observable<BaseBean> editHeadImg(@Url String url,

@@ -9,7 +9,25 @@ import java.util.List;
  */
 
 public class ListDataBean extends BaseBean {
-    public List<ListData> list_datas;
+    private int nowPage;
+    private int countPage;
+    private List<ListData> list_datas;
+
+    public int getNowPage() {
+        return nowPage;
+    }
+
+    public void setNowPage(int nowPage) {
+        this.nowPage = nowPage;
+    }
+
+    public int getCountPage() {
+        return countPage;
+    }
+
+    public void setCountPage(int countPage) {
+        this.countPage = countPage;
+    }
 
     public List<ListData> getList_datas() {
         return list_datas;

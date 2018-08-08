@@ -39,6 +39,17 @@ public class AlbumUtil {
         return imageUriFromCamera;
     }
 
+    public static void startCameraCrop(Activity fragment, Uri uri, int requestCode) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        }
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("scale", true);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        fragment.startActivityForResult(intent, requestCode);// 启动裁剪
+    }
+
     public static void openAlbum(Activity activity, int requestCode) {
         File outputImage = new File(activity.getExternalCacheDir(), "image.jpeg");
         try {
@@ -72,16 +83,6 @@ public class AlbumUtil {
         activity.startActivityForResult(intent, requestCode);  //PHOTO_ALBUM
     }
 
-    public static void startCameraCrop(Activity fragment, Uri uri, int requestCode) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        }
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("scale", true);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        fragment.startActivityForResult(intent, requestCode);// 启动裁剪
-    }
 
     public static void startAlbumCrop(Activity activity, Uri uri, int requestCode) {
         File camerafile = new File(activity.getExternalCacheDir(), "image.jpeg");

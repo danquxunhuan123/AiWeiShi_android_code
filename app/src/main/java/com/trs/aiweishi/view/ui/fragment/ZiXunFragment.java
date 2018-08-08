@@ -30,6 +30,9 @@ public class ZiXunFragment extends BaseFragment implements BaseAdapter.OnLoadMor
     protected static String mParam1 = "url";
     private ZiXunAdapter adapter;
     private List<ListData> list_datas;
+    private ListDataBean dataBean;
+    private String url;
+    private int page = 1;
 
     public ZiXunFragment() {
     }
@@ -49,16 +52,16 @@ public class ZiXunFragment extends BaseFragment implements BaseAdapter.OnLoadMor
 
     @Override
     public void initData() {
-        if (adapter == null){
-            adapter =new ZiXunAdapter(list_datas, context);  //DataHelper.getZiXunData()
-//            adapter.setOnLoadMoreListener(this);
+        if (adapter == null) {
+            adapter = new ZiXunAdapter(list_datas, context);  //DataHelper.getZiXunData()
+            adapter.setOnLoadMoreListener(this);
             RecycleviewUtil.initLinearRecycleView(recyclerView, adapter, context);
-        }else{
+        } else {
             adapter.updateData(list_datas);
         }
 
         if (getArguments() != null) {
-            String url = getArguments().getString(mParam1);
+            url = getArguments().getString(mParam1);
             presenter.getChannelData(url);
         }
     }
@@ -70,12 +73,25 @@ public class ZiXunFragment extends BaseFragment implements BaseAdapter.OnLoadMor
 
     @Override
     public void showSuccess(BaseBean baseBean) {
-        list_datas = ((ListDataBean) baseBean).getList_datas();
-        adapter.updateData(list_datas);
+        dataBean = (ListDataBean) baseBean;
+        list_datas = dataBean.getList_datas();
+        if (page == 0) {
+            adapter.updateData(list_datas);
+        } else {
+            adapter.addData(list_datas);
+        }
     }
 
     @Override
     public void OnLoadMore() {
-
+        if ((dataBean.getNowPage() + 1) < dataBean.getCountPage()) {
+            //当前页数小于总页数，加载更多
+            url = url.replace(".json", "_" + page + ".json");
+            page++;
+            presenter.getChannelData(url);
+        } else {
+            //没有更多数据
+            adapter.loadMoreEnd();
+        }
     }
 }

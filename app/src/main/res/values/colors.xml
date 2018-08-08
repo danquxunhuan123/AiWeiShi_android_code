@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
 
     <color name="color_00FFFFFF">#00FFFFFF</color>
     <color name="tab_root_color">#f4f4f4</color>
@@ -16,10 +17,13 @@
     <color name="color_white_trans">#80ffffff</color>
     <color name="color_f6f6f6">#f6f6f6</color>
     <color name="color_f4f4f4">#f4f4f4</color>
+    <color name="color_fafafa">#fafafa</color>
     <color name="color_f8f8f8">#f8f8f8</color>
     <color name="color_59B29C">#59B29C</color>
     <color name="color_3169b3">#3169b3</color>
     <color name="color_333333">#333333</color>
     <color name="color_11112233">#11112233</color>
     <color name="color_697cf4">#697cf4</color>
+    <color name="color_eeeeee">#eeeeee</color>
+    <color name="color_4588ec">#4588ec</color>
 </resources>

@@ -77,19 +77,19 @@ public class DocAdapter extends BaseAdapter implements MyBanner_1.OnItemClickLis
                             intent.putExtra(ListDataActivity.PARAM2, bean.getCname());
                             context.startActivity(intent);
                         } else {
-                            if (context.getResources().getString(R.string.zxun).equals(bean.getCname())) {
-                                Intent intent = new Intent(context, DetailActivity.class);
-                                intent.putExtra(DetailActivity.URL, AppConstant.XIAOSI);
-                                intent.putExtra(DetailActivity.TYPE, 3);
-                                context.startActivity(intent);
-                            } else if (context.getResources().getString(R.string.jc).equals(bean.getCname())) {
-                                context.startActivity(new Intent(context, CheckActivity.class));
-                            } else {
+//                            if (context.getResources().getString(R.string.zxun).equals(bean.getCname())) {
+//                                Intent intent = new Intent(context, DetailActivity.class);
+//                                intent.putExtra(DetailActivity.URL, AppConstant.XIAOSI);
+//                                intent.putExtra(DetailActivity.TYPE, 3);
+//                                context.startActivity(intent);
+//                            } else if (context.getResources().getString(R.string.jc).equals(bean.getCname())) {
+//                                context.startActivity(new Intent(context, CheckActivity.class));
+//                            } else {
                                 Intent intent = new Intent(context, ZiXunActivity.class);
                                 intent.putExtra(ZiXunActivity.PARAM, (Parcelable) bean);
                                 intent.putExtra(ZiXunActivity.PARAM2, bean.getCname());
                                 context.startActivity(intent);
-                            }
+//                            }
                         }
                     }
                 });
@@ -118,11 +118,12 @@ public class DocAdapter extends BaseAdapter implements MyBanner_1.OnItemClickLis
                 }
 
                 ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());
-                ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime());
+                ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
                 holder.getItemView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, DetailActivity.class);
+                        intent.putExtra(DetailActivity.TITLE_NAME, bean.getCname());
                         intent.putExtra(DetailActivity.URL, bean.getUrl());
                         context.startActivity(intent);
                     }

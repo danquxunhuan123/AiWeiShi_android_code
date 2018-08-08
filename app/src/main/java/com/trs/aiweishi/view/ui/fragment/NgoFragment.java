@@ -1,9 +1,14 @@
 package com.trs.aiweishi.view.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.view.View;
+import android.widget.LinearLayout;
 
+import com.blankj.utilcode.util.BarUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.NgoAdapter;
 import com.trs.aiweishi.base.BaseBean;
@@ -29,6 +34,8 @@ public class NgoFragment extends BaseFragment implements INgoView
         , SwipeRefreshLayout.OnRefreshListener {
     @Inject
     IHomePresenter presenter;
+    @BindView(R.id.view_padding)
+    View viewPadding;
     @BindView(R.id.recycleview)
     RecyclerView recycleview;
     @BindView(R.id.refresh)
@@ -38,6 +45,8 @@ public class NgoFragment extends BaseFragment implements INgoView
     private List<ListData> list = new ArrayList<>();
     private NgoAdapter adapter;
     private final int SPAN_COUNT = 3;
+    private int count_1 = 0;
+    private int count_2 = 0;
     private List<ListData> channel_list;
 
     public NgoFragment() {
@@ -60,6 +69,40 @@ public class NgoFragment extends BaseFragment implements INgoView
 
     @Override
     public void initData() {
+        LinearLayout.LayoutParams viewParam = (LinearLayout.LayoutParams) viewPadding.getLayoutParams();
+        viewParam.height = BarUtils.getStatusBarHeight();
+        viewPadding.setLayoutParams(viewParam);
+//        viewPadding.setBackground(getResources().getDrawable(R.mipmap.bg_ngo));
+        viewPadding.setBackgroundColor(Color.parseColor("#e49850"));
+
+        recycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+//                    BarUtils.setStatusBarVisibility(context,true);
+//                }
+//                if (newState == RecyclerView.SCROLL_STATE_SETTLING ){
+//                    BarUtils.setStatusBarVisibility(context,false);
+//                }
+//            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+//                if (!recyclerView.canScrollVertically(-1)){
+//                    if (!BarUtils.isStatusBarVisible(context))
+//                        BarUtils.setStatusBarVisibility(context,true);
+//                }
+//                else{
+//                    if (BarUtils.isStatusBarVisible(context))
+//                        BarUtils.setStatusBarVisibility(context,false);
+//                }
+            }
+        });
+
         refreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
         refreshLayout.setOnRefreshListener(this);
         ListData bean = null;
@@ -93,6 +136,7 @@ public class NgoFragment extends BaseFragment implements INgoView
         title.setTitle("view");
         list.add(title);  //公示公告
 
+        count_1 = list_datas.size();
         for (int i = 0; i < (list_datas.size() > 3 ? 3 : list_datas.size()); i++) {
             list.add(list_datas.get(i));
         }
@@ -108,6 +152,7 @@ public class NgoFragment extends BaseFragment implements INgoView
         title.setUrl(channel_list.get(1).getUrl());
         list.add(title); //NGO小组动态
 
+        count_2 = list_datas.size();
         for (int i = 0; i < (list_datas.size() > 3 ? 3 : list_datas.size()); i++) {
             list.add(list_datas.get(i));
         }
@@ -127,7 +172,7 @@ public class NgoFragment extends BaseFragment implements INgoView
         ngoData.setChannel_list(data);
         list.add(ngoData);
 
-        list = DataHelper.initNgoList(3,list);
+        list = DataHelper.initNgoList(count_1,count_2,list);
 
         if (adapter == null){
             adapter = new NgoAdapter(list, context);

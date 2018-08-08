@@ -36,6 +36,7 @@ public class AlertDialogUtil {
 
     public void create() {
         dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
 //        dialog.getWindow().setContentView(v);//自定义布局应该在这里添加，要在dialog.show()的后面
         //dialog.getWindow().setGravity(Gravity.CENTER);//可以设置显示的位置
@@ -81,6 +82,11 @@ public class AlertDialogUtil {
             }
         }
     };
+
+    public void onDestory(){
+        context = null;
+        instance = null;
+    }
 
     public interface DialogClickListener {
         void OnSureClick(String content);

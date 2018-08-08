@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 
 import retrofit2.http.Url;
@@ -48,4 +49,11 @@ public class GlideUtils
                 .into(imageView);
     }
 
+    public static void loadUrlImg(Context context, String url, ImageView imageView, RequestListener listener){
+        Glide.with(context)
+                .applyDefaultRequestOptions(RequestOptions.fitCenterTransform())
+                .load(url)
+                .listener(listener)
+                .into(imageView);
+    }
 }

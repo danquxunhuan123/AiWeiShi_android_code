@@ -12,7 +12,6 @@ public class RegularConversionUtil {
         if (inputString == null)
             return null;
         String htmlStr = inputString; // 含html标签的字符串
-        String textStr = "";
         Pattern p_style;
         java.util.regex.Matcher m_style;
         Pattern p_font;
@@ -24,9 +23,9 @@ public class RegularConversionUtil {
 
         try {
             String regEx_style = "style=\\\"(.*?)\\\"";
-            String regEx_font="</?font[^><]*>";
-            String regEx_width="width[\\s]*?=[\\\\]?[\\s]*?[\\\"|'][^\\\"|^')]+[\\\"|'][\\\\]?";
-            String regExImg_height="height=\\\"(.*?)\\\""; //获取img中height属性
+            String regEx_font = "</?font[^><]*>";
+            String regEx_width = "width[\\s]*?=[\\\\]?[\\s]*?[\\\"|'][^\\\"|^')]+[\\\"|'][\\\\]?";
+            String regExImg_height = "height=\\\"(.*?)\\\""; //获取img中height属性
 
             p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
             m_style = p_style.matcher(htmlStr);
@@ -44,10 +43,9 @@ public class RegularConversionUtil {
             mImg_height = pImg_height.matcher(htmlStr);
             htmlStr = mImg_height.replaceAll(""); // 过滤特殊标签
 
-            textStr = htmlStr;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return textStr;// 返回文本字符串
+        return htmlStr;// 返回文本字符串
     }
 }

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,9 +52,14 @@ public class CheckActivity extends BaseActivity implements
     @BindView(R.id.vp_check)
     ViewPager viewPager;
 
-//    private BDLocation location;
-    private List<String> titles = new ArrayList<>();
+    private final int JKZX = 2;
+    private final int FYBJ = 1;
+    private final int NGO = 0;
+    private final int PFXB = 4;
+    private final int MSTD = 3;
+    private final int OTHER = 5;
     private List<BaseFragment> fragments = new ArrayList<>();
+    private List<String> titles = new ArrayList<>();
     private FragmentAdapter adapter;
     private boolean isLoaded = false;
     private Thread thread;
@@ -97,14 +103,13 @@ public class CheckActivity extends BaseActivity implements
 
     @Override
     protected void initData() {
+        titles.add("疾控中心");
+        titles.add("妇幼保健");
+        titles.add("NGO机构");
+        titles.add("皮肤性病");
+        titles.add("美沙酮点");
+        titles.add("其他机构");
         locationHelper.startLocation();
-
-        titles.add("疾控中心");   //2
-        titles.add("妇幼保健");   //1
-        titles.add("NGO机构");    //0
-        titles.add("皮肤性病");   //4
-        titles.add("美沙酮点");   //3
-        titles.add("其他机构");   //5
         mHandler.sendEmptyMessage(MSG_LOAD_DATA);
     }
 
@@ -138,7 +143,7 @@ public class CheckActivity extends BaseActivity implements
         return R.layout.activity_check;
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_edit_location, R.id.tv_search_location})
+    @OnClick({R.id.iv_back, R.id.ll_check_address, R.id.tv_search_location})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_search_location:
@@ -148,7 +153,7 @@ public class CheckActivity extends BaseActivity implements
             case R.id.iv_back:
                 finish();
                 break;
-            case R.id.iv_edit_location:
+            case R.id.ll_check_address:
                 if (isLoaded) {
                     showPickerView();
                 } else {
@@ -163,25 +168,24 @@ public class CheckActivity extends BaseActivity implements
             @Override
             public void onOptionsSelect(int options1, int options2, int options3, View v) {
                 //返回的分别是三个级别的选中位置
-                String tx = options1Items.get(options1).getPickerViewText() + "," +
-                        options2Items.get(options1).get(options2) + "," +
-                        options3Items.get(options1).get(options2).get(options3);
+                StringBuffer buffer = new StringBuffer();
+                buffer
+                        .append(options1Items.get(options1).getPickerViewText())
+                        .append(",")
+                        .append(options2Items.get(options1).get(options2))
+                        .append(",")
+                        .append(options3Items.get(options1).get(options2).get(options3));
 
-                tvLocation.setText(tx);
+                tvLocation.setText(buffer.toString());
 
-//                Address address  = new Address.Builder()
-//                        .city(options1Items.get(options1).getPickerViewText())
-//                        .district(options2Items.get(options1).get(options2))
-//                        .street(options3Items.get(options1).get(options2).get(options3))
-//                        .build();
-//                location.setAddr(address);
-//
-//                fragments.clear();
-//
-//                for (int a =0;a < titles.size();a ++){
-//                    fragments.add(CheckFragment.newInstance(location,a));
-//                }
-//                adapter.update(fragments);
+                StringBuffer buffer1 = new StringBuffer();
+                buffer1
+                        .append(options1Items.get(options1).getPickerViewText())
+                        .append(options2Items.get(options1).get(options2))
+                        .append(options3Items.get(options1).get(options2).get(options3));
+
+                initFragment(null, buffer1.toString());
+                adapter.update(fragments);
             }
         })
 
@@ -200,29 +204,50 @@ public class CheckActivity extends BaseActivity implements
 
     @Override
     public void onLocation(BDLocation location) {
-//        this.location = location;
-        String addr = location.getCity() +
-                "," + location.getDistrict() +
-                "," + location.getAddrStr();
-        tvLocation.setText(addr);
+        if (TextUtils.isEmpty(location.getProvince())) {
+            String addr = "北京市市辖区全部";
+            tvLocation.setText("北京市,市辖区,全部");
 
-//        for (int a = 0; a < titles.size(); a++) {
-//            fragments.add(CheckFragment.newInstance(location, a));
-//        }
-            fragments.add(CheckFragment.newInstance(location, 2));
-            fragments.add(CheckFragment.newInstance(location, 1));
-            fragments.add(CheckFragment.newInstance(location, 0));
-            fragments.add(CheckFragment.newInstance(location, 4));
-            fragments.add(CheckFragment.newInstance(location, 3));
-            fragments.add(CheckFragment.newInstance(location, 5));
+            initFragment(null, addr);
+        } else {
+            StringBuffer addrBuffer = new StringBuffer();
+            addrBuffer
+                    .append(location.getProvince())
+                    .append(",")
+                    .append(location.getCity())
+                    .append(",")
+                    .append(location.getDistrict());
+            tvLocation.setText(addrBuffer.toString());
 
-        if (adapter == null) {
+            initFragment(location, "");
+        }
+
+        if (adapter == null){
             adapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
             viewPager.setAdapter(adapter);
             viewPager.setOffscreenPageLimit(titles.size());
             tabLayout.setupWithViewPager(viewPager);
-        } else {
+        }else {
             adapter.update(fragments);
+        }
+    }
+
+    private void initFragment(BDLocation location, String addr) {
+        fragments.clear();
+        if (location != null) {
+            fragments.add(CheckFragment.newInstance(location, JKZX, null));
+            fragments.add(CheckFragment.newInstance(location, FYBJ, null));
+            fragments.add(CheckFragment.newInstance(location, NGO, null));
+            fragments.add(CheckFragment.newInstance(location, PFXB, null));
+            fragments.add(CheckFragment.newInstance(location, MSTD, null));
+            fragments.add(CheckFragment.newInstance(location, OTHER, null));
+        } else if (!TextUtils.isEmpty(addr)) {
+            fragments.add(CheckFragment.newInstance(null, JKZX, addr));
+            fragments.add(CheckFragment.newInstance(null, FYBJ, addr));
+            fragments.add(CheckFragment.newInstance(null, NGO, addr));
+            fragments.add(CheckFragment.newInstance(null, PFXB, addr));
+            fragments.add(CheckFragment.newInstance(null, MSTD, addr));
+            fragments.add(CheckFragment.newInstance(null, OTHER, addr));
         }
     }
 

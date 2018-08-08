@@ -160,4 +160,9 @@ public class HttpHelper {
     public void editHeadImg(String url, MultipartBody.Part part, IResponseCallBack callBack) {
         getObservable(api.editHeadImg(url, part), callBack);
     }
+
+    public void feedBack(Map<String, String> params, IResponseCallBack callBack) {
+        addCommenParams(params);
+        getObservable(api.addFeedBack(params), callBack);
+    }
 }

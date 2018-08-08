@@ -15,13 +15,13 @@
     <TextView
         style="@style/home_style_foot"
         android:id="@+id/tv_consult"
-        android:drawableTop="@drawable/zixun_icon_selector"
+        android:drawableTop="@drawable/icon_aiyi_selector"
         android:text="@string/tab_doctor" />
 
     <TextView
         style="@style/home_style_foot"
         android:id="@+id/tv_ngo"
-        android:drawableTop="@drawable/zixun_icon_selector"
+        android:drawableTop="@drawable/icon_ngo_selector"
         android:text="@string/tab_ngo" />
 
     <TextView

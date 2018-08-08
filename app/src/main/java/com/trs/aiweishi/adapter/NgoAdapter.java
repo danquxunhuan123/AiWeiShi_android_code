@@ -3,6 +3,7 @@ package com.trs.aiweishi.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.v7.widget.GridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.SizeUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseAdapter;
@@ -58,10 +61,6 @@ public class NgoAdapter extends BaseAdapter {
         final ListData bean = (ListData) list.get(position);
         switch (getItemViewType(position)) {
             case ListData.PAGE_HEAD_TYPE:
-                View itemView = holder.getItemView();
-                ViewGroup.LayoutParams params = itemView.getLayoutParams();
-                params.width = ScreenUtils.getScreenWidth();
-                itemView.setLayoutParams(params);
                 break;
             case ListData.ITEM_TITLE_TYPE:
                 if (TextUtils.isEmpty(bean.getTitle())){
@@ -98,6 +97,7 @@ public class NgoAdapter extends BaseAdapter {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(context, DetailActivity.class);
+                            intent.putExtra(DetailActivity.TITLE_NAME, finalData.getCname());
                             intent.putExtra(DetailActivity.URL, finalData.getUrl());
                             context.startActivity(intent);
                         }
@@ -116,11 +116,12 @@ public class NgoAdapter extends BaseAdapter {
                 }
 
                 ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());
-                ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime());
+                ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
                 holder.getItemView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, DetailActivity.class);
+                        intent.putExtra(DetailActivity.TITLE_NAME, bean.getCname());
                         intent.putExtra(DetailActivity.URL, bean.getUrl());
                         context.startActivity(intent);
                     }

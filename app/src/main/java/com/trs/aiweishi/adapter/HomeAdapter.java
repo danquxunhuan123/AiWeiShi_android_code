@@ -3,12 +3,17 @@ package com.trs.aiweishi.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
+import com.blankj.utilcode.util.SizeUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseAdapter;
@@ -64,7 +69,7 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        context.startActivity(new Intent(context,SearchActivity.class));
+                        context.startActivity(new Intent(context, SearchActivity.class));
                     }
                 });
                 break;
@@ -74,11 +79,46 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                 break;
             case TextDrawableBean.TEXT_DRAWABLE_TYPE:
                 TextView tv = (TextView) holder.getView(R.id.tv);
+                View lineBottom = holder.getView(R.id.line_bottom);
+                View lineRighBott = holder.getView(R.id.line_right_bottom);
+                View lineRighTop = holder.getView(R.id.line_right_top);
+
                 final String name = bean.getCname();
                 tv.setText(name);
+                int draId = bean.getDrawable();
                 tv.setCompoundDrawablesWithIntrinsicBounds(
-                        context.getResources().getDrawable(bean.getDrawable()),
-                        null,null, null);
+                        context.getResources().getDrawable(draId),
+                        null, null, null);
+
+                if (draId == R.mipmap.icon_zx) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) lineBottom.getLayoutParams();
+                    params.setMargins(SizeUtils.dp2px(10), 0, 0, 0);
+                    lineBottom.setLayoutParams(params);
+
+                    lineBottom.setVisibility(View.VISIBLE);
+                    lineRighBott.setVisibility(View.VISIBLE);
+                    lineRighTop.setVisibility(View.GONE);
+                } else if (draId == R.mipmap.icon_jishu) {
+                    lineBottom.setVisibility(View.VISIBLE);
+                    lineRighBott.setVisibility(View.VISIBLE);
+                    lineRighTop.setVisibility(View.GONE);
+                } else if (draId == R.mipmap.icon_zixun) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) lineBottom.getLayoutParams();
+                    params.setMargins(0, 0, SizeUtils.dp2px(10), 0);
+                    lineBottom.setLayoutParams(params);
+
+                    lineBottom.setVisibility(View.VISIBLE);
+                    lineRighBott.setVisibility(View.GONE);
+                    lineRighTop.setVisibility(View.GONE);
+                } else if (draId == R.mipmap.icon_zhishi || draId == R.mipmap.icon_yiyao) {
+                    lineBottom.setVisibility(View.GONE);
+                    lineRighBott.setVisibility(View.GONE);
+                    lineRighTop.setVisibility(View.VISIBLE);
+                } else {
+                    lineBottom.setVisibility(View.GONE);
+                    lineRighBott.setVisibility(View.GONE);
+                    lineRighTop.setVisibility(View.GONE);
+                }
 
                 holder.getItemView().setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -92,6 +132,7 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                             if (context.getResources().getString(R.string.zxun).equals(bean.getCname())) {
                                 Intent intent = new Intent(context, DetailActivity.class);
                                 intent.putExtra(DetailActivity.URL, AppConstant.XIAOSI);
+                                intent.putExtra(DetailActivity.TITLE_NAME, "智能咨询");
                                 intent.putExtra(DetailActivity.TYPE, 3);
                                 context.startActivity(intent);
                             } else if (context.getResources().getString(R.string.jc).equals(bean.getCname())) {
@@ -130,11 +171,13 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                 }
 
                 ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());
-                ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime());
+                if (!TextUtils.isEmpty(bean.getTime()))
+                    ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
                 holder.getItemView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, DetailActivity.class);
+                        intent.putExtra(DetailActivity.TITLE_NAME, bean.getCname());
                         intent.putExtra(DetailActivity.URL, bean.getUrl());
                         context.startActivity(intent);
                     }
@@ -148,6 +191,7 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
     @Override
     public void OnItemClick(int position) {
         Intent intent = new Intent(context, DetailActivity.class);
+//        intent.putExtra(DetailActivity.TITLE_NAME, bannerData.get(position).getCname());
         intent.putExtra(DetailActivity.URL, bannerData.get(position).getUrl());
         context.startActivity(intent);
     }

@@ -1,6 +1,9 @@
 package com.trs.aiweishi.base;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -24,7 +27,20 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<MyHolder> {
     protected List<T> listMore;
     protected Context context;
     protected OnLoadMoreListener listener;
+    private final int what_0 = 0;
     private BaseBean loadMorebean = new BaseBean();
+
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == what_0){
+                listMore = null;
+                notifyItemRangeChanged(getItemCount() - 1,getItemCount());
+            }
+        }
+    };
 
     public BaseAdapter(List<T> listData, Context context) {
         listMore = listData;
@@ -65,6 +81,10 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<MyHolder> {
         }else {
             notifyItemRangeChanged(getItemCount() - 1,getItemCount()); //更新最后一个加载更多布局
         }
+    }
+
+    public void loadMoreEnd(){
+        handler.sendEmptyMessageDelayed(what_0,500);
     }
 
     @Override

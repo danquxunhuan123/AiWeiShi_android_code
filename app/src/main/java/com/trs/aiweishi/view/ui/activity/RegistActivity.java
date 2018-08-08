@@ -113,6 +113,12 @@ public class RegistActivity extends BaseActivity implements IRegistView{
         }else {
             ToastUtils.showShort(bean.getDesc());
         }
+    }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        instance = null;
     }
 }

@@ -12,9 +12,6 @@ import android.provider.MediaStore;
 
 import java.io.File;
 
-/**
- * Created by Liufan on 2018/7/16.
- */
 
 public class UriToPathUtil {
     public static String getRealFilePath(Context context, final Uri uri) {

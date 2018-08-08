@@ -9,13 +9,11 @@ import com.trs.aiweishi.presenter.IUserPresenter;
 import com.trs.aiweishi.view.IBaseView;
 import com.trs.aiweishi.view.IFindPsdView;
 import com.trs.aiweishi.view.IRegistView;
+import com.trs.aiweishi.view.IUserCenterView;
 import com.trs.aiweishi.view.IUserEditerView;
 import com.trs.aiweishi.view.IUserView;
-import com.trs.aiweishi.view.IUserCenterView;
 
 import java.util.Map;
-
-import javax.inject.Inject;
 
 import okhttp3.MultipartBody;
 
@@ -32,7 +30,7 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
     IUserCenterView userInfoView;
     IBindPhoneView bindPhoneView;
 
-    public UserPresenterImpl(IBaseView baseView,IDataModel dataModel) {
+    public UserPresenterImpl(IBaseView baseView, IDataModel dataModel) {
         this.dataModel = dataModel;
 
         if (baseView instanceof IRegistView)
@@ -64,7 +62,10 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
             @Override
             public void onError(Throwable e) {
-                userView.showError(e);
+                if (count == 0)
+                    userView.showError(e);
+                else
+                    editVeiw.showError(e);
             }
         });
     }
@@ -101,21 +102,25 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
     }
 
     @Override
-    public void notifyUserAttr(final int count,Map<String, String> params) {
+    public void notifyUserAttr(final int count, Map<String, String> params) {
         dataModel.notifyUserAttr(params, new IResponseCallBack() {
 
             @Override
             public void onSuccess(Object obj) {
-                if (count == 0){
+                if (count == 0) {
                     registVeiw.notifyCodeSuccess((BaseBean) obj);
-                }else if (count == 1){
+                } else if (count == 1) {
                     findPsdView.notifyCodeSuccess((BaseBean) obj);
                 }
             }
 
             @Override
             public void onError(Throwable e) {
-                registVeiw.showError(e);
+                if (count == 0) {
+                    registVeiw.showError(e);
+                } else if (count == 1) {
+                    findPsdView.showError(e);
+                }
             }
         });
     }
@@ -134,7 +139,10 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
             @Override
             public void onError(Throwable e) {
-                registVeiw.showError(e);
+                if (count == 0)
+                    registVeiw.showError(e);
+                else
+                    findPsdView.showError(e);
             }
         });
     }
@@ -188,7 +196,7 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
     }
 
     @Override
-    public void getUserInfo(final int count,Map<String, String> param) {
+    public void getUserInfo(final int count, Map<String, String> param) {
         dataModel.getUserInfo(param, new IResponseCallBack() {
 
             @Override
@@ -201,7 +209,10 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
             @Override
             public void onError(Throwable e) {
-                baseView.showError(e);
+                if (count == 0)
+                    userInfoView.showError(e);
+                if (count == 1)
+                    bindPhoneView.showError(e);
             }
         });
     }
@@ -223,21 +234,25 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
     }
 
     @Override
-    public void loginByUID(final int count,Map<String, String> params) {
+    public void loginByUID(final int count, Map<String, String> params) {
         dataModel.loginByUID(params, new IResponseCallBack() {
 
             @Override
             public void onSuccess(Object obj) {
-                if (count == 0){
+                if (count == 0) {
                     userView.thirdLoginSuccess((BaseBean) obj);
-                }else{
+                } else {
                     bindPhoneView.loginByUID((BaseBean) obj);
                 }
             }
 
             @Override
             public void onError(Throwable e) {
-                baseView.showError(e);
+                if (count == 0) {
+                    userView.showError(e);
+                } else {
+                    bindPhoneView.showError(e);
+                }
             }
         });
     }
@@ -269,14 +284,14 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
             @Override
             public void onError(Throwable e) {
-                baseView.showError(e);
+                bindPhoneView.showError(e);
             }
         });
     }
 
     @Override
     public void editHeadImg(String url, MultipartBody.Part part) {
-        dataModel.editHeadImg(url,part,new IResponseCallBack() {
+        dataModel.editHeadImg(url, part, new IResponseCallBack() {
 
             @Override
             public void onSuccess(Object obj) {
@@ -286,6 +301,22 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
             @Override
             public void onError(Throwable e) {
                 editVeiw.showError(e);
+            }
+        });
+    }
+
+    @Override
+    public void feedBack(Map<String, String> params) {
+        dataModel.feedBack( params, new IResponseCallBack() {
+
+            @Override
+            public void onSuccess(Object obj) {
+                baseView.showSuccess((BaseBean) obj);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                baseView.showError(e);
             }
         });
     }

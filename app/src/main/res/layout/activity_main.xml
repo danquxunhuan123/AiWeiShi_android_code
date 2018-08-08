@@ -5,52 +5,36 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <!--<android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:background="@mipmap/bg_kefu"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:visibility="gone"
-            android:src="@mipmap/icon_arr_back" />
-
-        <ImageButton
-            android:id="@+id/ib_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:onClick="toSearch"
-            android:src="@mipmap/bg_search"/>
-
-        <TextView
-            android:id="@+id/tv_toolbar_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/text_commen_size" />
-
-    </android.support.v7.widget.Toolbar>-->
-
     <TextView
         android:id="@+id/tv_toolbar_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/color_black"
         android:textSize="@dimen/text_commen_size"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
-    <FrameLayout
-        android:id="@+id/fl_content"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:id="@+id/fl_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tv_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_failed"
+            android:visibility="gone"
+            android:padding="20dp"
+            android:textSize="@dimen/size_17sp"
+            android:textColor="@color/color_75787b"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
 
     <include layout="@layout/line_layout" />
 

@@ -1,14 +1,10 @@
 package com.trs.aiweishi.controller;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.trs.aiweishi.base.BaseFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Liufan on 2018/5/17.
@@ -16,56 +12,51 @@ import java.util.List;
 
 public class FragmentController {
     private static FragmentController controller;
+    private Fragment currentFragment = null;
+    private int count = 0;
+    private int currentShowIndex = 0;
 
-    private List<Fragment> fragmentList;
-    private FragmentManager fm;
-    private int containerId;
-
-    public FragmentController(FragmentActivity activity, int containerId) {
-        this.containerId = containerId;
-        fm = activity.getSupportFragmentManager();
-        fragmentList = new ArrayList<>();
+    private FragmentController() {
     }
 
-    public static FragmentController getInstance(FragmentActivity activity, int containerId) {
+    public static FragmentController getInstance() {
         if (controller == null) {
-            controller = new FragmentController(activity, containerId);
+            controller = new FragmentController();
         }
         return controller;
     }
 
-    public void addFragment(BaseFragment fragment){
-        fragmentList.add(fragment);
-    }
+    public void addFragment(BaseFragment fragment, int containerId, FragmentManager manager) {
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.add(containerId, fragment, String.valueOf(count));
 
-    public void initFragment() {
-        FragmentTransaction ft = fm.beginTransaction();
-        for (int a = 0; a < fragmentList.size(); a++) {
-            ft.add(containerId, fragmentList.get(a), String.valueOf(a));
-        }
+        if (count == 0) {
+            ft.show(fragment);
+            currentFragment = fragment;
+        } else
+            ft.hide(fragment);
         ft.commit();
+        count++;
     }
 
-    public void showFragment(int position) {
-        FragmentTransaction ft = fm.beginTransaction();
-        for (int i = 0; i < fragmentList.size(); i++) {
-            if (i == position)
-                ft.show(fragmentList.get(i));
-            else
-                ft.hide(fragmentList.get(i));
-        }
+    public void showFragment(int position, FragmentManager manager) {
+        if (currentShowIndex == position)
+            return;
+
+        FragmentTransaction ft = manager.beginTransaction();
+        Fragment findFragment = manager.findFragmentByTag(String.valueOf(position));
+        ft.show(findFragment);
+        ft.hide(currentFragment);
         ft.commitAllowingStateLoss();
+        currentFragment = findFragment;
+        currentShowIndex = position;
     }
 
-    public Fragment getFragment(int position) {
-        return fragmentList.get(position);
+    public Fragment getFragment(int position, FragmentManager manager) {
+        return manager.findFragmentByTag(String.valueOf(position));
     }
 
     public void onDestroy() {
         controller = null;
-    }
-
-    public void clear() {
-        fragmentList.clear();
     }
 }

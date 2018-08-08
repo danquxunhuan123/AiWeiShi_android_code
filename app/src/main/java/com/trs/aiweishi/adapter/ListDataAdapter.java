@@ -47,11 +47,12 @@ public class ListDataAdapter extends BaseAdapter {
         }
 
         ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());
-        ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime());
+        ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
         holder.getItemView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra(DetailActivity.TITLE_NAME, bean.getCname());
                 intent.putExtra(DetailActivity.URL, bean.getUrl());
                 context.startActivity(intent);
             }

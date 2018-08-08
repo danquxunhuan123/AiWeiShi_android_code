@@ -29,7 +29,7 @@ public class ZiXunAdapter extends BaseAdapter {
 
     @Override
     public MyHolder getViewHolder(ViewGroup parent, int viewType) {
-        return MyHolder.getComViewHolder(context, R.layout.zixun_item_layout, parent);
+        return MyHolder.getComViewHolder(context, R.layout.list_item_commen_layout, parent);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class ZiXunAdapter extends BaseAdapter {
             imageView.setVisibility(View.GONE);
         }
 
-        ((TextView) holder.getView(R.id.tv_name)).setText(bean.getCname());
-        ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime());
+        ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());
+        ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
 
 //        ((ImageView)holder.getView(R.id.iv_pic)).setImageResource(R.mipmap.icon_pic);
 
@@ -54,6 +54,7 @@ public class ZiXunAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra(DetailActivity.TITLE_NAME, bean.getCname());
                 intent.putExtra(DetailActivity.URL, bean.getUrl());
                 context.startActivity(intent);
             }

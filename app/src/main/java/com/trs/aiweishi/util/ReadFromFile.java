@@ -66,6 +66,7 @@ public class ReadFromFile {
             }
         }
     }
+
     /**
      * 以行为单位读取文件，常用于读面向行的格式化文件
      */
@@ -153,6 +154,7 @@ public class ReadFromFile {
             }
         }
     }
+
     /**
      * 以字节为单位读取文件，常用于读二进制文件，如图片、声音、影像等文件。
      */
@@ -164,7 +166,7 @@ public class ReadFromFile {
             // 一次读一个字节
             in = new FileInputStream(file);
             int tempbyte;
-            while ((tempbyte = in.read())!=-1) {
+            while ((tempbyte = in.read()) != -1) {
                 System.out.println(tempbyte);
             }
         } catch (Exception e) {
@@ -208,15 +210,16 @@ public class ReadFromFile {
 
     //从assets 文件夹中获取文件并读取数据
     public static final String ENCODING = "UTF-8";
-    public static String getFromAssets(Context context, String fileName){
+
+    public static String getFromAssets(Context context, String fileName) {
         String result = "";
         try {
             InputStream in = context.getResources().getAssets().open(fileName);
-//获取文件的字节数
+            //获取文件的字节数
             int lenght = in.available();
-//创建byte数组
-            byte[]  buffer = new byte[lenght];
-//将文件中的数据读到byte数组中
+            //创建byte数组
+            byte[] buffer = new byte[lenght];
+            //将文件中的数据读到byte数组中
             in.read(buffer);
 //            result = EncodingUtils.getString(buffer, ENCODING);//EncodingUtils:deprecated  过时，API level 21之后是不可以的
             result = new String(buffer, "UTF-8");//用new String可以运行在任意API Level
@@ -225,16 +228,15 @@ public class ReadFromFile {
         }
         return result;
     }
+
     //拷贝assets下的文件到sd卡中
-    public static void copyBigDataToSD(Context context, String strOutFileName, String openFile) throws IOException
-    {
+    public static void copyBigDataToSD(Context context, String strOutFileName, String openFile) throws IOException {
         InputStream myInput;
         OutputStream myOutput = new FileOutputStream(strOutFileName);
         myInput = context.getAssets().open(openFile);
         byte[] buffer = new byte[1024];
         int length = myInput.read(buffer);
-        while(length > 0)
-        {
+        while (length > 0) {
             myOutput.write(buffer, 0, length);
             length = myInput.read(buffer);
         }
@@ -243,14 +245,16 @@ public class ReadFromFile {
         myInput.close();
         myOutput.close();
     }
+
     /**
      * 向sdcard中写入文件
+     *
      * @param filename 文件名
-     * @param content 文件内容
+     * @param content  文件内容
      */
     public static void saveToSDCard(String filename, String content) throws Exception {
-        File file=new File(Environment.getExternalStorageDirectory(), filename);
-        OutputStream out=new FileOutputStream(file);
+        File file = new File(Environment.getExternalStorageDirectory(), filename);
+        OutputStream out = new FileOutputStream(file);
         out.write(content.getBytes());
         out.close();
     }

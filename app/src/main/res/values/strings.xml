@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">艾卫士</string>
+    <string name="app_name">i卫士</string>
     <string name="app_exit">再次点击退出应用</string>
     <string name="load_more">加载更多...</string>
     <string name="no_more">没有更多数据</string>
@@ -42,7 +42,7 @@
     <!--<string name="xlfd">心理辅导</string>-->
     <!--<string name="ypzs">药品知识</string>-->
     <!--<string name="gwpx">公卫培训</string>-->
-    <!--<string nabg_ngo"ngo">NGO</string>-->
+    <!--<string nabg_icon_ngo_select"nicon_ngo_normal>NGO</string>-->
     <!--<string name="xyx">校园行</string>-->
     <!--<string name="dcwj">调查问卷</string>-->
 
@@ -97,4 +97,9 @@
     <string name="tab_ngo">NGO</string>
     <string name="search_text">请输入关键词</string>
     <string name="find_psd">找回密码</string>
+    <string name="ngo">NGO</string>
+    <string name="feed_back">用户反馈</string>
+    <string name="login_warn">请登录</string>
+    <string name="loading_failed">加载失败，点击重试。。。</string>
+    <string name="net_error">请检查网络连接状态</string>
 </resources>

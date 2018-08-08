@@ -49,4 +49,6 @@ public interface IDataModel {
     void addAccountMapping(Map<String, String> params, IResponseCallBack callBack);
 
     void editHeadImg(String url, MultipartBody.Part part, IResponseCallBack callBack);
+
+    void feedBack(Map<String, String> params, IResponseCallBack callBack);
 }

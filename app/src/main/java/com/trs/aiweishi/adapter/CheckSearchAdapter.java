@@ -10,9 +10,7 @@ import android.widget.TextView;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.base.BaseAdapter;
 import com.trs.aiweishi.bean.SearchBean;
-import com.trs.aiweishi.bean.Site;
 import com.trs.aiweishi.view.ui.activity.CheckDetailActivity;
-import com.trs.aiweishi.view.ui.activity.DetailActivity;
 
 import java.util.List;
 

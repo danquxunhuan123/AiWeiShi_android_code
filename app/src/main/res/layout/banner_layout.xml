@@ -23,11 +23,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/viewpager"
-            android:background="@color/color_black_trans"
-            android:ellipsize="end"
-            android:padding="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:background="@mipmap/bg_banner_title"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/new_psd_sure"
             android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_commen_size" />
@@ -40,4 +43,6 @@
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:orientation="horizontal" />
+
+    <include layout="@layout/line_margin_layout" />
 </LinearLayout>

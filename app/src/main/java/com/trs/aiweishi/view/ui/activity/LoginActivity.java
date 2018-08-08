@@ -204,4 +204,9 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        instance = null;
+    }
 }

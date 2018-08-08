@@ -8,6 +8,7 @@
     <include layout="@layout/toolbar_layout"/>
 
     <LinearLayout
+        android:id="@+id/ll_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -28,10 +29,10 @@
 
         <TextView
             android:id="@+id/tv_address"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:drawableLeft="@mipmap/icon_location"
             android:drawablePadding="10dp"
             android:text="东城区交道口南大街北兵马司胡同1号"

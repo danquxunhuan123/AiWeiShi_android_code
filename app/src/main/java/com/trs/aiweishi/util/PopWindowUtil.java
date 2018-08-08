@@ -57,6 +57,10 @@ public class PopWindowUtil {
             window.dismiss();
     }
 
+    public void onDestory(){
+        instance = null;
+    }
+
     public void showAtLocation(View parent){
         window.showAtLocation(parent, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
     }

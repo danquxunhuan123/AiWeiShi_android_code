@@ -40,6 +40,8 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
 
     @Inject
     IHomePresenter presenter;
+    @BindView(R.id.view_padding)
+    View viewPadding;
     @BindView(R.id.ll_zixun_top)
     LinearLayout top;
     @BindView(R.id.ll_item)
@@ -60,16 +62,12 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
     TextView tvNameOne;
     @BindView(R.id.tv_time)
     TextView tvTimeOne;
-    @BindView(R.id.line_1)
-    View line1;
     @BindView(R.id.iv_pic1)
     ImageView ivPicTwo;
     @BindView(R.id.tv_name1)
     TextView tvNameTwo;
     @BindView(R.id.tv_time1)
     TextView tvTimeTwo;
-    @BindView(R.id.line_2)
-    View line2;
     @BindView(R.id.iv_pic2)
     ImageView ivPicThree;
     @BindView(R.id.tv_name2)
@@ -91,6 +89,11 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
     private String toolbarName = "";
 
     @Override
+    protected boolean isTranslucent() {
+        return false;
+    }
+
+    @Override
     protected String initToolBarName() {
         return toolbarName;
     }
@@ -110,7 +113,8 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
 
                 } else if (state == State.COLLAPSED) {
                     //折叠状态
-                    toolbar.setBackgroundColor(Color.parseColor("#f6f6f6"));
+//                    toolbar.setBackgroundColor(getResources().getColor(R.color.color_f6f6f6));
+
                 } else {
                     //中间状态
 
@@ -140,8 +144,6 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                 item.setVisibility(View.VISIBLE);
                 item1.setVisibility(View.GONE);
                 item2.setVisibility(View.GONE);
-                line1.setVisibility(View.GONE);
-                line2.setVisibility(View.GONE);
 
                 data = list_datas.get(0);
                 if (TextUtils.isEmpty(getImg(data.getImages()))) {
@@ -151,12 +153,11 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data.getImages()), ivPicOne);
                 }
                 tvNameOne.setText(data.getTitle());
-                tvTimeOne.setText(data.getTime());
+                tvTimeOne.setText(data.getTime().split(" ")[0]);
             } else if (list_datas.size() == 2) {
                 item.setVisibility(View.VISIBLE);
                 item1.setVisibility(View.VISIBLE);
                 item2.setVisibility(View.GONE);
-                line2.setVisibility(View.GONE);
 
                 //one
                 data = list_datas.get(0);
@@ -167,7 +168,7 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data.getImages()), ivPicOne);
                 }
                 tvNameOne.setText(data.getTitle());
-                tvTimeOne.setText(data.getTime());
+                tvTimeOne.setText(data.getTime().split(" ")[0]);
                 //two
                 data1 = list_datas.get(1);
                 if (TextUtils.isEmpty(getImg(data1.getImages()))) {
@@ -177,7 +178,7 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data1.getImages()), ivPicTwo);
                 }
                 tvNameTwo.setText(data1.getTitle());
-                tvTimeTwo.setText(data1.getTime());
+                tvTimeTwo.setText(data1.getTime().split(" ")[0]);
             } else {
                 item.setVisibility(View.VISIBLE);
                 item1.setVisibility(View.VISIBLE);
@@ -192,7 +193,7 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data.getImages()), ivPicOne);
                 }
                 tvNameOne.setText(data.getTitle());
-                tvTimeOne.setText(data.getTime());
+                tvTimeOne.setText(data.getTime().split(" ")[0]);
                 //two
                 data1 = list_datas.get(1);
                 if (TextUtils.isEmpty(getImg(data1.getImages()))) {
@@ -202,7 +203,7 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data1.getImages()), ivPicTwo);
                 }
                 tvNameTwo.setText(data1.getTitle());
-                tvTimeTwo.setText(data1.getTime());
+                tvTimeTwo.setText(data1.getTime().split(" ")[0]);
                 //three
                 data2 = list_datas.get(2);
                 if (TextUtils.isEmpty(getImg(data2.getImages()))) {
@@ -212,7 +213,7 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data2.getImages()), ivPicThree);
                 }
                 tvNameThree.setText(data2.getTitle());
-                tvTimeThree.setText(data2.getTime());
+                tvTimeThree.setText(data2.getTime().split(" ")[0]);
             }
         } else {
             top.setVisibility(View.GONE);
@@ -276,6 +277,7 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
 
     private void toDetail(String url) {
         Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(DetailActivity.TITLE_NAME, toolbarName);
         intent.putExtra(DetailActivity.URL, url);
         startActivity(intent);
     }

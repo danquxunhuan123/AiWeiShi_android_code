@@ -12,6 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/view_padding"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -44,9 +45,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/viewpager"
-                android:background="@color/color_black_trans"
+                android:background="@mipmap/bg_banner_title"
                 android:ellipsize="end"
-                android:padding="10dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/text_commen_size" />
@@ -59,5 +62,8 @@
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:orientation="horizontal" />
+
+        <include layout="@layout/line_layout" />
     </LinearLayout>
+
 </RelativeLayout>

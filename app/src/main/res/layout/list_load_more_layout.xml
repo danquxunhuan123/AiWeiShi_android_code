@@ -4,6 +4,8 @@
     android:layout_height="80dp"
     >
 
+    <include layout="@layout/line_margin_layout"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -45,7 +45,7 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
     private boolean isStarting;
     private WeakHandler handler = new WeakHandler();
     private List<ListData> data;
-    private int scaleType = 6;
+    private int scaleType = 1;
     private ViewPager.OnPageChangeListener mOnPageChangeListener;
 
     private int count = 0;
@@ -166,7 +166,7 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
 
             //indicator
             View point = new View(context);
-            point.setBackgroundColor(Color.parseColor("#75787b"));
+            point.setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
                     SizeUtils.dp2px(20), SizeUtils.dp2px(5));
             param.leftMargin = 10;
@@ -177,7 +177,7 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
         }
 
         title.setText(data.get(0).getTitle());
-        indicator.getChildAt(0).setBackgroundColor(Color.parseColor("#697cf4"));
+        indicator.getChildAt(0).setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
     }
 
     private void setScaleType(ImageView view) {
@@ -287,9 +287,9 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
 
         for (int i = 0; i < indicator.getChildCount(); i++) {
             if (i == po)
-                indicator.getChildAt(i).setBackgroundColor(Color.parseColor("#697cf4"));
+                indicator.getChildAt(i).setBackground(getResources().getDrawable(R.drawable.banner_indicator_select_view));
             else
-                indicator.getChildAt(i).setBackgroundColor(Color.parseColor("#75787b"));
+                indicator.getChildAt(i).setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
         }
 
         currentItem = position;

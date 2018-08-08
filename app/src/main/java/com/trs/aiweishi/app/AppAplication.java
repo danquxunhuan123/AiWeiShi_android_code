@@ -4,7 +4,6 @@ import android.app.Application;
 import android.support.v4.app.FragmentActivity;
 
 import com.blankj.utilcode.util.Utils;
-import com.trs.aiweishi.base.BaseActivity;
 import com.trs.aiweishi.di.component.AppComponent;
 import com.trs.aiweishi.di.component.DaggerAppComponent;
 import com.trs.aiweishi.di.module.AppModule;
@@ -25,6 +24,8 @@ public class AppAplication extends Application {
         instance = this;
         Utils.init(this); //utils
 
+//        initLeakCanery();
+
         //设置LOG开关，默认为false
         UMConfigure.setLogEnabled(true);
         UMConfigure.init(this, "5b480776b27b0a69220000bd"
@@ -33,6 +34,15 @@ public class AppAplication extends Application {
         PlatformConfig.setQQZone("1106921261", " rtpnE4i4o3Uyvm6w");
         PlatformConfig.setSinaWeibo("2768991115", "bfcb07caf4a78edd1071f1acc86beacb", "http://www.pmph.com/");  //866875922   48121c73af937b29fe262325442467d3
     }
+
+//    private void initLeakCanery() {
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            // This process is dedicated to LeakCanary for heap analysis.
+//            // You should not init your app in this process.
+//            return;
+//        }
+//        LeakCanary.install(this);
+//    }
 
     public static AppAplication getInstance() {
         return instance;
