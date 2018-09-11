@@ -13,8 +13,6 @@ import android.widget.ImageButton;
 
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.maning.mndialoglibrary.MProgressDialog;
-import com.maning.mndialoglibrary.config.MDialogConfig;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.base.BaseActivity;
 import com.trs.aiweishi.base.BaseBean;
@@ -52,17 +50,15 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
     public static final String TITLE_NAME = "title_name";
     public static final String URL = "url";
     public static final String TYPE = "type";
-    private MDialogConfig config;
     private UMShareUtil shareUtil;
     private PopWindowUtil sharePopUtil;
     private String toolbarName = "";
     private int type;
-    private List<String> imgs;
+    private List<String> imgs = new ArrayList<>();
     private String imgUrl;
     private String thumbUrl;
     private String shareUrl;
     private String title;
-    private String body;
 
     @Override
     protected String initToolBarName() {
@@ -98,16 +94,11 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
     protected void initData() {
         shareUtil = UMShareUtil.getInstance()
                 .setOnShareSuccessListener(this);
-        sharePopUtil = PopWindowUtil.getInstance(this);
+        sharePopUtil = new PopWindowUtil(this);
 
         toolbarName = getIntent().getStringExtra(TITLE_NAME);
         String url = getIntent().getStringExtra(URL);
         type = getIntent().getIntExtra(TYPE, 2);
-
-        config = new MDialogConfig.Builder()
-                .isCanceledOnTouchOutside(true)
-                .build();
-        MProgressDialog.showProgress(this, config);
 
         if (type == 2) {
             if (url.contains(".json")) {
@@ -136,7 +127,7 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
 
     @Override
     public void showSuccess(BaseBean baseBean) {
-        MProgressDialog.dismissProgress();
+//        MProgressDialog.dismissProgress();
         loadUrl(((DetailBean) baseBean).getDatas());
     }
 
@@ -202,9 +193,8 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
         title = listData.getTitle();
         String source = listData.getSource();
         String updatedate = listData.getTime().split(" ")[0];
-        body = listData.getBody();
+        String body = listData.getBody();
 
-        imgs = new ArrayList<>();
         List<String> imgSrcList = Utils.getImgSrcList(body);
         for (int a = 0; a < imgSrcList.size(); a++) {
             String img = imgSrcList.get(a);
@@ -260,7 +250,7 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
         @Override
         public void onPageFinished(WebView view, String url) {
             addImageClickListner(view);
-            MProgressDialog.dismissProgress();
+//            MProgressDialog.dismissProgress();
         }
     }
 
@@ -300,7 +290,6 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        sharePopUtil.onDestory();
         shareUtil.onDestory();
     }
 }

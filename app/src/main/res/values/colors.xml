@@ -17,7 +17,7 @@
     <color name="color_white_trans">#80ffffff</color>
     <color name="color_f6f6f6">#f6f6f6</color>
     <color name="color_f4f4f4">#f4f4f4</color>
-    <color name="color_fafafa">#fafafa</color>
+    <color name="color_fafafa">#989898</color>
     <color name="color_f8f8f8">#f8f8f8</color>
     <color name="color_59B29C">#59B29C</color>
     <color name="color_3169b3">#3169b3</color>
@@ -26,4 +26,9 @@
     <color name="color_697cf4">#697cf4</color>
     <color name="color_eeeeee">#eeeeee</color>
     <color name="color_4588ec">#4588ec</color>
+    <color name="color_e49850">#e49850</color>
+    <color name="color_2f79e9">#2f79e9</color>
+    <color name="color_015aac">#015aac</color>
+    <color name="color_3970e7">#3970e7</color>
+    <color name="color_4670e0">#4670e0</color>
 </resources>

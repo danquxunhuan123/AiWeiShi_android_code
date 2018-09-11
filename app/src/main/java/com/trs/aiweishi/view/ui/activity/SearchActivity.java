@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.trs.aiweishi.R;
-import com.trs.aiweishi.adapter.CheckAdapter;
 import com.trs.aiweishi.adapter.SearchAdapter;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
@@ -15,7 +14,6 @@ import com.trs.aiweishi.bean.SearchBean;
 import com.trs.aiweishi.presenter.IHomePresenter;
 import com.trs.aiweishi.util.RecycleviewUtil;
 import com.trs.aiweishi.util.SoftInputUtil;
-import com.trs.aiweishi.view.IBaseView;
 
 import java.util.HashMap;
 import java.util.List;

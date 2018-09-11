@@ -7,8 +7,10 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.baidu.location.BDLocation;
+import com.blankj.utilcode.util.LogUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.CheckAdapter;
+import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseAdapter;
 import com.trs.aiweishi.base.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
@@ -17,6 +19,7 @@ import com.trs.aiweishi.bean.SiteBean;
 import com.trs.aiweishi.presenter.IHomePresenter;
 import com.trs.aiweishi.util.DataHelper;
 import com.trs.aiweishi.util.RecycleviewUtil;
+import com.trs.aiweishi.view.ui.activity.CheckActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,14 +38,14 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
     public static String PARAM = "parce";
     public static String PARAM1 = "siteType";
     public static String PARAM2 = "address";
+    private BDLocation location = null;
+    private int type = 0;
+    private String address = null;
     private CheckAdapter adapter;
-    private BDLocation location;
     private List<Site.Monitor> monitors;
     private String HashLength = "3";
     private int pageNum = 1;
     private int pageSize = 20;
-    private int type = 0;
-    private String address;
 
     public CheckFragment() {
     }
@@ -78,11 +81,17 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
             adapter.updateData(monitors);
         }
 
-//        if (type == 0)
         requestLocation();
     }
 
-    private void requestLocation() {
+    public void setLocation(BDLocation location, String address) {
+        this.location = location;
+        this.address = address;
+        pageNum = 1;
+        requestLocation();
+    }
+
+    public void requestLocation() {
         Map<String, String> params = new HashMap<>();
         params.put("pageNum", Base64.encodeToString(String.valueOf(pageNum).getBytes(), Base64.DEFAULT));
         params.put("pageSize", Base64.encodeToString(String.valueOf(pageSize).getBytes(), Base64.DEFAULT));
@@ -92,16 +101,24 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
             params.put("lon", Base64.encodeToString(String.valueOf(location.getLongitude()).getBytes(), Base64.DEFAULT));
             params.put("lat", Base64.encodeToString(String.valueOf(location.getLatitude()).getBytes(), Base64.DEFAULT));
             params.put("geoHashLength", Base64.encodeToString(HashLength.getBytes(), Base64.DEFAULT));   //1-12
-            //0,bg_ngo  1,妇幼保健 2，疾病预防控制中心  3，美沙酮门诊 4，性病中心或皮防所  5，其他机构
-            params.put("siteType", Base64.encodeToString(String.valueOf(type).getBytes(), Base64.DEFAULT));
         } else if (!TextUtils.isEmpty(address)) {
+            String[] adds = address.split(",");
             params.put("filterName", Base64.encodeToString("getSitesInRegion".getBytes(), Base64.DEFAULT));
-            params.put("province", Base64.encodeToString(address.getBytes(), Base64.DEFAULT));
-            params.put("siteType", Base64.encodeToString(String.valueOf(type).getBytes(), Base64.DEFAULT));
+            params.put("province", Base64.encodeToString(adds[0].getBytes(), Base64.DEFAULT));
+
+            if ("全部".equals(adds[1]))
+                params.put("city", "");
+            else
+                params.put("city", Base64.encodeToString(adds[1].getBytes(), Base64.DEFAULT));
+            if ("全部".equals(adds[2]))
+                params.put("country", "");
+            else
+                params.put("country", Base64.encodeToString(adds[2].getBytes(), Base64.DEFAULT));
         } else {
             params.put("filterName", Base64.encodeToString("listSitesByFilter".getBytes(), Base64.DEFAULT));
-            params.put("siteType", Base64.encodeToString(String.valueOf(type).getBytes(), Base64.DEFAULT));
         }
+        params.put("siteType", Base64.encodeToString(String.valueOf(type).getBytes(), Base64.DEFAULT));
+
         presenter.getLocationData(params);
     }
 
@@ -125,7 +142,11 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
 
     @Override
     public void OnLoadMore() {
-        pageNum++;
-        requestLocation();
+        if (location != null) {
+            adapter.loadMoreEnd();
+        } else {
+            pageNum++;
+            requestLocation();
+        }
     }
 }

@@ -32,7 +32,7 @@ public class CheckSearchAdapter extends BaseAdapter {
     protected void bindMyViewHolder(MyHolder holder, int position) {
         final SearchBean.SearchData bean = (SearchBean.SearchData) list.get(position);
 
-        ((TextView) holder.getView(R.id.tv_name)).setText(bean.getORGNAME());
+        ((TextView) holder.getView(R.id.tv_name)).setText(Html.fromHtml(bean.getORGNAME()));
         ((TextView) holder.getView(R.id.tv_address)).setText(Html.fromHtml(bean.getORGADDR()));
         holder.getItemView().setOnClickListener(new View.OnClickListener() {
             @Override

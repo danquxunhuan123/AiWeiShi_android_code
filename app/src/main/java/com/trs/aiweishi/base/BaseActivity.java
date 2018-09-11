@@ -1,6 +1,7 @@
 package com.trs.aiweishi.base;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.BarUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.maning.mndialoglibrary.config.MDialogConfig;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppAplication;
 import com.trs.aiweishi.app.AppConstant;
@@ -34,7 +35,6 @@ import butterknife.Unbinder;
 public abstract class BaseActivity extends AppCompatActivity implements IBaseView {
     private Unbinder unBinder;
     protected SPUtils spUtils;
-    protected MDialogConfig config;
 
     @BindView(R.id.tv_toolbar_name)
     TextView tvToolbarName;
@@ -42,6 +42,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(initLayout());
 
         if (isTranslucent())
@@ -59,15 +61,23 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     private void initUtil() {
         ToastUtils.setBgColor(getResources().getColor(R.color.color_black_trans));
         spUtils = SPUtils.getInstance(AppConstant.SP_NAME);
-        config = new MDialogConfig.Builder()
-                .isCanceledOnTouchOutside(true)
-                .build();
     }
 
+    /**
+     * 是否界面留出padding，从状态栏下方开始绘制
+     *
+     * @return 默认返回true，从状态栏下方开始绘制，界面不被状态栏遮挡
+     * 返回false，不流出padding，从屏幕顶部开始绘制界面
+     */
     protected boolean isFitsSystemWindows() {
         return true;
     }
 
+    /**
+     * 是否要状态栏透明
+     *
+     * @return 默认true，设置透明  f返回alse，不设置状态栏透明
+     */
     protected boolean isTranslucent() {
         return true;
     }
@@ -151,7 +161,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     @Override
     public void showSuccess(BaseBean baseBean) {
-
+        LogUtils.dTag(AppConstant.LOG_FLAG, baseBean.toString());
     }
 
     @Override
@@ -167,8 +177,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
                 , AppConstant.READ_EXTERNAL_STORAGE
                 , AppConstant.ACCESS_WIFI_STATE
                 , AppConstant.CALL_PHONE)) {
-            PermissionUtils.permission(AppConstant.READ_PHONE_STATE,
-                    AppConstant.WRITE_EXTERNAL_STORAGE
+            PermissionUtils.permission(AppConstant.READ_PHONE_STATE
+                    , AppConstant.WRITE_EXTERNAL_STORAGE
                     , AppConstant.ACCESS_COARSE_LOCATION
                     , AppConstant.READ_EXTERNAL_STORAGE
                     , AppConstant.ACCESS_WIFI_STATE

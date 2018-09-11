@@ -1,8 +1,15 @@
 package com.trs.aiweishi.view.ui.fragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
@@ -16,7 +23,9 @@ import com.blankj.utilcode.util.ObjectUtils;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.maning.mndialoglibrary.config.MDialogConfig;
 import com.trs.aiweishi.R;
@@ -26,11 +35,16 @@ import com.trs.aiweishi.listener.OnChannelListener;
 import com.trs.aiweishi.util.BannerHelper;
 import com.trs.aiweishi.util.GlideUtils;
 import com.trs.aiweishi.util.RecycleviewUtil;
+import com.trs.aiweishi.util.SaveBitmapToLocalUtil;
 import com.trs.aiweishi.util.Utils;
 import com.trs.aiweishi.view.custview.MyBanner;
 import com.trs.aiweishi.view.custview.PinchImageView;
 import com.youth.banner.Banner;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,26 +113,25 @@ public class ImgsDialogFragment extends DialogFragment {
     private void processLogic() {
         position = getArguments().getInt(param2, 0);
 
-//        Utils.setParam(viewPager, 16, 9);
         List<String> imgs = getArguments().getStringArrayList(param1);
         List<View> views = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(imgs)) {
-//            BannerHelper.initBannner(getActivity(), banner, imgs);
-//            banner.toRealPosition(position);
-
             for (int i = 0; i < imgs.size(); i++) {
-                PinchImageView imageView = new PinchImageView(getActivity());
-                GlideUtils.loadUrlImg(getActivity(), imgs.get(i), imageView, new RequestListener() {
+                final PinchImageView imageView = new PinchImageView(getActivity());
+                GlideUtils.loadUrlBitmap(imgs.get(i), imageView, new SimpleTarget<Bitmap>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.GONE);
-                        return false;
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        if (progressBar != null)
+                            progressBar.setVisibility(View.GONE);
+                        imageView.setImageBitmap(resource);
+//                        SaveBitmapToLocalUtil.saveImageToGallery(getActivity(),resource);
                     }
 
                     @Override
-                    public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.GONE);
-                        return false;
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        super.onLoadFailed(errorDrawable);
+                        if (progressBar != null)
+                            progressBar.setVisibility(View.GONE);
                     }
                 });
                 views.add(imageView);
@@ -129,7 +142,6 @@ public class ImgsDialogFragment extends DialogFragment {
             viewPager.setCurrentItem(position);
         }
     }
-
 
     @OnClick(R.id.iv_back)
     public void onViewClicked() {

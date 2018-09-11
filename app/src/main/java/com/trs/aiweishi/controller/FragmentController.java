@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.trs.aiweishi.base.BaseActivity;
 import com.trs.aiweishi.base.BaseFragment;
 
 /**
@@ -13,21 +14,25 @@ import com.trs.aiweishi.base.BaseFragment;
 public class FragmentController {
     private static FragmentController controller;
     private Fragment currentFragment = null;
+    private FragmentManager fragmentManager;
+    private int containerId;
     private int count = 0;
     private int currentShowIndex = 0;
 
-    private FragmentController() {
+    private FragmentController(BaseActivity context, int containerId) {
+        fragmentManager = context.getSupportFragmentManager();
+        this.containerId = containerId;
     }
 
-    public static FragmentController getInstance() {
+    public static FragmentController getInstance(BaseActivity context, int containerId) {
         if (controller == null) {
-            controller = new FragmentController();
+            controller = new FragmentController(context, containerId);
         }
         return controller;
     }
 
-    public void addFragment(BaseFragment fragment, int containerId, FragmentManager manager) {
-        FragmentTransaction ft = manager.beginTransaction();
+    public void addFragment(BaseFragment fragment) {
+        FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(containerId, fragment, String.valueOf(count));
 
         if (count == 0) {
@@ -35,25 +40,22 @@ public class FragmentController {
             currentFragment = fragment;
         } else
             ft.hide(fragment);
+
         ft.commit();
         count++;
     }
 
-    public void showFragment(int position, FragmentManager manager) {
+    public void showFragment(int position) {
         if (currentShowIndex == position)
             return;
 
-        FragmentTransaction ft = manager.beginTransaction();
-        Fragment findFragment = manager.findFragmentByTag(String.valueOf(position));
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        Fragment findFragment = fragmentManager.findFragmentByTag(String.valueOf(position));
         ft.show(findFragment);
         ft.hide(currentFragment);
         ft.commitAllowingStateLoss();
         currentFragment = findFragment;
         currentShowIndex = position;
-    }
-
-    public Fragment getFragment(int position, FragmentManager manager) {
-        return manager.findFragmentByTag(String.valueOf(position));
     }
 
     public void onDestroy() {

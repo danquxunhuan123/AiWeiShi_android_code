@@ -1,17 +1,12 @@
 package com.trs.aiweishi.http;
 
-import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.maning.mndialoglibrary.config.MDialogConfig;
 import com.trs.aiweishi.app.AppConstant;
-import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
 
 import java.util.Map;
-
-import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -37,20 +32,20 @@ public class HttpHelper {
                 .build();
     }
 
-    private void getObservable(Observable<? extends BaseBean> observable, final IResponseCallBack callBack) {
+    private void getObservable(Observable<? extends Object> observable, final IResponseCallBack callBack) {
         MProgressDialog.showProgress(activity, config);
         observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<BaseBean>() {
+                .subscribe(new Observer<Object>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 //                        DisposedUtil.getInstance().addDisposable(d);
                     }
 
                     @Override
-                    public void onNext(BaseBean baseBean) {
+                    public void onNext(Object object) {
                         MProgressDialog.dismissProgress();
-                        callBack.onSuccess(baseBean);
+                        callBack.onSuccess(object);
                     }
 
                     @Override
@@ -164,5 +159,25 @@ public class HttpHelper {
     public void feedBack(Map<String, String> params, IResponseCallBack callBack) {
         addCommenParams(params);
         getObservable(api.addFeedBack(params), callBack);
+    }
+
+    public void getUpdate(String update, IResponseCallBack callBack) {
+        getObservable(api.update(update), callBack);
+    }
+
+    public void loginQuesiton(String url, IResponseCallBack callBack) {
+        getObservable(api.loginQuesiton(url), callBack);
+    }
+
+    public void submitBooking(String url, Map<String, String> param, IResponseCallBack callBack) {
+        getObservable(api.submitBooking(url,param), callBack);
+    }
+
+    public void cancleBook(String url, Map<String, String> param, IResponseCallBack callBack) {
+        getObservable(api.submitBooking(url,param), callBack);
+    }
+
+    public void getBook(String url, Map<String, String> param, IResponseCallBack callBack) {
+        getObservable(api.submitBooking(url,param), callBack);
     }
 }

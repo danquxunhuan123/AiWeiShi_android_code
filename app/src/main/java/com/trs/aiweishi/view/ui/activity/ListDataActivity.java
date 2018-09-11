@@ -82,7 +82,8 @@ public class ListDataActivity extends BaseActivity implements BaseAdapter.OnLoad
 
     @Override
     public void showSuccess(BaseBean baseBean) {
-        refreshLayout.setRefreshing(false);
+        if (refreshLayout != null)
+            refreshLayout.setRefreshing(false);
         dataBean = (ListDataBean) baseBean;
         listResult = dataBean.getList_datas();
         if (page == 1) {

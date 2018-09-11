@@ -21,6 +21,15 @@ public class AppConstant {
     public static String XIAOSI = "http://139.199.128.170/xiaosi/index.html";
     public static String SEARCH = "http://139.199.128.170/search/sitesearch.jsp";
     public static String SEARCH_JCD = "http://139.199.128.170/search/jianchadian.jsp";
+    public static String UPDATE = "http://www.iws365.com/bx/version.json";
+    public static String YINGYONGBAO = "yingyongbao_url";
+
+    public static  String GET_NGO_INFO = "http://139.199.128.170/wcm/rws/api/getNGOinfos.jsp";
+    public static  String SUBMIT_BOOKING = "http://139.199.128.170/wcm/rws/api/submitBooking.jsp";
+    public static  String FIND_NGO_BYID = "http://139.199.128.170/wcm/rws/api/findbyIdNgoinfo.jsp";
+    public static String GET_HISTORY_BOOKED = "http://139.199.128.170/wcm/rws/api/getHistoryBooked.jsp";
+    public static String CANCLE_BOOKED = "http://139.199.128.170/wcm/rws/api/cancelBooked.jsp";
+    public static String GET_BOOKED = "http://139.199.128.170/wcm/rws/api/getBooked.jsp";
 
     public static String LOG_FLAG = "logFlag";
     public static String OK_HTTP = "okHttpUtil";
@@ -30,9 +39,10 @@ public class AppConstant {
     public static String APP_NAME = "IWSApp";
     public static String USER_PIC = "user_pic";
     public static String USER_PHONE = "user_phone";
-    public static String NICK_NAME = "user_nick_name";
     public static String USER_NAME = "user_name";
     public static String USER_BIRTHDAT = "user_birthday";
     public static String UER_PSD = "user_psd";
     public static String AUTH_SITE = "auth_site";
+    public static String IS_UPDATE = "is_update";
+    public static String CANCLE_UPDATE = "cancle_update";
 }

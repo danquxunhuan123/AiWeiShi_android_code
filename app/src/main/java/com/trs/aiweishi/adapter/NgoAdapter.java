@@ -27,6 +27,7 @@ import com.trs.aiweishi.view.custview.MyBanner;
 import com.trs.aiweishi.view.ui.activity.CheckActivity;
 import com.trs.aiweishi.view.ui.activity.DetailActivity;
 import com.trs.aiweishi.view.ui.activity.ListDataActivity;
+import com.trs.aiweishi.view.ui.activity.NgoListActivity;
 import com.trs.aiweishi.view.ui.activity.ZiXunActivity;
 
 import java.util.ArrayList;
@@ -63,33 +64,42 @@ public class NgoAdapter extends BaseAdapter {
             case ListData.PAGE_HEAD_TYPE:
                 break;
             case ListData.ITEM_TITLE_TYPE:
-                if (TextUtils.isEmpty(bean.getTitle())){
+                if (TextUtils.isEmpty(bean.getTitle())) {
                     (holder.getView(R.id.view_title_top)).setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     (holder.getView(R.id.view_title_top)).setVisibility(View.GONE);
                 }
 
-                ((TextView) holder.getView(R.id.tv_title)).setText(bean.getCname());
+                final TextView textView = (TextView) holder.getView(R.id.tv_title);
+                textView.setText(bean.getCname());
 
                 holder.getItemView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(context, ListDataActivity.class);
-                        intent.putExtra(ListDataActivity.PARAM1, bean.getUrl());
-                        intent.putExtra(ListDataActivity.PARAM2, bean.getCname());
-                        context.startActivity(intent);
+                        if ("NGO小组".equals(textView.getText().toString())){
+                            Intent intent = new Intent(context, NgoListActivity.class);
+                            intent.putExtra(ListDataActivity.PARAM1, bean.getUrl());
+                            intent.putExtra(ListDataActivity.PARAM2, bean.getCname());
+                            context.startActivity(intent);
+                        }
+                        else{
+                            Intent intent = new Intent(context, ListDataActivity.class);
+                            intent.putExtra(ListDataActivity.PARAM1, bean.getUrl());
+                            intent.putExtra(ListDataActivity.PARAM2, bean.getCname());
+                            context.startActivity(intent);
+                        }
                     }
                 });
                 break;
             case ListData.SCROOL_LINEAR_TYPE:
                 LinearLayout line = (LinearLayout) holder.getView(R.id.ll_content);
                 line.removeAllViews();
-                for (int a = 0;a < bean.getChannel_list().size(); a ++){
+                for (int a = 0; a < bean.getChannel_list().size(); a++) {
                     ListData data = bean.getChannel_list().get(a);
                     View view = LayoutInflater.from(context).inflate(R.layout.scrool_linear_item, line, false);
                     ImageView iv = view.findViewById(R.id.iv_scrool);
                     TextView tv = view.findViewById(R.id.tv_scrool);
-                    GlideUtils.loadUrlImg(context,data.getImages().get(0).getSrc(), iv);
+                    GlideUtils.loadUrlImg(context, data.getImages().get(0).getSrc(), iv);
                     tv.setText(data.getTitle());
 
                     final ListData finalData = data;

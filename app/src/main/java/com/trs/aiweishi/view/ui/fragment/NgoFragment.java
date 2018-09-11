@@ -72,8 +72,7 @@ public class NgoFragment extends BaseFragment implements INgoView
         LinearLayout.LayoutParams viewParam = (LinearLayout.LayoutParams) viewPadding.getLayoutParams();
         viewParam.height = BarUtils.getStatusBarHeight();
         viewPadding.setLayoutParams(viewParam);
-//        viewPadding.setBackground(getResources().getDrawable(R.mipmap.bg_ngo));
-        viewPadding.setBackgroundColor(Color.parseColor("#e49850"));
+        viewPadding.setBackgroundColor(getResources().getColor(R.color.color_e49850));
 
         recycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
 

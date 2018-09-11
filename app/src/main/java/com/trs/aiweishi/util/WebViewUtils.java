@@ -2,6 +2,7 @@ package com.trs.aiweishi.util;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -23,7 +24,7 @@ public class WebViewUtils {
      * @param htmlcontent
      * @param loadType    加载方式  1,加载html标签代码  3,加载本地html
      */
-    public static void load(WebView webView,WebViewClient client, String htmlcontent, int loadType) {
+    public static void load(final WebView webView, WebViewClient client, String htmlcontent, int loadType) {
         webView.setWebChromeClient(new WebChromeClient());
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -38,6 +39,23 @@ public class WebViewUtils {
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setLoadsImagesAutomatically(true);//自动加载图片
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        //点击后退按钮,让WebView后退一页(也可以覆写Activity的onKeyDown方法)
+        webView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {  //表示按返回键
+                        webView.goBack();   //后退
+
+                        //webview.goForward();//前进
+                        return true;    //已处理
+                    }
+                }
+                return false;
+            }
+        });
+
+
         if (client != null)
             webView.setWebViewClient(client);
         else

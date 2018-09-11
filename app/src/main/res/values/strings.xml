@@ -25,7 +25,8 @@
     <string name="share">推荐给好友</string>
     <string name="about_us">关于我们</string>
     <string name="clear">清除缓存</string>
-    <string name="version_name">V%1s 已是最新版本</string>
+    <string name="version_name">V%1s</string>
+    <!--<string name="version_name">V%1s 已是最新版本</string>-->
 
     <!--detail-->
     <string name="check_way">检测方式</string>
@@ -102,4 +103,7 @@
     <string name="login_warn">请登录</string>
     <string name="loading_failed">加载失败，点击重试。。。</string>
     <string name="net_error">请检查网络连接状态</string>
+    <string name="free">免费</string>
+    <string name="check_time">预约时间（北京时间）</string>
+    <string name="yuyue_time">%1s %2s %3s</string>
 </resources>

@@ -73,8 +73,7 @@ public class DocFragment extends BaseFragment implements IHomeView
         LinearLayout.LayoutParams viewParam = (LinearLayout.LayoutParams) viewPadding.getLayoutParams();
         viewParam.height = BarUtils.getStatusBarHeight();
         viewPadding.setLayoutParams(viewParam);
-//        viewPadding.setBackground(getResources().getDrawable(R.mipmap.bg_aiyi));
-        viewPadding.setBackgroundColor(Color.parseColor("#2f79e9"));
+        viewPadding.setBackgroundColor(getResources().getColor(R.color.color_2f79e9));
 
         recycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
 

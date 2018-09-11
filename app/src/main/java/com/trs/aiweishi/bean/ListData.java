@@ -108,6 +108,10 @@ public class ListData extends BaseBean implements Parcelable {
         return channelType;
     }
 
+    public String getAbs() {
+        return abs;
+    }
+
     public void setChannelType(int channelType) {
         this.channelType = channelType;
     }

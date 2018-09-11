@@ -16,6 +16,7 @@
         android:id="@+id/tv_scrool"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:singleLine="true"
         android:ellipsize="end"

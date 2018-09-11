@@ -1,7 +1,6 @@
 package com.trs.aiweishi.view.ui.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
@@ -122,7 +120,7 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
                 UMShareAPI.get(this).getPlatformInfo(this, SHARE_MEDIA.QQ, umAuthListener);
                 break;
             case R.id.ll_weixin_login:
-                authSite = "";
+                authSite = "wechat";
                 auth = 2;
                 UMShareAPI.get(this).getPlatformInfo(this, SHARE_MEDIA.WEIXIN, umAuthListener);
                 break;

@@ -14,6 +14,9 @@ import com.trs.aiweishi.view.ui.activity.ForgetPsdActivity;
 import com.trs.aiweishi.view.ui.activity.ListDataActivity;
 import com.trs.aiweishi.view.ui.activity.LoginActivity;
 import com.trs.aiweishi.view.ui.activity.MainActivity;
+import com.trs.aiweishi.view.ui.activity.MyBookingActivity;
+import com.trs.aiweishi.view.ui.activity.MyQuestionActivity;
+import com.trs.aiweishi.view.ui.activity.NgoListActivity;
 import com.trs.aiweishi.view.ui.activity.RegistActivity;
 import com.trs.aiweishi.view.ui.activity.RegistNextActivity;
 import com.trs.aiweishi.view.ui.activity.SearchActivity;
@@ -46,4 +49,9 @@ public interface ActivityComponent {
     void inject(BindPhoneActivity bindPhoneActivity);
     void inject(FindPsdNextActivity findPsdNextActivity);
     void inject(FeedBackActivity feedBackActivity);
+    void inject(MyQuestionActivity myQuestionActivity);
+
+    void inject(NgoListActivity ngoListActivity);
+
+    void inject(MyBookingActivity myBookingActivity);
 }

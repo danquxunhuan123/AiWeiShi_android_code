@@ -27,7 +27,6 @@ public class LocationHelper {
     //原有BDLocationListener接口暂时同步保留。具体介绍请参考后文中的说明
     private void initLocationClient() {
         mLocationClient = new LocationClient(AppAplication.getInstance());
-        mLocationClient.registerLocationListener(locationListener);//注册监听函数
 
         LocationClientOption option = new LocationClientOption();
         //可选，设置定位模式，默认高精度
@@ -79,11 +78,17 @@ public class LocationHelper {
 
 //        mLocationClient.requestHotSpotState();  获取设备所链接网络信息
         mLocationClient.setLocOption(option);
+
+        mLocationClient.registerLocationListener(locationListener);//注册监听函数
     }
 
     //调用LocationClient的start()方法，便可发起定位请求
     public void startLocation() {
         mLocationClient.start();
+    }
+
+    public boolean isStartLocation(){
+        return mLocationClient.isStarted();
     }
 
     public void stopLocation() {

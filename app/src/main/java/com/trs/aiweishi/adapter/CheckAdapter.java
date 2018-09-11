@@ -19,22 +19,28 @@ import java.util.List;
  * Created by Liufan on 2018/6/28.
  */
 
-public class CheckAdapter extends BaseAdapter{
+public class CheckAdapter extends BaseAdapter {
     public CheckAdapter(List list, Context context) {
         super(list, context);
     }
 
     @Override
     public MyHolder getViewHolder(ViewGroup parent, int viewType) {
-        return MyHolder.getComViewHolder(context, R.layout.check_item_layout,parent);
+        return MyHolder.getComViewHolder(context, R.layout.check_item_layout1, parent);
     }
 
 
     @Override
     protected void bindMyViewHolder(MyHolder holder, int position) {
         final Site.Monitor bean = (Site.Monitor) list.get(position);
-        ((TextView)holder.getView(R.id.tv_name)).setText(bean.getOrgName());
-        ((TextView)holder.getView(R.id.tv_address)).setText(bean.getOrgAddr());
+        ((TextView) holder.getView(R.id.tv_name)).setText(bean.getOrgName());
+        holder.getView(R.id.tv_yuyue).setBackground(null); // 可预约和暂停预约
+//        if ("0".equals(bean.getIsFree()))
+            holder.getView(R.id.tv_free).setVisibility(View.GONE);
+//        else
+//            holder.getView(R.id.tv_free).setVisibility(View.VISIBLE);
+
+        ((TextView) holder.getView(R.id.tv_address)).setText(bean.getOrgAddr());
 
         holder.getItemView().setOnClickListener(new View.OnClickListener() {
             @Override

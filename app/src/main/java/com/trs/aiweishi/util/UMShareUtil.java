@@ -18,7 +18,7 @@ import com.umeng.socialize.media.UMWeb;
  */
 
 public class UMShareUtil {
-
+    private OnShareSuccessListener listener;
     private static UMShareUtil instance = null;
 
     private UMShareUtil() {
@@ -81,6 +81,7 @@ public class UMShareUtil {
          */
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
+            t.printStackTrace();
             listener.onShareError(platform, t);
         }
 
@@ -95,10 +96,8 @@ public class UMShareUtil {
 
     public void onDestory(){
         instance = null;
-        listener = null;
+        this.listener = null;
     }
-
-    private OnShareSuccessListener listener;
 
     public UMShareUtil setOnShareSuccessListener(OnShareSuccessListener listener) {
         this.listener = listener;

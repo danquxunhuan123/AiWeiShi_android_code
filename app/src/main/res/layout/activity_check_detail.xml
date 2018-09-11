@@ -2,97 +2,205 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar_layout"/>
+    <include layout="@layout/toolbar_layout" />
 
-    <LinearLayout
-        android:id="@+id/ll_content"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/ll_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/ll_toolbar"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:text="东城疾病控制中心"
+                android:textColor="@color/color_black"
+                android:textSize="16sp" />
+
+            <include layout="@layout/line_layout" />
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/icon_location"
+                android:drawablePadding="10dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="20dp"
+                android:text="东城区交道口南大街北兵马司胡同1号"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/text_commen_size" />
+
+            <include layout="@layout/line_layout" />
+
+            <TextView
+                android:id="@+id/tv_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:drawableLeft="@mipmap/icon_location"
+                android:drawablePadding="10dp"
+                android:textColor="@color/color_4670e0"
+                android:textSize="@dimen/text_commen_size" />
+
+            <include layout="@layout/line_layout" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/check_way"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/text_commen_size" />
+
+            <TextView
+                android:id="@+id/tv_check_way"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="@string/have_no"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/text_commen_size" />
+
+            <include layout="@layout/line_layout" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/check_note"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/text_commen_size" />
+
+            <TextView
+                android:id="@+id/tv_check_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="@string/have_no"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/text_commen_size" />
+
+            <include layout="@layout/line_layout" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:visibility="visible"
+                android:text="@string/check_time"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/text_commen_size" />
+
+            <LinearLayout
+                android:id="@+id/ll_weekday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:id="@+id/ll_monthday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" />
+
+            <RelativeLayout
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycleview_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/iv_no_time_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/bg_no_yuyue"
+                    android:visibility="gone"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_4670e0"
+        >
 
-
-        <TextView
-            android:id="@+id/tv_name"
+        <ImageView
+            android:id="@+id/iv_yuyue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
-            android:text="东城疾病控制中心"
-            android:textColor="@color/color_black"
-            android:textSize="16sp" />
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:src="@mipmap/icon_yuyue" />
 
-        <include layout="@layout/line_layout" />
 
         <TextView
-            android:id="@+id/tv_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:drawableLeft="@mipmap/icon_location"
-            android:drawablePadding="10dp"
-            android:text="东城区交道口南大街北兵马司胡同1号"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="@dimen/text_commen_size" />
-
-        <include layout="@layout/line_layout" />
-
-        <TextView
-            android:id="@+id/tv_phone"
+            android:id="@+id/tv_time_yuyue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
-            android:drawableLeft="@mipmap/icon_location"
-            android:drawablePadding="10dp"
-            android:textColor="@android:color/holo_blue_dark"
-            android:textSize="@dimen/text_commen_size" />
-
-        <include layout="@layout/line_layout" />
+            android:layout_toRightOf="@id/iv_yuyue"
+            android:layout_alignTop="@id/iv_yuyue"
+            android:text="检测时间"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_small_10sp" />
 
         <TextView
+            android:id="@+id/tv_yuyue_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:text="@string/check_way"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/text_commen_size" />
+            android:layout_below="@id/tv_time_yuyue"
+            android:layout_toRightOf="@id/iv_yuyue"
+            android:text="@string/yuyue_time"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_small_10sp" />
 
         <TextView
-            android:id="@+id/tv_check_way"
+            android:id="@+id/tv_yuyue_sure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="@string/have_no"
-            android:textColor="@color/color_black"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/sure"
+            android:padding="10dp"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/text_commen_size" />
 
-        <include layout="@layout/line_layout" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/iv_yuyue"
+            android:layout_alignTop="@id/iv_yuyue"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/tv_yuyue_sure"
+            android:background="@android:color/white" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:text="@string/check_note"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/text_commen_size" />
-
-        <TextView
-            android:id="@+id/tv_check_note"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="@string/have_no"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/text_commen_size" />
-
-        <include layout="@layout/line_layout" />
-
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

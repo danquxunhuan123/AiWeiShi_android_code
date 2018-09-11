@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -90,7 +91,6 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     private ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
     private ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
     private TimePickerView pvTime;
-    private AlertDialogUtil dialogUtil;
     private UserData.User user;
 
     private Uri imageUriFromCamera;
@@ -144,7 +144,6 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
 
     @Override
     protected void initData() {
-        dialogUtil = AlertDialogUtil.getInstance(this);
         user = getIntent().getParcelableExtra(USER);
         mHandler.sendEmptyMessage(MSG_LOAD_DATA);
         umAuthListener.setOnThirdSucListener(this);
@@ -282,12 +281,12 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
             case PHOTO_ALBUM:
                 if (resultCode == RESULT_OK) {
                     imageUriFromCamera = data.getData();
-                    AlbumUtil.startAlbumCrop(this, imageUriFromCamera, SHOW_PHOTO);
+                    AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO);
                 }
                 break;
             case TAKE_PHOTO:
                 if (resultCode == RESULT_OK) {
-                    AlbumUtil.startCameraCrop(this, imageUriFromCamera, SHOW_PHOTO);
+                    AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO);
                 }
                 break;
             case SHOW_PHOTO:
@@ -345,9 +344,9 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
         try {
             File file = new File(getExternalCacheDir().getPath() + "/image.jpeg");
             file = new CompressHelper.Builder(this)
-                    .setMaxWidth(720)  // 默认最大宽度为720
-                    .setMaxHeight(960) // 默认最大高度为960
-                    .setQuality(80)
+//                    .setMaxWidth(720)  // 默认最大宽度为720
+//                    .setMaxHeight(960) // 默认最大高度为960
+//                    .setQuality(80)
                     .setFileName("compress_user_head")
                     .setCompressFormat(Bitmap.CompressFormat.JPEG)
                     .setDestinationDirectoryPath(getExternalCacheDir().getPath())
@@ -357,13 +356,19 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
             RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
             MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 
+            StringBuffer buffer = new StringBuffer();
+            buffer.append(AppConstant.BASE_URL)
+                    .append("admin/user/editHeadImg.jsp?")
+                    .append("loginUserName=")
+                    .append(spUtils.getString(AppConstant.USER_PHONE))
+                    .append("&appName=")
+                    .append(AppConstant.APP_NAME)
+                    .append("&coSessionId=")
+                    .append(spUtils.getString(AppConstant.SESSION_ID))
+                    .append("&fileName=")
+                    .append(file);
 
-            String saveHead = AppConstant.BASE_URL + "admin/user/editHeadImg.jsp?"
-                    + "loginUserName=" + spUtils.getString(AppConstant.USER_PHONE)
-                    + "&appName=" + AppConstant.APP_NAME
-                    + "&coSessionId=" + spUtils.getString(AppConstant.SESSION_ID)
-                    + "&fileName=" + file;
-            presenter.editHeadImg(saveHead, part);
+            presenter.editHeadImg(buffer.toString(), part);
         } catch (Exception e) {
             saveInfo();
         }
@@ -388,36 +393,43 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     }
 
     private void showDialog(final TextView textView) {
+        final AlertDialogUtil dialogUtil = new AlertDialogUtil(this);
         dialogUtil.setContentView(R.layout.editer_dialog_layout)
-                .setEditContent(textView.getText().toString().trim())
-                .setDialogClickListener(new AlertDialogUtil.DialogClickListener() {
+                .setViewText(R.id.dialog_content, textView.getText().toString().trim())
+                .setViewClickListener(R.id.dialog_btn_sure, new View.OnClickListener() {
                     @Override
-                    public void OnSureClick(String content) {
-                        if (!TextUtils.isEmpty(content)) {
+                    public void onClick(View v) {
+                        EditText viewText = (EditText) dialogUtil.getViewText(R.id.dialog_content);
+                        String str = viewText.getText().toString().trim();
+                        if (!TextUtils.isEmpty(str)) {
                             isChanged = true;
-                            textView.setText(content);
+                            textView.setText(str);
                         }
-                    }
-
-                    @Override
-                    public void OnCancleClick() {
-
+                        dialogUtil.dismiss();
                     }
                 })
+                .setViewClickListener(R.id.dialog_btn_cancel
+                        , new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialogUtil.dismiss();
+                            }
+                        })
                 .create();
     }
 
     private void showPopWindow() {
-        PopWindowUtil.getInstance(this)
+        new PopWindowUtil(this)
                 .setContentView(R.layout.pop_bottom_layout)
-                .getView(R.id.tv_album, new View.OnClickListener() {
+                .setContent(R.id.tv_select_1, "从相册选择")
+                .setContent(R.id.tv_select_2, "相机拍照")
+                .getView(R.id.tv_select_1, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        AlbumUtil.openAlbum(UserConfigActivity.this, PHOTO_ALBUM);
                         AlbumUtil.openAlbum(UserConfigActivity.this, PHOTO_ALBUM);
                     }
                 })
-                .getView(R.id.tv_take_phone, new View.OnClickListener() {
+                .getView(R.id.tv_select_2, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         imageUriFromCamera = AlbumUtil.takePhone(UserConfigActivity.this, TAKE_PHOTO);
@@ -464,7 +476,7 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     }
 
     public void parseJson() {
-        String JsonData = new GetJsonDataUtil().getJson(this, "province.json");
+        String JsonData = new GetJsonDataUtil().getJson(this, "province_new.json");
 
         ArrayList<JsonBean> jsonBean = parseData(JsonData);//用Gson 转成实体
 
@@ -588,6 +600,5 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dialogUtil.onDestory();
     }
 }

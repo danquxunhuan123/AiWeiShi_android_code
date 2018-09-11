@@ -14,7 +14,6 @@ import com.trs.aiweishi.bean.SearchBean;
 import com.trs.aiweishi.presenter.IHomePresenter;
 import com.trs.aiweishi.util.RecycleviewUtil;
 import com.trs.aiweishi.util.SoftInputUtil;
-import com.trs.aiweishi.view.IBaseView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +32,6 @@ public class CheckSearchActivity extends BaseActivity implements BaseAdapter.OnL
     EditText etSearch;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-//    @BindView(R.id.swipeRefresh)
-//    SwipeRefreshLayout swipeRefresh;
 
     private List<SearchBean.SearchData> list;
     private CheckSearchAdapter adapter;
@@ -53,9 +50,6 @@ public class CheckSearchActivity extends BaseActivity implements BaseAdapter.OnL
 
     @Override
     protected void initData() {
-//        swipeRefresh.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
-//        swipeRefresh.setOnRefreshListener(this);
-
         if (adapter == null) {
             adapter = new CheckSearchAdapter(list, this);
             adapter.setOnLoadMoreListener(this);
@@ -90,9 +84,17 @@ public class CheckSearchActivity extends BaseActivity implements BaseAdapter.OnL
         Map<String, String> params = new HashMap<>();
         params.put("page", String.valueOf(page));
         params.put("pagesize", String.valueOf(pagesize));
-        params.put("searchword", etSearch.getText().toString().trim());
-//        params.put("docchannel","");
 
+        StringBuilder searchWords = new StringBuilder().append("(");
+        String search = etSearch.getText().toString().trim();
+        for (int i = 0; i < search.length(); i++) {
+            if (i != search.length() - 1)
+                searchWords.append(search.charAt(i)).append(" and ");
+            else
+                searchWords.append(search.charAt(i)).append(")");
+        }
+
+        params.put("searchword", searchWords.toString());
         presenter.getSearchData(AppConstant.SEARCH_JCD, params);
     }
 

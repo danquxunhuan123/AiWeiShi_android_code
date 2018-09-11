@@ -9,13 +9,17 @@ import com.trs.aiweishi.bean.LoginBean;
 import com.trs.aiweishi.bean.RegistBean;
 import com.trs.aiweishi.bean.SearchBean;
 import com.trs.aiweishi.bean.SiteBean;
+import com.trs.aiweishi.bean.UpdateBean;
 import com.trs.aiweishi.bean.UserBean;
 import com.trs.aiweishi.bean.UserData;
+import com.trs.aiweishi.bean.WorkTimeBean;
 
 import java.util.Map;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -30,6 +34,9 @@ import retrofit2.http.Url;
  * Created by Liufan on 2018/5/16.
  */
 public interface RetofitApi {
+
+    @GET
+    Observable<UpdateBean> update(@Url String url);
 
     @GET
     Observable<HomeBean> getHomeData(@Url String url);
@@ -48,7 +55,7 @@ public interface RetofitApi {
     //检索
     @FormUrlEncoded
     @POST("service?idsServiceType=remoteapi&method=listMonitoringSitesByFilter")
-    Observable<SiteBean> getLocationData(@FieldMap Map<String, String> params);
+    Observable<SiteBean> getLocationData(@FieldMap Map<String, String> params);  //SiteBean
 
     //登录
     @FormUrlEncoded
@@ -113,7 +120,15 @@ public interface RetofitApi {
     @Multipart
     @POST()
     Observable<BaseBean> editHeadImg(@Url String url,
-                                    @Part() MultipartBody.Part part);
+                                     @Part() MultipartBody.Part part);
+
+    @GET()
+    Observable<ResponseBody> loginQuesiton(@Url String url);
+
+    @FormUrlEncoded
+    @POST()
+    Observable<ResponseBody> submitBooking(@Url String url, @FieldMap Map<String, String> param);
+
 }
 
 

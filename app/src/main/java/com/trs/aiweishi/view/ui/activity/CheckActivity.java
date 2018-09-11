@@ -52,12 +52,7 @@ public class CheckActivity extends BaseActivity implements
     @BindView(R.id.vp_check)
     ViewPager viewPager;
 
-    private final int JKZX = 2;
-    private final int FYBJ = 1;
-    private final int NGO = 0;
-    private final int PFXB = 4;
-    private final int MSTD = 3;
-    private final int OTHER = 5;
+    private int[] siteTypeArry = new int[]{999, 2, 1, 0, 6, 5};
     private List<BaseFragment> fragments = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
     private FragmentAdapter adapter;
@@ -103,12 +98,12 @@ public class CheckActivity extends BaseActivity implements
 
     @Override
     protected void initData() {
+        titles.add("全部");
         titles.add("疾控中心");
-        titles.add("妇幼保健");
-        titles.add("NGO机构");
-        titles.add("皮肤性病");
-        titles.add("美沙酮点");
-        titles.add("其他机构");
+        titles.add("妇幼机构");
+        titles.add("社会组织");
+        titles.add("医院");
+        titles.add("其他");
         locationHelper.startLocation();
         mHandler.sendEmptyMessage(MSG_LOAD_DATA);
     }
@@ -167,25 +162,27 @@ public class CheckActivity extends BaseActivity implements
         OptionsPickerView pvOptions = new OptionsPickerBuilder(this, new OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                String province = options1Items.get(options1).getPickerViewText();
+                String city = options2Items.get(options1).get(options2);
+                String area = options3Items.get(options1).get(options2).get(options3);
                 //返回的分别是三个级别的选中位置
                 StringBuffer buffer = new StringBuffer();
-                buffer
-                        .append(options1Items.get(options1).getPickerViewText())
-                        .append(",")
-                        .append(options2Items.get(options1).get(options2))
-                        .append(",")
-                        .append(options3Items.get(options1).get(options2).get(options3));
+                buffer.append(province).append(",").append(city).append(",").append(area);
 
                 tvLocation.setText(buffer.toString());
 
-                StringBuffer buffer1 = new StringBuffer();
-                buffer1
-                        .append(options1Items.get(options1).getPickerViewText())
-                        .append(options2Items.get(options1).get(options2))
-                        .append(options3Items.get(options1).get(options2).get(options3));
+//                String location;
+//                StringBuffer buffer1 = new StringBuffer();
+//                if ("全部".equals(city) && "全部".equals(area))
+//                    location = buffer1.append(province).toString();
+//                else
+//                    location = buffer1.append(province)
+//                            .append(",").append(city)
+//                            .append(",").append(area).toString();
 
-                initFragment(null, buffer1.toString());
-                adapter.update(fragments);
+                for (int i = 0; i < adapter.getCount(); i++) {
+                    ((CheckFragment)adapter.getItem(i)).setLocation(null, buffer.toString());
+                }
             }
         })
 
@@ -205,10 +202,10 @@ public class CheckActivity extends BaseActivity implements
     @Override
     public void onLocation(BDLocation location) {
         if (TextUtils.isEmpty(location.getProvince())) {
-            String addr = "北京市市辖区全部";
+//            String addr = "北京市市辖区全部";
             tvLocation.setText("北京市,市辖区,全部");
 
-            initFragment(null, addr);
+            initFragment(null, null);
         } else {
             StringBuffer addrBuffer = new StringBuffer();
             addrBuffer
@@ -222,37 +219,27 @@ public class CheckActivity extends BaseActivity implements
             initFragment(location, "");
         }
 
-        if (adapter == null){
+        if (adapter == null) {
             adapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
             viewPager.setAdapter(adapter);
             viewPager.setOffscreenPageLimit(titles.size());
             tabLayout.setupWithViewPager(viewPager);
-        }else {
+        } else {
             adapter.update(fragments);
         }
+
+        locationHelper.stopLocation();
     }
 
     private void initFragment(BDLocation location, String addr) {
         fragments.clear();
-        if (location != null) {
-            fragments.add(CheckFragment.newInstance(location, JKZX, null));
-            fragments.add(CheckFragment.newInstance(location, FYBJ, null));
-            fragments.add(CheckFragment.newInstance(location, NGO, null));
-            fragments.add(CheckFragment.newInstance(location, PFXB, null));
-            fragments.add(CheckFragment.newInstance(location, MSTD, null));
-            fragments.add(CheckFragment.newInstance(location, OTHER, null));
-        } else if (!TextUtils.isEmpty(addr)) {
-            fragments.add(CheckFragment.newInstance(null, JKZX, addr));
-            fragments.add(CheckFragment.newInstance(null, FYBJ, addr));
-            fragments.add(CheckFragment.newInstance(null, NGO, addr));
-            fragments.add(CheckFragment.newInstance(null, PFXB, addr));
-            fragments.add(CheckFragment.newInstance(null, MSTD, addr));
-            fragments.add(CheckFragment.newInstance(null, OTHER, addr));
+        for (int i = 0; i < titles.size(); i++) {
+            fragments.add(CheckFragment.newInstance(location, siteTypeArry[i], addr));
         }
     }
 
     public void parseJson() {
-        String JsonData = new GetJsonDataUtil().getJson(this, "province.json");
+        String JsonData = new GetJsonDataUtil().getJson(this, "province_new.json");
 
         ArrayList<JsonBean> jsonBean = parseData(JsonData);//用Gson 转成实体
 
@@ -268,11 +255,13 @@ public class CheckActivity extends BaseActivity implements
             ArrayList<String> cityList = new ArrayList<>();//该省的城市列表（第二级）
             ArrayList<ArrayList<String>> Province_AreaList = new ArrayList<>();//该省的所有地区列表（第三极）
 
+            cityList.add("全部"); //添加城市全部项
+            ArrayList<String> areaList = new ArrayList<>();
             for (int c = 0; c < jsonBean.get(i).getCityList().size(); c++) {//遍历该省份的所有城市
                 String CityName = jsonBean.get(i).getCityList().get(c).getName();
                 cityList.add(CityName);//添加城市
                 ArrayList<String> City_AreaList = new ArrayList<>();//该城市的所有地区列表
-
+//                City_AreaList.add("全部");
                 //如果无地区数据，建议添加空字符串，防止数据为null 导致三个选项长度不匹配造成崩溃
                 if (jsonBean.get(i).getCityList().get(c).getArea() == null
                         || jsonBean.get(i).getCityList().get(c).getArea().size() == 0) {
@@ -280,8 +269,13 @@ public class CheckActivity extends BaseActivity implements
                 } else {
                     City_AreaList.addAll(jsonBean.get(i).getCityList().get(c).getArea());
                 }
+
                 Province_AreaList.add(City_AreaList);//添加该省所有地区数据
             }
+            ArrayList<String> allList = new ArrayList<>();
+            allList.add("全部");
+            areaList.addAll(allList);  //添加全部区域
+            Province_AreaList.add(0,areaList); //添加全部区域集合
 
             /**
              * 添加城市数据

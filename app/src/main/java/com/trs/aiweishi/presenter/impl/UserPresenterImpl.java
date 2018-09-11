@@ -7,15 +7,20 @@ import com.trs.aiweishi.model.IDataModel;
 import com.trs.aiweishi.presenter.IBindPhoneView;
 import com.trs.aiweishi.presenter.IUserPresenter;
 import com.trs.aiweishi.view.IBaseView;
+import com.trs.aiweishi.view.IBookView;
 import com.trs.aiweishi.view.IFindPsdView;
+import com.trs.aiweishi.view.IQuestionView;
 import com.trs.aiweishi.view.IRegistView;
+import com.trs.aiweishi.view.ITimeView;
 import com.trs.aiweishi.view.IUserCenterView;
 import com.trs.aiweishi.view.IUserEditerView;
 import com.trs.aiweishi.view.IUserView;
 
+import java.io.IOException;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 
 /**
  * Created by Liufan on 2018/5/16.
@@ -29,6 +34,7 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
     IUserEditerView editVeiw;
     IUserCenterView userInfoView;
     IBindPhoneView bindPhoneView;
+    IQuestionView questionView;
 
     public UserPresenterImpl(IBaseView baseView, IDataModel dataModel) {
         this.dataModel = dataModel;
@@ -45,6 +51,8 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
             this.bindPhoneView = (IBindPhoneView) baseView;
         else if (baseView instanceof IUserCenterView)
             this.userInfoView = (IUserCenterView) baseView;
+        else if (baseView instanceof IQuestionView)
+            this.questionView = (IQuestionView) baseView;
         else
             this.baseView = baseView;
     }
@@ -307,11 +315,84 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
     @Override
     public void feedBack(Map<String, String> params) {
-        dataModel.feedBack( params, new IResponseCallBack() {
+        dataModel.feedBack(params, new IResponseCallBack() {
 
             @Override
             public void onSuccess(Object obj) {
                 baseView.showSuccess((BaseBean) obj);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                baseView.showError(e);
+            }
+        });
+    }
+
+    @Override
+    public void loginQuesiton(String url) {
+        dataModel.loginQuesiton(url, new IResponseCallBack() {
+
+            @Override
+            public void onSuccess(Object obj) {
+                questionView.loginQuesiton((ResponseBody) obj);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                baseView.showError(e);
+            }
+        });
+    }
+
+    @Override
+    public void getHistoryBooked(String url, Map<String, String> param) {
+        dataModel.getBooked(url, param, new IResponseCallBack() {
+
+            @Override
+            public void onSuccess(Object obj) {
+                try {
+                    ((IBookView)baseView).getHistoryBooked(((ResponseBody) obj).string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+        });
+    }
+
+    @Override
+    public void getUnBooked(String url, Map<String, String> param) {
+        dataModel.getBooked(url, param, new IResponseCallBack() {
+
+            @Override
+            public void onSuccess(Object obj) {
+                try {
+                    ((IBookView)baseView).getUnBooked(((ResponseBody) obj).string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+        });
+    }
+
+    @Override
+    public void cancleBook(String url, Map<String, String> param) {
+        dataModel.cancleBook(url,param,new IResponseCallBack() {
+            @Override
+            public void onSuccess(Object obj) {
+                try {
+                    ((IBookView)baseView).cancleBooking(((ResponseBody)obj).string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

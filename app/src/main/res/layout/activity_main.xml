@@ -27,12 +27,12 @@
             android:id="@+id/tv_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/loading_failed"
-            android:visibility="gone"
+            android:layout_centerInParent="true"
             android:padding="20dp"
-            android:textSize="@dimen/size_17sp"
+            android:text="@string/loading_failed"
             android:textColor="@color/color_75787b"
-            android:layout_centerInParent="true"/>
+            android:textSize="@dimen/size_17sp"
+            android:visibility="gone" />
     </RelativeLayout>
 
 

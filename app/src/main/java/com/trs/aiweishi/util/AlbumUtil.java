@@ -1,6 +1,7 @@
 package com.trs.aiweishi.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -23,31 +24,15 @@ public class AlbumUtil {
     public static Uri takePhone(Activity activity, int requestCode) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File photoFile = new File(activity.getExternalCacheDir(), "image.jpeg");
-//        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        /*
-         * 这里就是高版本需要注意的，需用使用FileProvider来获取Uri，同时需要注意getUriForFile
-         * 方法第二个参数要与AndroidManifest.xml中provider的里面的属性authorities的值一致
-         * */
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
         Uri imageUriFromCamera = FileProvider.getUriForFile(activity,
                 AppUtils.getAppPackageName() + ".fileprovider", photoFile);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUriFromCamera);
 
-        activity.startActivityForResult(intent, requestCode); //PHOTO_ALBUM
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUriFromCamera);
+        activity.startActivityForResult(intent, requestCode);
 
         return imageUriFromCamera;
-    }
-
-    public static void startCameraCrop(Activity fragment, Uri uri, int requestCode) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        }
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("scale", true);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        fragment.startActivityForResult(intent, requestCode);// 启动裁剪
     }
 
     public static void openAlbum(Activity activity, int requestCode) {
@@ -83,22 +68,70 @@ public class AlbumUtil {
         activity.startActivityForResult(intent, requestCode);  //PHOTO_ALBUM
     }
 
-
-    public static void startAlbumCrop(Activity activity, Uri uri, int requestCode) {
+    public static void startCrop(Activity activity, Uri uri, int requestCode) {
         File camerafile = new File(activity.getExternalCacheDir(), "image.jpeg");
         Intent intent = new Intent("com.android.camera.action.CROP");
-        Uri imageUri;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            imageUri = FileProvider.getUriForFile(activity,
-                    AppUtils.getAppPackageName() + ".fileprovider",
-                    camerafile);
-        } else {
-            imageUri = Uri.fromFile(camerafile);
-        }
+        Uri imageUri = getUriForFile(activity, camerafile);
         intent.setDataAndType(uri, "image/*");
+        if (Build.VERSION.SDK_INT < 24) {
+            grantPermissions(activity, intent, uri, true);
+        }
         intent.putExtra("scale", true);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         activity.startActivityForResult(intent, requestCode);// 启动裁剪
     }
+
+    private static Uri getUriForFile(Activity activity, File camerafile) {
+        Uri fileUri = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            fileUri = FileProvider.getUriForFile(activity, activity.getPackageName() + ".fileprovider", camerafile);
+        } else {
+            fileUri = Uri.fromFile(camerafile);
+        }
+        return fileUri;
+    }
+
+    /**
+     * @param writeAble 是否可读
+     */
+    public static void grantPermissions(Context context, Intent intent, Uri uri, boolean writeAble) {
+        int flag = Intent.FLAG_GRANT_READ_URI_PERMISSION;
+        if (writeAble) {
+            flag |= Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+        }
+        intent.addFlags(flag);
+        List<ResolveInfo> resInfoList = context.getPackageManager()
+                .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            context.grantUriPermission(packageName, uri, flag);
+        }
+    }
+
+//    public static void startAlbumCrop(Activity activity, Uri uri, int requestCode) {
+//        File camerafile = new File(activity.getExternalCacheDir(), "image.jpeg");
+//        Intent intent = new Intent("com.android.camera.action.CROP");
+//        Uri imageUri = getUriForFile(activity, camerafile);
+//        intent.setDataAndType(uri, "image/*");
+//        if (Build.VERSION.SDK_INT < 24) {
+//            grantPermissions(activity, intent, uri, true);
+//        }
+//        intent.putExtra("scale", true);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//        activity.startActivityForResult(intent, requestCode);// 启动裁剪
+//    }
+//
+//    public static void startCameraCrop(Activity activity, Uri uri, int requestCode) {
+//        File camerafile = new File(activity.getExternalCacheDir(), "image.jpeg");
+//        Intent intent = new Intent("com.android.camera.action.CROP");
+//        Uri imageUri = getUriForFile(activity, camerafile);
+//        intent.setDataAndType(uri, "image/*");
+//        if (Build.VERSION.SDK_INT < 24) {
+//            grantPermissions(activity, intent, uri, true);
+//        }
+//
+//        intent.putExtra("scale", true);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//        activity.startActivityForResult(intent, requestCode);// 启动裁剪
+//    }
 }

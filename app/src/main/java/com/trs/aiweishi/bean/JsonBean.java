@@ -55,7 +55,7 @@ public class JsonBean implements IPickerViewData {
          */
 
         private String name;
-        private List<String> area;
+        private List<String> city;
 
         public String getName() {
             return name;
@@ -66,11 +66,11 @@ public class JsonBean implements IPickerViewData {
         }
 
         public List<String> getArea() {
-            return area;
+            return city;
         }
 
         public void setArea(List<String> area) {
-            this.area = area;
+            this.city = area;
         }
     }
 }

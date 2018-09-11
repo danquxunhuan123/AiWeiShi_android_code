@@ -45,4 +45,14 @@ public class BaseBean implements Serializable {
     public void setType(int type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "BaseBean{" +
+                "code=" + code +
+                ", desc='" + desc + '\'' +
+                ", result=" + result +
+                ", type=" + type +
+                '}';
+    }
 }

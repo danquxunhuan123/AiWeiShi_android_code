@@ -25,6 +25,7 @@ public class Site extends BaseBean {
         private String country;
         private String geoHash;
         private String id;
+        private String isFree;
         private String lat;
         private String lon;
         private String orgAddr;
@@ -34,6 +35,14 @@ public class Site extends BaseBean {
         private String postcode;
         private String province;
         private String tel;
+
+        public String getIsFree() {
+            return isFree;
+        }
+
+        public void setIsFree(String isFree) {
+            this.isFree = isFree;
+        }
 
         public String getRemark() {
             return remark;

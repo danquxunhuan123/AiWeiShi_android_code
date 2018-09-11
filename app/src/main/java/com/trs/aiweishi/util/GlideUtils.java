@@ -7,8 +7,9 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-
-import retrofit2.http.Url;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 
 /**
  * Created by Liufan on 2018/7/2.
@@ -55,5 +56,9 @@ public class GlideUtils
                 .load(url)
                 .listener(listener)
                 .into(imageView);
+    }
+
+    public static void loadUrlBitmap(String url, ImageView imageView, SimpleTarget<Bitmap> simpleTarget){
+        Glide.with(imageView.getContext()).asBitmap().load(url).into(simpleTarget);
     }
 }

@@ -6,8 +6,6 @@ import com.trs.aiweishi.model.IDataModel;
 
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import okhttp3.MultipartBody;
 
 /**
@@ -121,6 +119,31 @@ public class DataModelImpl implements IDataModel {
     @Override
     public void feedBack(Map<String, String> params, IResponseCallBack callBack) {
         httpHelper.feedBack(params,callBack);
+    }
+
+    @Override
+    public void getUpdate(String update, IResponseCallBack callBack) {
+        httpHelper.getUpdate(update,callBack);
+    }
+
+    @Override
+    public void loginQuesiton(String url, IResponseCallBack callBack) {
+        httpHelper.loginQuesiton(url,callBack);
+    }
+
+    @Override
+    public void submitBooking(String url, Map<String, String> param, IResponseCallBack callBack) {
+        httpHelper.submitBooking(url,param,callBack);
+    }
+
+    @Override
+    public void getBooked(String url, Map<String, String> param,IResponseCallBack callBack) {
+        httpHelper.getBook(url,param,callBack);
+    }
+
+    @Override
+    public void cancleBook(String url, Map<String, String> param, IResponseCallBack callBack) {
+        httpHelper.cancleBook(url,param,callBack);
     }
 
 }

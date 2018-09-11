@@ -32,4 +32,10 @@ public interface IUserPresenter {
 
     void editHeadImg(String url, MultipartBody.Part part);
     void feedBack(Map<String, String> params);
+
+    void loginQuesiton(String s);
+
+    void getHistoryBooked(String url, Map<String, String> param);
+    void getUnBooked(String url, Map<String, String> param);
+    void cancleBook(String url, Map<String, String> param);
 }

@@ -25,4 +25,12 @@ public interface IHomePresenter {
     void getDetailData(String url);
 
     void getSearchData(String url, Map<String, String> params);
+
+    void updateInfo(String update);
+
+    void getYuYueTime(String s,Map<String, String> params);
+
+    void getNgoInfo(String url);
+
+    void submitBooking(String submitBooking, Map<String, String> param);
 }

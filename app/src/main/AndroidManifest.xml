@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- ================定位权限================== -->
     <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- 这个权限用于访问GPS定位 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -53,7 +54,9 @@
             android:process=":remote" />
         <!-- ========================= 百度定位配置 =========================== -->
 
-        <activity android:name=".view.ui.activity.MainActivity" />
+        <activity
+            android:name=".view.ui.activity.MainActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".view.ui.activity.ListDataActivity" />
         <activity android:name=".view.ui.activity.SearchActivity" />
         <activity android:name=".view.ui.activity.DetailActivity" />
@@ -80,6 +83,10 @@
         <activity
             android:name=".view.ui.activity.RegistNextActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize|stateHidden" />
+        <activity
+            android:name=".view.ui.activity.BindPhoneActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustResize|stateHidden" />
+        <activity android:name=".view.ui.activity.FeedBackActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -146,11 +153,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!-- 友盟 -->
-        <activity
-            android:name=".view.ui.activity.BindPhoneActivity"
-            android:windowSoftInputMode="stateUnchanged|adjustResize|stateHidden" />
-        <activity android:name=".view.ui.activity.FeedBackActivity" />
         <activity android:name="com.autonavi.auto.remote.fill.UsbFillActivity" />
+        <activity android:name=".view.ui.activity.MyQuestionActivity" />
+        <activity android:name=".view.ui.activity.NgoListActivity" />
+        <activity android:name=".view.ui.activity.MyBookingActivity"></activity>
     </application>
 
 </manifest>

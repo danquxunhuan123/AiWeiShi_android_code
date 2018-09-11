@@ -51,4 +51,14 @@ public interface IDataModel {
     void editHeadImg(String url, MultipartBody.Part part, IResponseCallBack callBack);
 
     void feedBack(Map<String, String> params, IResponseCallBack callBack);
+
+    void getUpdate(String update, IResponseCallBack callBack);
+
+    void loginQuesiton(String url, IResponseCallBack callBack);
+
+    void submitBooking(String url, Map<String, String> param, IResponseCallBack callBack);
+
+    void getBooked(String url,Map<String, String> param, IResponseCallBack callBack);
+
+    void cancleBook(String url, Map<String, String> param, IResponseCallBack callBack);
 }

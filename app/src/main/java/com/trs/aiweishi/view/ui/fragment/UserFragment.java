@@ -1,6 +1,7 @@
 package com.trs.aiweishi.view.ui.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.BarUtils;
-import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.trs.aiweishi.R;
@@ -26,9 +26,10 @@ import com.trs.aiweishi.util.GlideUtils;
 import com.trs.aiweishi.util.PopWindowUtil;
 import com.trs.aiweishi.util.UMShareUtil;
 import com.trs.aiweishi.view.IUserCenterView;
-import com.trs.aiweishi.view.ui.activity.DetailActivity;
 import com.trs.aiweishi.view.ui.activity.FeedBackActivity;
 import com.trs.aiweishi.view.ui.activity.LoginActivity;
+import com.trs.aiweishi.view.ui.activity.MyBookingActivity;
+import com.trs.aiweishi.view.ui.activity.MyQuestionActivity;
 import com.trs.aiweishi.view.ui.activity.UserConfigActivity;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -39,6 +40,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import dagger.multibindings.ElementsIntoSet;
 
 /**
  * Created by Liufan on 2018/5/17.
@@ -47,7 +49,6 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
 
     @Inject
     IUserPresenter presenter;
-
     @BindView(R.id.ll_user_page)
     LinearLayout userPage;
     @BindView(R.id.view_padding)
@@ -66,8 +67,6 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
     TextView tvNewsCenter;
     @BindView(R.id.tv_feedback)
     TextView tvFeedback;
-    @BindView(R.id.ll_check_version)
-    LinearLayout llCheckVersion;
     @BindView(R.id.tv_share)
     TextView tvShare;
     @BindView(R.id.tv_about)
@@ -84,10 +83,7 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
     private final int RESULT_USER = 100;
     private final int RESULT_CONFIG = 101;
     private SPUtils sp;
-    private String title = "快来下载吧";
-    private String body = "i卫士 您身边的艾防助手";
-    private String thumbUrl = "";
-    private String shareUrl = "https://fir.im/awsAndroid";
+
 
     public static UserFragment newInstance(String param1, String param2) {
         UserFragment fragment = new UserFragment();
@@ -105,13 +101,13 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
 
     @Override
     public void initData() {
-        shareUtil = UMShareUtil.getInstance()
-                .setOnShareSuccessListener(this);
-        sharePopUtil = PopWindowUtil.getInstance(context);
+        shareUtil = UMShareUtil.getInstance().setOnShareSuccessListener(this);
+        sharePopUtil = new PopWindowUtil(context);
 
         LinearLayout.LayoutParams viewParam = (LinearLayout.LayoutParams) viewPadding.getLayoutParams();
         viewParam.height = BarUtils.getStatusBarHeight();
         viewPadding.setLayoutParams(viewParam);
+        viewPadding.setBackgroundColor(getResources().getColor(R.color.color_015aac));
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(PARAM1);
@@ -119,8 +115,14 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
         }
         sp = SPUtils.getInstance(AppConstant.SP_NAME);
 
-        String versionName = context.getResources().getString(R.string.version_name);
-        version.setText(String.format(versionName, AppUtils.getAppVersionName()));
+        //有版本更新显示红点
+        if (sp.getBoolean(AppConstant.IS_UPDATE, false)) {
+            version.setCompoundDrawablesWithIntrinsicBounds(
+                    getResources().getDrawable(R.drawable.update_warn_point)
+                    , null, null, null);
+        }
+        version.setText(String.format(getResources().getString(R.string.version_name)
+                , AppUtils.getAppVersionName()));
         try {
             cache.setText(DataCleanManager.getTotalCacheSize(context));
         } catch (Exception e) {
@@ -131,7 +133,7 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
     private void requestUserInfo() {
         Map<String, String> param = new HashMap();
         param.put("userName", Base64.encodeToString(sp.getString(AppConstant.USER_PHONE).getBytes(), Base64.DEFAULT));
-        presenter.getUserInfo(0,param);
+        presenter.getUserInfo(0, param);
     }
 
     @Override
@@ -140,7 +142,8 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
     }
 
     @OnClick({R.id.ib_config, R.id.iv_user_pic, R.id.ll_clear_cache,
-            R.id.tv_feedback,R.id.tv_share})
+            R.id.tv_feedback, R.id.tv_share, R.id.ll_check_version
+            , R.id.iv_my_yy, R.id.iv_my_dbsx})
     public void toConfig(View view) {
         switch (view.getId()) {
             case R.id.ib_config:
@@ -157,56 +160,85 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
                 else
                     ToastUtils.showShort(getResources().getString(R.string.login_warn));
                 break;
+            case R.id.ll_check_version:
+                //有版本点击应用宝页面
+                if (sp.getBoolean(AppConstant.IS_UPDATE, false)) {
+                    Uri uri = Uri.parse(sp.getString(AppConstant.YINGYONGBAO));
+                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                }
+                break;
             case R.id.tv_share:
                 shareApp();
                 break;
             case R.id.ll_clear_cache:
-                try {
-                    DataCleanManager.clearAllCache(context);
-                    cache.setText(DataCleanManager.getTotalCacheSize(context));
-                    ToastUtils.showShort("清除成功");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                clearCache();
+                break;
+            case R.id.iv_my_dbsx:
+                if (sp.getBoolean(AppConstant.IS_LOGIN))
+                    startActivity(new Intent(context, MyQuestionActivity.class));
+                else
+                    ToastUtils.showShort(getResources().getString(R.string.login_warn));
+                break;
+            case R.id.iv_my_yy:
+                if (sp.getBoolean(AppConstant.IS_LOGIN))
+                    startActivity(new Intent(context, MyBookingActivity.class));
+                else
+                    ToastUtils.showShort(getResources().getString(R.string.login_warn));
                 break;
         }
     }
 
+    private void clearCache() {
+        try {
+            DataCleanManager.clearAllCache(context);
+            cache.setText(DataCleanManager.getTotalCacheSize(context));
+            ToastUtils.showShort("清除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void shareApp() {
+        final String title = "快来下载吧";
+        final String body = "i卫士 您身边的艾防助手";
+        final String thumbUrl = "";
+        final String yyb_url = sp.getString(AppConstant.YINGYONGBAO);
+
+        sharePopUtil.disMiss();
         sharePopUtil.setContentView(R.layout.share_layout)
                 .getView(R.id.tv_qq, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(context, SHARE_MEDIA.QQ,
-                                title, body, thumbUrl, shareUrl);
+                                title, body, thumbUrl, yyb_url);
                     }
                 })
                 .getView(R.id.tv_zone, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(context, SHARE_MEDIA.QZONE,
-                                title, body, thumbUrl, shareUrl);
+                                title, body, thumbUrl, yyb_url);
                     }
                 })
                 .getView(R.id.tv_wecheat, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(context, SHARE_MEDIA.WEIXIN,
-                                title, body, thumbUrl, shareUrl);
+                                title, body, thumbUrl, yyb_url);
                     }
                 })
                 .getView(R.id.tv_circle_friend, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(context, SHARE_MEDIA.WEIXIN_CIRCLE,
-                                title, body, thumbUrl, shareUrl);
+                                title, body, thumbUrl, yyb_url);
                     }
                 })
                 .getView(R.id.tv_sina, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         shareUtil.share(context, SHARE_MEDIA.SINA,
-                                title, body, thumbUrl, shareUrl);
+                                title, body, thumbUrl, yyb_url);
                     }
                 })
                 .showAtLocation(userPage);
@@ -270,16 +302,17 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
     public void getUserInfo(BaseBean bean) {
         user = (UserData) bean;
         if (user.getEntry() != null) {
-            if (TextUtils.isEmpty(user.getEntry().getHeadUrl())){
-                GlideUtils.loadLocalImg(context,R.mipmap.icon_user_pic_default,ivUserPic);
-            }else{
+            if (TextUtils.isEmpty(user.getEntry().getHeadUrl())) {
+                GlideUtils.loadLocalImg(context, R.mipmap.icon_user_pic_default, ivUserPic);
+            } else {
                 GlideUtils.loadCircleUrlImg(context, AppConstant.HEAD_URL + user.getEntry().getHeadUrl(), ivUserPic);
             }
 
-            if (TextUtils.isEmpty(user.getEntry().getNickName())){
+            if (TextUtils.isEmpty(user.getEntry().getNickName())) {
                 userName.setText(sp.getString(AppConstant.USER_PHONE));
-            }else{
+            } else {
                 userName.setText(user.getEntry().getNickName());
+                sp.put(AppConstant.USER_NAME, user.getEntry().getNickName());
             }
         }
     }
@@ -303,7 +336,6 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
     @Override
     public void onDestroy() {
         super.onDestroy();
-        sharePopUtil.onDestory();
         shareUtil.onDestory();
     }
 }
