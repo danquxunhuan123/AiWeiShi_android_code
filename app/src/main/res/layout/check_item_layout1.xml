@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:drawableLeft="@mipmap/icon_check_little"
+        android:drawablePadding="10dp"
+        android:maxWidth="270dp"
+        android:textColor="@color/color_343638"
+        android:textSize="@dimen/text_commen_size" />
+
+    <TextView
+        android:id="@+id/tv_free"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tv_name"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/tv_name"
+        android:text="@string/free"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/text_small_size"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tv_name"
+        android:layout_below="@id/tv_name"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/color_75787b"
+        android:textSize="@dimen/text_commen_size" />
+
+    <ImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:src="@mipmap/icon_arr" />
+
+    <TextView
+        android:id="@+id/tv_yuyue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/iv_arrow"
+        android:layout_marginRight="30dp"
+        android:background="@mipmap/icon_check_kyy" />
+</RelativeLayout>

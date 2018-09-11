@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="当前预约"
+        android:textColor="@color/color_black"
+        android:textSize="16sp" />
+
+
+    <include layout="@layout/yuyue_item_layout" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:layout_marginTop="1dp"
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:text="取消预约"
+            android:layout_margin="10dp"
+            android:onClick="cancleYuYue"
+            android:textColor="@color/color_3970e7"
+            android:textSize="@dimen/text_commen_size"
+            android:background="@drawable/corner_blue_shape"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="历史预约"
+        android:textColor="@color/color_black"
+        android:textSize="16sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycleview_yuyue"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
