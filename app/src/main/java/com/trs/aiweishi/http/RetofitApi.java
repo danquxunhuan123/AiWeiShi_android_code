@@ -13,6 +13,7 @@ import com.trs.aiweishi.bean.UpdateBean;
 import com.trs.aiweishi.bean.UserBean;
 import com.trs.aiweishi.bean.UserData;
 import com.trs.aiweishi.bean.WorkTimeBean;
+import com.trs.aiweishi.bean.YuYueItem;
 
 import java.util.Map;
 
@@ -129,6 +130,9 @@ public interface RetofitApi {
     @POST()
     Observable<ResponseBody> submitBooking(@Url String url, @FieldMap Map<String, String> param);
 
+//    @FormUrlEncoded
+//    @POST()
+//    Observable<YuYueItem> getBook(@Url String url, @FieldMap Map<String, String> param);
 }
 
 

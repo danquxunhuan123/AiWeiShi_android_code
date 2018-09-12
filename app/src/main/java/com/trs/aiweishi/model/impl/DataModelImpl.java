@@ -138,7 +138,7 @@ public class DataModelImpl implements IDataModel {
 
     @Override
     public void getBooked(String url, Map<String, String> param,IResponseCallBack callBack) {
-        httpHelper.getBook(url,param,callBack);
+//        httpHelper.getBook(url,param,callBack);
     }
 
     @Override

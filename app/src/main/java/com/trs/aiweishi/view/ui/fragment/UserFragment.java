@@ -143,7 +143,7 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
 
     @OnClick({R.id.ib_config, R.id.iv_user_pic, R.id.ll_clear_cache,
             R.id.tv_feedback, R.id.tv_share, R.id.ll_check_version
-            , R.id.iv_my_yy, R.id.iv_my_dbsx})
+            , R.id.iv_my_yy, R.id.iv_my_dbsx, R.id.ll_user})
     public void toConfig(View view) {
         switch (view.getId()) {
             case R.id.ib_config:
@@ -184,6 +184,13 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
                     startActivity(new Intent(context, MyBookingActivity.class));
                 else
                     ToastUtils.showShort(getResources().getString(R.string.login_warn));
+                break;
+            case R.id.ll_user:
+                if (sp.getBoolean(AppConstant.IS_LOGIN)) {
+                    Intent intent1 = new Intent(context, UserConfigActivity.class);
+                    intent1.putExtra(USER, user.getEntry());
+                    startActivityForResult(intent1, RESULT_CONFIG);
+                }
                 break;
         }
     }

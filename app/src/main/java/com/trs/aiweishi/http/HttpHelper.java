@@ -177,7 +177,7 @@ public class HttpHelper {
         getObservable(api.submitBooking(url,param), callBack);
     }
 
-    public void getBook(String url, Map<String, String> param, IResponseCallBack callBack) {
-        getObservable(api.submitBooking(url,param), callBack);
-    }
+//    public void getBook(String url, Map<String, String> param, IResponseCallBack callBack) {
+//        getObservable(api.getBook(url,param), callBack);
+//    }
 }

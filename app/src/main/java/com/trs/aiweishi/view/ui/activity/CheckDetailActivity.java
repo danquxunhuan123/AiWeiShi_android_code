@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
@@ -38,6 +39,8 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -187,7 +190,7 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
         new AlertDialogUtil(this)
                 .setDialogView()
                 .setDialogTitle("确定预约时间")
-                .setDialogContent("您确定要预约该监测点 " + yuyueTime.getText().toString()+" 时间段吗？请按时到场哦~")
+                .setDialogContent("您确定要预约该监测点 " + yuyueTime.getText().toString() + " 时间段吗？请按时到场哦~")
                 .setOnClickListener(new AlertDialogUtil.OnClickListener() {
                     @Override
                     public void OnSureClick() {
@@ -203,19 +206,18 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
     }
 
 
-
     private void submitBooking() {
         String[] split = yuyueTime.getText().toString().split(" ");
-        String bookingTime = split[0] + " " +split[2].split("-")[0];
-        Map<String,String> param = new HashMap<>();
-        param.put("mobile",spUtils.getString(AppConstant.USER_PHONE));
-        param.put("nickName",spUtils.getString(AppConstant.USER_NAME));
-        param.put("way","0");
-        param.put("bookingTime",bookingTime);
-        param.put("jiancedian",ngoId);
-        param.put("monitoringPoint",ngoName);
-        param.put("remarks","");
-        presenter.submitBooking(AppConstant.SUBMIT_BOOKING,param);
+        String bookingTime = split[0] + " " + split[2].split("-")[0];
+        Map<String, String> param = new HashMap<>();
+        param.put("mobile", spUtils.getString(AppConstant.USER_PHONE));
+        param.put("nickName", spUtils.getString(AppConstant.USER_NAME));
+        param.put("way", "0");
+        param.put("bookingTime", bookingTime);
+        param.put("jiancedian", ngoId);
+        param.put("monitoringPoint", ngoName);
+        param.put("remarks", "");
+        presenter.submitBooking(AppConstant.SUBMIT_BOOKING, param);
     }
 
     public void openMap() {
@@ -302,15 +304,29 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
                 weekDay.addView(weekTextView);
 
                 //初始化日期布局
-                final TextView dayTextView = new TextView(this);
-                dayTextView.setGravity(Gravity.CENTER);
-                dayTextView.setText(keyDay.substring(keyDay.length() - 2, keyDay.length()));
-                dayTextView.setTextSize(14);
-                dayTextView.setTextColor(getResources().getColor(R.color.color_75787b));
-                LinearLayout.LayoutParams para = new LinearLayout.LayoutParams(SizeUtils.dp2px(50), SizeUtils.dp2px(50));
+                View dayView = getLayoutInflater().inflate(R.layout.day_time_layout, null);
+                LinearLayout.LayoutParams para = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
                 para.weight = 1;
-                dayTextView.setLayoutParams(para);
-                monthDay.addView(dayTextView);
+                dayView.setLayoutParams(para);
+
+                TextView tvMonth = dayView.findViewById(R.id.tv_yuyue_month);
+                tvMonth.setText((Calendar.getInstance().get(Calendar.MONTH) + 1) + "月"); //
+                TextView tvDay = dayView.findViewById(R.id.tv_yuyue_day);
+                String strDay = keyDay.substring(keyDay.length() - 2, keyDay.length());
+                tvDay.setText(strDay);
+
+                if ("01".equals(strDay))
+                    tvMonth.setVisibility(View.VISIBLE);
+
+//                final TextView dayTextView = new TextView(this);
+//                dayTextView.setGravity(Gravity.CENTER);
+//                dayTextView.setText(keyDay.substring(keyDay.length() - 2, keyDay.length()));
+//                dayTextView.setTextSize(14);
+//                dayTextView.setTextColor(getResources().getColor(R.color.color_75787b));
+//                LinearLayout.LayoutParams para = new LinearLayout.LayoutParams(SizeUtils.dp2px(50), SizeUtils.dp2px(50));
+//                para.weight = 1;
+//                dayTextView.setLayoutParams(para);
+                monthDay.addView(dayView);
             }
 
             //初始化时间段
@@ -322,18 +338,19 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
             RecycleviewUtil.initGridNoTypeRecycleView(recycleTime, adapter, this, 3);
 
             //默认选中第一天
-            TextView tv = (TextView) monthDay.getChildAt(0);
+            TextView tv = monthDay.getChildAt(0).findViewById(R.id.tv_yuyue_day);
             tv.setTextColor(Color.WHITE);
             tv.setBackground(getResources().getDrawable(R.drawable.bg_blue_drawable));
             selectTextView = tv;
             //点击日期事件处理
             for (int i = 0; i < monthDay.getChildCount(); i++) {
-                final TextView dayTextView = (TextView) monthDay.getChildAt(i);
+                final TextView dayTextView = monthDay.getChildAt(i).findViewById(R.id.tv_yuyue_day);
                 final int finalI = i;
                 dayTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         selectIndex = finalI;
+                        selectTimes = "";
                         setTime(days.get(selectIndex), weeks.get(selectIndex), selectTimes);
 
                         if (selectTextView != null) {
@@ -366,9 +383,9 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
             data = new JSONObject(json).getJSONArray("data").getJSONObject(0);
             ngoId = data.getString("NGOid");
             ngoName = data.getString("NGOName");
-            Map<String,String> param = new HashMap<>();
-            param.put("monitoringPointId",ngoId);
-            presenter.getYuYueTime(AppConstant.FIND_NGO_BYID,param);
+            Map<String, String> param = new HashMap<>();
+            param.put("monitoringPointId", ngoId);
+            presenter.getYuYueTime(AppConstant.FIND_NGO_BYID, param);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -378,13 +395,9 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
     public void submitBooking(String string) {
         try {
             JSONObject result = new JSONObject(string);
-            int code = result.getInt("code");
-            if (code == 200){
-                ToastUtils.showShort(result.getString("msg"));
-            }else {
-
-            }
-        }catch (JSONException e) {
+//            int code = result.getInt("code");
+            ToastUtils.showShort(result.getString("msg"));
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

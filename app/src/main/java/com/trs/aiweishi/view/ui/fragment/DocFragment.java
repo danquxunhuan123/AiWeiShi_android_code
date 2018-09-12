@@ -42,7 +42,8 @@ public class DocFragment extends BaseFragment implements IHomeView
     @BindView(R.id.refresh)
     SwipeRefreshLayout refreshLayout;
 
-    private final int listCount = 2;
+    private final int listCount = 5;
+    private int list1 = 0;
     public static String mParam1;
     private List<ListData> bannerDatas = new ArrayList<>();
     private List<ListData> list = new ArrayList<>();
@@ -139,14 +140,14 @@ public class DocFragment extends BaseFragment implements IHomeView
 
         List<ListData> ld = ((ListDataBean) baseBean).getList_datas();
         if (ObjectUtils.isNotEmpty(ld)) {
-            for (int a = 0; a < (ld.size() > 5 ? 5 : ld.size()); a ++){
+            for (int a = 0; a < (ld.size() > listCount ? listCount : ld.size()); a++) {
                 bannerDatas.add(ld.get(a));
             }
         }
 
         list.add(new ListData());
         List<ListData> lb_list = channel_list.get(3).getChannel_list();  //类别集合
-        for (int a =0 ; a < lb_list.size(); a ++){
+        for (int a = 0; a < lb_list.size(); a++) {
             ListData l = new ListData();
             l.setCname(lb_list.get(a).getCname());
             l.setChannel_list(lb_list.get(a).getChannel_list());
@@ -166,6 +167,7 @@ public class DocFragment extends BaseFragment implements IHomeView
         title.setUrl(channel_list.get(1).getUrl());
         list.add(title);  //最新活动
 
+        list1 = list_datas.size() > listCount ? listCount : list_datas.size();
         for (int i = 0; i < (list_datas.size() > listCount ? listCount : list_datas.size()); i++) {
             list.add(list_datas.get(i));
         }
@@ -185,10 +187,9 @@ public class DocFragment extends BaseFragment implements IHomeView
             list.add(list_datas.get(i));
         }
 
+        list = DataHelper.initDocList(list, list1);
 
-        list = DataHelper.initDocList(list,listCount);
-
-        adapter = new DocAdapter(list, context,bannerDatas);
+        adapter = new DocAdapter(list, context, bannerDatas);
         RecycleviewUtil.initGridRecycleView(recycleview, adapter, context, SPAN_COUNT);
     }
 

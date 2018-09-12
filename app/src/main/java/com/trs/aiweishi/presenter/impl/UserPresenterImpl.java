@@ -347,12 +347,12 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
     @Override
     public void getHistoryBooked(String url, Map<String, String> param) {
-        dataModel.getBooked(url, param, new IResponseCallBack() {
+        dataModel.submitBooking(url, param, new IResponseCallBack() {
 
             @Override
             public void onSuccess(Object obj) {
                 try {
-                    ((IBookView)baseView).getHistoryBooked(((ResponseBody) obj).string());
+                    ((IBookView) baseView).getHistoryBooked(((ResponseBody) obj).string());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -360,18 +360,19 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
             @Override
             public void onError(Throwable e) {
+                baseView.showError(e);
             }
         });
     }
 
     @Override
     public void getUnBooked(String url, Map<String, String> param) {
-        dataModel.getBooked(url, param, new IResponseCallBack() {
+        dataModel.submitBooking(url, param, new IResponseCallBack() {
 
             @Override
             public void onSuccess(Object obj) {
                 try {
-                    ((IBookView)baseView).getUnBooked(((ResponseBody) obj).string());
+                    ((IBookView) baseView).getUnBooked(((ResponseBody) obj).string());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -379,17 +380,18 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
             @Override
             public void onError(Throwable e) {
+                baseView.showError(e);
             }
         });
     }
 
     @Override
     public void cancleBook(String url, Map<String, String> param) {
-        dataModel.cancleBook(url,param,new IResponseCallBack() {
+        dataModel.cancleBook(url, param, new IResponseCallBack() {
             @Override
             public void onSuccess(Object obj) {
                 try {
-                    ((IBookView)baseView).cancleBooking(((ResponseBody)obj).string());
+                    ((IBookView) baseView).cancleBooking(((ResponseBody) obj).string());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

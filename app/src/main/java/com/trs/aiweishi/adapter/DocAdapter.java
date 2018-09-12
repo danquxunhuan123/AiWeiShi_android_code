@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ObjectUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseAdapter;
@@ -85,10 +86,10 @@ public class DocAdapter extends BaseAdapter implements MyBanner_1.OnItemClickLis
 //                            } else if (context.getResources().getString(R.string.jc).equals(bean.getCname())) {
 //                                context.startActivity(new Intent(context, CheckActivity.class));
 //                            } else {
-                                Intent intent = new Intent(context, ZiXunActivity.class);
-                                intent.putExtra(ZiXunActivity.PARAM, (Parcelable) bean);
-                                intent.putExtra(ZiXunActivity.PARAM2, bean.getCname());
-                                context.startActivity(intent);
+                            Intent intent = new Intent(context, ZiXunActivity.class);
+                            intent.putExtra(ZiXunActivity.PARAM, (Parcelable) bean);
+                            intent.putExtra(ZiXunActivity.PARAM2, bean.getCname());
+                            context.startActivity(intent);
 //                            }
                         }
                     }
@@ -118,7 +119,8 @@ public class DocAdapter extends BaseAdapter implements MyBanner_1.OnItemClickLis
                 }
 
                 ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());
-                ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
+                if (!StringUtils.isEmpty(bean.getTime()))
+                    ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
                 holder.getItemView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

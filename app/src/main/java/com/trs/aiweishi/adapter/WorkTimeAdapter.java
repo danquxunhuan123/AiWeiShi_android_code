@@ -36,6 +36,8 @@ public class WorkTimeAdapter extends BaseAdapter {
         String time = (String) list.get(position);
         final TextView textTime = (TextView) holder.getView(R.id.tv_worktime);
 
+        textTime.setTextColor(context.getResources().getColor(R.color.color_3970e7));
+        textTime.setBackground(context.getResources().getDrawable(R.drawable.border_blue_trans));
         LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) textTime.getLayoutParams();
         param.width = (ScreenUtils.getScreenWidth() - SizeUtils.dp2px(10) * 4) / 3;
         textTime.setLayoutParams(param);
@@ -45,7 +47,7 @@ public class WorkTimeAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 onTimeSelectListener.OnTimeSelect(textTime.getText());
-                if (currentTextView != null){
+                if (currentTextView != null) {
                     currentTextView.setTextColor(context.getResources().getColor(R.color.color_3970e7));
                     currentTextView.setBackground(context.getResources().getDrawable(R.drawable.border_blue_trans));
                 }
@@ -56,12 +58,13 @@ public class WorkTimeAdapter extends BaseAdapter {
         });
     }
 
-    private  OnTimeSelectListener onTimeSelectListener;
-    public void setOnTimeSelectListener(OnTimeSelectListener onTimeSelectListener){
+    private OnTimeSelectListener onTimeSelectListener;
+
+    public void setOnTimeSelectListener(OnTimeSelectListener onTimeSelectListener) {
         this.onTimeSelectListener = onTimeSelectListener;
     }
 
-    public interface OnTimeSelectListener{
+    public interface OnTimeSelectListener {
         void OnTimeSelect(CharSequence text);
     }
 }

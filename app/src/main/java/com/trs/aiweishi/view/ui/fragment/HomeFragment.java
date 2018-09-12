@@ -40,7 +40,8 @@ public class HomeFragment extends BaseFragment implements IHomeView,
     @BindView(R.id.refresh)
     SwipeRefreshLayout refreshLayout;
 
-    private final int listCount = 2;
+    private final int listCount = 5;
+    private int list1 = 0;
     private final int SPAN_COUNT = 3;
     public static String mParam1 = "param1";
     private List<ListData> bannerDatas = new ArrayList<>();
@@ -188,6 +189,7 @@ public class HomeFragment extends BaseFragment implements IHomeView,
         title.setUrl(channel_list.get(1).getUrl());
         list.add(title);  //最新活动
 
+        list1 = hudong_datas.size() > listCount ? listCount : hudong_datas.size();
         for (int i = 0; i < (hudong_datas.size() > listCount ? listCount : hudong_datas.size()); i++) {
             list.add(hudong_datas.get(i));
         }
@@ -207,7 +209,7 @@ public class HomeFragment extends BaseFragment implements IHomeView,
             list.add(list_datas.get(i));
         }
 
-        List<ListData> listData = DataHelper.initHomeList(list, listCount);
+        List<ListData> listData = DataHelper.initHomeList(list, list1);
         adapter = new HomeAdapter(listData, context, bannerDatas);
         RecycleviewUtil.initGridRecycleView(recycleview, adapter, context, SPAN_COUNT);
     }

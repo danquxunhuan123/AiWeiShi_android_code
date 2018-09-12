@@ -45,6 +45,7 @@ public class NgoFragment extends BaseFragment implements INgoView
     private List<ListData> list = new ArrayList<>();
     private NgoAdapter adapter;
     private final int SPAN_COUNT = 3;
+    private final int listCount = 5;
     private int count_1 = 0;
     private int count_2 = 0;
     private List<ListData> channel_list;
@@ -136,7 +137,7 @@ public class NgoFragment extends BaseFragment implements INgoView
         list.add(title);  //公示公告
 
         count_1 = list_datas.size();
-        for (int i = 0; i < (list_datas.size() > 3 ? 3 : list_datas.size()); i++) {
+        for (int i = 0; i < (list_datas.size() > listCount ? listCount : list_datas.size()); i++) {
             list.add(list_datas.get(i));
         }
 
@@ -152,7 +153,7 @@ public class NgoFragment extends BaseFragment implements INgoView
         list.add(title); //NGO小组动态
 
         count_2 = list_datas.size();
-        for (int i = 0; i < (list_datas.size() > 3 ? 3 : list_datas.size()); i++) {
+        for (int i = 0; i < (list_datas.size() > listCount ? listCount : list_datas.size()); i++) {
             list.add(list_datas.get(i));
         }
 
