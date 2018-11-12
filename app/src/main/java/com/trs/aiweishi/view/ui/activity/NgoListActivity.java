@@ -40,6 +40,7 @@ public class NgoListActivity extends BaseActivity implements BaseAdapter.OnLoadM
 
     @Override
     protected String initToolBarName() {
+        toolbarName = getIntent().getStringExtra(PARAM2);
         return toolbarName;
     }
 
@@ -62,7 +63,6 @@ public class NgoListActivity extends BaseActivity implements BaseAdapter.OnLoadM
     @Override
     protected void initData() {
         url = getIntent().getStringExtra(PARAM1);
-        toolbarName = getIntent().getStringExtra(PARAM2);
 
         if (adapter == null) {
             adapter = new ListNgoAdapter(listResult, this);

@@ -20,21 +20,38 @@ public class Site extends BaseBean {
         this.monitoringSites = monitoringSites;
     }
 
-    public class Monitor implements Serializable{
+    public class Monitor implements Serializable {
         private String city;
         private String country;
+        private String description;
+        private String detectionWay;
         private String geoHash;
         private String id;
+        private String reservable;
+        private String provideDetectionPackage;
         private String isFree;
         private String lat;
         private String lon;
         private String orgAddr;
+        private String orgId;
         private String orgName;
         private String orgType;
         private String remark;
         private String postcode;
         private String province;
         private String tel;
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getDetectionWay() {
+            return detectionWay;
+        }
+
+        public String getReservable() {
+            return reservable;
+        }
 
         public String getIsFree() {
             return isFree;
@@ -98,6 +115,10 @@ public class Site extends BaseBean {
 
         public void setLon(String lon) {
             this.lon = lon;
+        }
+
+        public String getOrgId() {
+            return orgId;
         }
 
         public String getOrgAddr() {

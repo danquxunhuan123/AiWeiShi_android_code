@@ -5,9 +5,11 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.blankj.utilcode.util.ToastUtils;
+import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
@@ -20,6 +22,9 @@ import com.trs.aiweishi.view.IUserView;
 import com.trs.aiweishi.view.ui.fragment.UserFragment;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +45,8 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
     EditText userName;
     @BindView(R.id.et_psd)
     EditText psd;
+    @BindView(R.id.but_login)
+    Button butLogin;
 
     public static LoginActivity instance = null;
 
@@ -65,9 +72,12 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
 
 
     public void login(View view) {
+        MProgressDialog.showProgress(this, config);
+
         String userPhone = userName.getText().toString().trim();
         String psd = this.psd.getText().toString().trim();
         if (TextUtils.isEmpty(userPhone) || TextUtils.isEmpty(psd)) {
+            MProgressDialog.dismissProgress();
             ToastUtils.showShort(getResources().getString(R.string.empty_warn));
             return;
         }
@@ -80,10 +90,13 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
         params.put("password", psd);
         params.put("coSessionId", Base64.encodeToString(Utils.getRandomString(5).getBytes(), Base64.DEFAULT));
         presenter.login(0, params);
+
+        butLogin.setClickable(false);
     }
 
     @Override
     public void showSuccess(BaseBean baseBean) {
+        MProgressDialog.dismissProgress();
         UserBean bean = (UserBean) baseBean;
         if (bean.getCode() == 200) {
             spUtils.put(AppConstant.IS_LOGIN, true);
@@ -97,8 +110,17 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
             finish();
             ToastUtils.showShort(getResources().getString(R.string.login_success));
         } else {
-            ToastUtils.showShort(bean.getDesc());
+            String desc = bean.getDesc();
+            ToastUtils.showShort(desc.substring(desc.indexOf("message:") + "message:".length()));
         }
+
+        butLogin.setClickable(true);
+    }
+
+    @Override
+    public void showError(Throwable e) {
+        super.showError(e);
+        butLogin.setClickable(true);
     }
 
     @OnClick({R.id.tv_regist, R.id.tv_forget_psd, R.id.iv_back
@@ -152,17 +174,17 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
     public void checkAccountMapping(BaseBean obj) {
         if (obj.getCode() == 15) { //未绑定 进行绑定
             Intent intent = new Intent(this, BindPhoneActivity.class);
-            intent.putExtra(BindPhoneActivity.UID,data.get(MyUMAuthListener.uid));
-            intent.putExtra(BindPhoneActivity.AUTH_SITE,authSite);
-            intent.putExtra(BindPhoneActivity.ACCESS_TOKEN,data.get(MyUMAuthListener.accessToken));
-            intent.putExtra(BindPhoneActivity.AUTH,auth);
-            intent.putExtra(BindPhoneActivity.USER_NAME,data.get(MyUMAuthListener.name));
-            intent.putExtra(BindPhoneActivity.USER_PIC,data.get(MyUMAuthListener.iconurl));
+            intent.putExtra(BindPhoneActivity.UID, data.get(MyUMAuthListener.uid));
+            intent.putExtra(BindPhoneActivity.AUTH_SITE, authSite);
+            intent.putExtra(BindPhoneActivity.ACCESS_TOKEN, data.get(MyUMAuthListener.accessToken));
+            intent.putExtra(BindPhoneActivity.AUTH, auth);
+            intent.putExtra(BindPhoneActivity.USER_NAME, data.get(MyUMAuthListener.name));
+            intent.putExtra(BindPhoneActivity.USER_PIC, data.get(MyUMAuthListener.iconurl));
             startActivity(intent);
 //            addAccountMapping();
-        } else if (obj.getCode() == 14){  //已绑定 进行登录
+        } else if (obj.getCode() == 14) {  //已绑定 进行登录
             loginByUID();
-        }else { //其他错误
+        } else { //其他错误
             ToastUtils.showShort(obj.getDesc());
         }
     }
@@ -171,19 +193,19 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
     public void addAccountMapping(BaseBean obj) {
         if (obj.getCode() == 0 || obj.getCode() == 14) { // 操作成功
 //            loginByUID();
-        } else{
+        } else {
             ToastUtils.showShort(obj.getDesc());
         }
     }
 
-    private void loginByUID(){
+    private void loginByUID() {
         Map<String, String> params = new HashMap<>();
         params.put("coAppName", AppConstant.APP_NAME);
-        params.put("uid",data.get(MyUMAuthListener.uid));
+        params.put("uid", data.get(MyUMAuthListener.uid));
         params.put("authSite", authSite);//
         params.put("accessToken", Base64.encodeToString(data.get(MyUMAuthListener.accessToken).getBytes(), Base64.DEFAULT));
         params.put("coSessionId", Base64.encodeToString(Utils.getRandomString(5).getBytes(), Base64.DEFAULT));
-        presenter.loginByUID(0,params);
+        presenter.loginByUID(0, params);
     }
 
     @Override

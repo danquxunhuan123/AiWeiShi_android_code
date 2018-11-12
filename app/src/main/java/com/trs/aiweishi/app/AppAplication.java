@@ -2,8 +2,12 @@ package com.trs.aiweishi.app;
 
 import android.app.Application;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
+import com.trs.aiweishi.R;
 import com.trs.aiweishi.di.component.AppComponent;
 import com.trs.aiweishi.di.component.DaggerAppComponent;
 import com.trs.aiweishi.di.module.AppModule;
@@ -25,9 +29,14 @@ public class AppAplication extends Application {
         Utils.init(this); //utils
 
 //        initLeakCanery();
+        ToastUtils.setBgResource(R.drawable.toast_bg);
+        ToastUtils.setGravity(Gravity.CENTER, 0, 0);
+//        LogUtils.getConfig().setLogSwitch(false); //log开关   false关闭
+        UMConfig();//UM配置
+    }
 
-        //设置LOG开关，默认为false
-        UMConfigure.setLogEnabled(true);
+    private void UMConfig() {
+        UMConfigure.setLogEnabled(true); //设置LOG开关，默认为false
         UMConfigure.init(this, "5b480776b27b0a69220000bd"
                 , "umeng", UMConfigure.DEVICE_TYPE_PHONE, "");//58edcfeb310c93091c000be2 5965ee00734be40b580001a0
         PlatformConfig.setWeixin("wx58263f2fd876c5eb", "88ad98ed7d76259c0fb0afc4f83b3d39");
@@ -51,7 +60,7 @@ public class AppAplication extends Application {
     public static synchronized AppComponent getAppComponent(FragmentActivity baseActivity) {
         if (appComponent == null) {
             appComponent = DaggerAppComponent.builder()
-                    .appModule(new AppModule(instance,baseActivity))
+                    .appModule(new AppModule(instance, baseActivity))
                     .build();
         }
         return appComponent;

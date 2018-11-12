@@ -146,4 +146,14 @@ public class DataModelImpl implements IDataModel {
         httpHelper.cancleBook(url,param,callBack);
     }
 
+    @Override
+    public void getAdData(String adUrl, IResponseCallBack callBack) {
+        httpHelper.getAdData(adUrl,callBack);
+    }
+
+    @Override
+    public void getCheckInfo(String url, Map<String, String> param, IResponseCallBack callBack) {
+        httpHelper.getCheckInfo(url,param,callBack);
+    }
+
 }

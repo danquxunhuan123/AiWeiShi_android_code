@@ -1,5 +1,6 @@
 package com.trs.aiweishi.view.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +9,7 @@ import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
+import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.HomeAdapter;
 import com.trs.aiweishi.base.BaseBean;
@@ -69,6 +71,7 @@ public class HomeFragment extends BaseFragment implements IHomeView,
         LinearLayout.LayoutParams viewParam = (LinearLayout.LayoutParams) viewPadding.getLayoutParams();
         viewParam.height = BarUtils.getStatusBarHeight();
         viewPadding.setLayoutParams(viewParam);
+        viewPadding.setBackgroundColor(Color.parseColor("#00989898"));
 
         recycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -199,6 +202,8 @@ public class HomeFragment extends BaseFragment implements IHomeView,
 
     @Override
     public void showSuccess(BaseBean baseBean) {
+        MProgressDialog.dismissProgress();
+
         List<ListData> list_datas = ((ListDataBean) baseBean).getList_datas();
         ListData title = new ListData();
         title.setCname(channel_list.get(2).getCname());

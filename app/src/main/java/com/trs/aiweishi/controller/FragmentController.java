@@ -12,12 +12,11 @@ import com.trs.aiweishi.base.BaseFragment;
  */
 
 public class FragmentController {
-    private static FragmentController controller;
-    private Fragment currentFragment = null;
-    private FragmentManager fragmentManager;
+    private static FragmentController controller = null;
+    private FragmentManager fragmentManager = null;
     private int containerId;
-    private int count = 0;
-    private int currentShowIndex = 0;
+    private int currentShowIndex;
+
 
     private FragmentController(BaseActivity context, int containerId) {
         fragmentManager = context.getSupportFragmentManager();
@@ -31,31 +30,34 @@ public class FragmentController {
         return controller;
     }
 
-    public void addFragment(BaseFragment fragment) {
+    public void addFragment(BaseFragment fragment, int finalA) {
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.add(containerId, fragment, String.valueOf(count));
-
-        if (count == 0) {
-            ft.show(fragment);
-            currentFragment = fragment;
-        } else
-            ft.hide(fragment);
-
+        ft.add(containerId, fragment, String.valueOf(finalA));
         ft.commit();
-        count++;
+        currentShowIndex = finalA;
     }
 
     public void showFragment(int position) {
-        if (currentShowIndex == position)
-            return;
-
         FragmentTransaction ft = fragmentManager.beginTransaction();
         Fragment findFragment = fragmentManager.findFragmentByTag(String.valueOf(position));
         ft.show(findFragment);
-        ft.hide(currentFragment);
         ft.commitAllowingStateLoss();
-        currentFragment = findFragment;
         currentShowIndex = position;
+    }
+
+    public void hideFragment(int position) {
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        Fragment findFragment = fragmentManager.findFragmentByTag(String.valueOf(position));
+        ft.hide(findFragment);
+        ft.commitAllowingStateLoss();
+    }
+
+    public int getCurrentShowIndex() {
+        return currentShowIndex;
+    }
+
+    public void setCurrentShowIndex(int currentShowIndex) {
+        this.currentShowIndex = currentShowIndex;
     }
 
     public void onDestroy() {

@@ -1,10 +1,8 @@
 package com.trs.aiweishi.di.module;
 
-import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 
 import com.trs.aiweishi.app.AppAplication;
-import com.trs.aiweishi.base.BaseActivity;
 import com.trs.aiweishi.http.HttpHelper;
 import com.trs.aiweishi.model.IDataModel;
 import com.trs.aiweishi.model.impl.DataModelImpl;

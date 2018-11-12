@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.maning.mndialoglibrary.config.MDialogConfig;
 import com.trs.aiweishi.app.AppConstant;
+import com.trs.aiweishi.view.ui.activity.SplashActivity;
 
 import java.util.Map;
 
@@ -21,19 +22,16 @@ import okhttp3.MultipartBody;
 
 public class HttpHelper {
     private RetofitApi api;
-    private FragmentActivity activity;
-    private MDialogConfig config;
+//    private FragmentActivity activity;
+
 
     public HttpHelper(FragmentActivity baseActivity) {
         api = HttpMethods.getInstance().info;
-        activity = baseActivity;
-        config = new MDialogConfig.Builder()
-                .isCanceledOnTouchOutside(true)
-                .build();
+//        activity = baseActivity;
     }
 
     private void getObservable(Observable<? extends Object> observable, final IResponseCallBack callBack) {
-        MProgressDialog.showProgress(activity, config);
+//        MProgressDialog.showProgress(activity, config);
         observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<Object>() {
@@ -44,13 +42,13 @@ public class HttpHelper {
 
                     @Override
                     public void onNext(Object object) {
-                        MProgressDialog.dismissProgress();
+//                        MProgressDialog.dismissProgress();
                         callBack.onSuccess(object);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        MProgressDialog.dismissProgress();
+//                        MProgressDialog.dismissProgress();
                         callBack.onError(e);
                     }
 
@@ -175,6 +173,14 @@ public class HttpHelper {
 
     public void cancleBook(String url, Map<String, String> param, IResponseCallBack callBack) {
         getObservable(api.submitBooking(url,param), callBack);
+    }
+
+    public void getAdData(String adUrl, IResponseCallBack callBack) {
+        getObservable(api.getAdData(adUrl), callBack);
+    }
+
+    public void getCheckInfo(String url, Map<String, String> param, IResponseCallBack callBack) {
+        getObservable(api.getCheckInfo(url,param), callBack);
     }
 
 //    public void getBook(String url, Map<String, String> param, IResponseCallBack callBack) {

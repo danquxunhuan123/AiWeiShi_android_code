@@ -61,4 +61,8 @@ public interface IDataModel {
     void getBooked(String url,Map<String, String> param, IResponseCallBack callBack);
 
     void cancleBook(String url, Map<String, String> param, IResponseCallBack callBack);
+
+    void getAdData(String adUrl, IResponseCallBack callBack);
+
+    void getCheckInfo(String url, Map<String, String> param, IResponseCallBack iResponseCallBack);
 }

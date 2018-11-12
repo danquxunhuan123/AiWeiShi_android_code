@@ -40,6 +40,7 @@ public class ListDataActivity extends BaseActivity implements BaseAdapter.OnLoad
 
     @Override
     protected String initToolBarName() {
+        toolbarName = getIntent().getStringExtra(PARAM2);
         return toolbarName;
     }
 
@@ -57,7 +58,6 @@ public class ListDataActivity extends BaseActivity implements BaseAdapter.OnLoad
     @Override
     protected void initData() {
         url = getIntent().getStringExtra(PARAM1);
-        toolbarName = getIntent().getStringExtra(PARAM2);
 
         if (adapter == null) {
             adapter = new ListDataAdapter(listResult, this);

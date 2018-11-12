@@ -25,12 +25,23 @@ public class CheckSearchAdapter extends BaseAdapter {
 
     @Override
     public MyHolder getViewHolder(ViewGroup parent, int viewType) {
-        return MyHolder.getComViewHolder(parent.getContext(), R.layout.check_item_layout, parent);
+        return MyHolder.getComViewHolder(parent.getContext(), R.layout.check_item_layout1, parent);
     }
 
     @Override
     protected void bindMyViewHolder(MyHolder holder, int position) {
         final SearchBean.SearchData bean = (SearchBean.SearchData) list.get(position);
+
+//        if ("1".equals(bean.getReservable())) //可预约
+//            holder.getView(R.id.tv_yuyue).setBackground(context.getResources().getDrawable(R.mipmap.icon_check_kyy));
+//        else {
+//            holder.getView(R.id.tv_yuyue).setBackground(context.getResources().getDrawable(R.mipmap.icon_check_ztyy)); // 暂停预约
+//        }
+//
+//        if ("0".equals(bean.getIsFree()))
+//            holder.getView(R.id.tv_free).setVisibility(View.GONE);
+//        else
+//            holder.getView(R.id.tv_free).setVisibility(View.VISIBLE);
 
         ((TextView) holder.getView(R.id.tv_name)).setText(Html.fromHtml(bean.getORGNAME()));
         ((TextView) holder.getView(R.id.tv_address)).setText(Html.fromHtml(bean.getORGADDR()));

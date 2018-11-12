@@ -106,4 +106,18 @@
     <string name="free">免费</string>
     <string name="check_time">预约时间（北京时间）</string>
     <string name="yuyue_time">%1s %2s %3s</string>
+    <string name="current_version">当前版本</string>
+    <string name="third_login_text">第三方登录</string>
+    <string name="no_update_warn">已经是最新版本</string>
+    <string name="about_us_desc">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\"i卫士\"以移动互联网为主要载体，服务于政府协会、HIV感染者、高危人群、艾防工作者、医生专家、医院及医药企业，依托人卫集团的行业优势牵头整合各方资源，为艾滋病防治提供全面的解决方案，提供贴心的服务，打造便捷的医患沟通渠道，和你分享关于艾滋病防治的一切。</string>
+    <string name="check_time_warn">请选择预约时间</string>
+    <string name="jump">跳过</string>
+    <string name="warn">提示</string>
+    <string name="yuyue_way_warn">可以通过“首页-检测”进行预约</string>
+    <string name="jiancebao">我的检测包</string>
+    <string name="jianceresult">检测结果查询</string>
+    <string name="check_info_time">检测时间：%1s</string>
+    <string name="check_info_result">检测结果：%1s</string>
+    <string name="check_info_address">检测地点：%1s</string>
+    <string name="check_result_search">%1s检测结果查询</string>
 </resources>

@@ -33,4 +33,6 @@ public interface IHomePresenter {
     void getNgoInfo(String url);
 
     void submitBooking(String submitBooking, Map<String, String> param);
+
+    void getAdData(String adUrl);
 }

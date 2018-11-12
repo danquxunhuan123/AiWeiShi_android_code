@@ -27,8 +27,9 @@ public class ListData extends BaseBean implements Parcelable {
     private String docid;
     private String title;
     private String source;
-    private String author;
     private String articletype;
+    private String videourl;
+    private String author;
     private String listimgtype;
     private String body;
     private String time;
@@ -50,6 +51,7 @@ public class ListData extends BaseBean implements Parcelable {
         source = in.readString();
         author = in.readString();
         articletype = in.readString();
+        videourl = in.readString();
         listimgtype = in.readString();
         body = in.readString();
         time = in.readString();
@@ -86,6 +88,7 @@ public class ListData extends BaseBean implements Parcelable {
         dest.writeString(source);
         dest.writeString(author);
         dest.writeString(articletype);
+        dest.writeString(videourl);
         dest.writeString(listimgtype);
         dest.writeString(body);
         dest.writeString(time);
@@ -148,12 +151,12 @@ public class ListData extends BaseBean implements Parcelable {
         this.source = source;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getArticleType() {
+        return articletype;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public String getVideoURL() {
+        return videourl;
     }
 
     public String getBody() {

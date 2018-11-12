@@ -102,7 +102,7 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                     lineBottom.setVisibility(View.VISIBLE);
                     lineRighBott.setVisibility(View.VISIBLE);
                     lineRighTop.setVisibility(View.GONE);
-                } else if (draId == R.mipmap.icon_zixun) {
+                } else if (draId == R.mipmap.icon_yiyao) {
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) lineBottom.getLayoutParams();
                     params.setMargins(0, 0, SizeUtils.dp2px(10), 0);
                     lineBottom.setLayoutParams(params);
@@ -110,7 +110,7 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                     lineBottom.setVisibility(View.VISIBLE);
                     lineRighBott.setVisibility(View.GONE);
                     lineRighTop.setVisibility(View.GONE);
-                } else if (draId == R.mipmap.icon_zhishi || draId == R.mipmap.icon_yiyao) {
+                } else if (draId == R.mipmap.icon_zhishi || draId == R.mipmap.icon_zixun) {
                     lineBottom.setVisibility(View.GONE);
                     lineRighBott.setVisibility(View.GONE);
                     lineRighTop.setVisibility(View.VISIBLE);
@@ -132,7 +132,7 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                             if (context.getResources().getString(R.string.zxun).equals(bean.getCname())) {
                                 Intent intent = new Intent(context, DetailActivity.class);
                                 intent.putExtra(DetailActivity.URL, AppConstant.XIAOSI);
-                                intent.putExtra(DetailActivity.TITLE_NAME, "智能咨询");
+                                intent.putExtra(DetailActivity.TITLE_NAME, "智慧咨询");
                                 intent.putExtra(DetailActivity.TYPE, 3);
                                 context.startActivity(intent);
                             } else if (context.getResources().getString(R.string.jc).equals(bean.getCname())) {

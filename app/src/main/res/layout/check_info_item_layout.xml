@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:orientation="vertical"
+    android:background="@mipmap/bg_check_info_item">
+
+    <TextView
+        android:id="@+id/tv_check_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_commen_size"
+        android:text="@string/check_info_time" />
+
+    <TextView
+        android:id="@+id/tv_check_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_commen_size"
+        android:text="@string/check_info_address" />
+
+    <TextView
+        android:id="@+id/tv_check_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_commen_size"
+        android:text="@string/check_info_result" />
+
+</LinearLayout>

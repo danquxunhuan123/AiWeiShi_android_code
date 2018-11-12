@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PhoneUtils;
-import com.blankj.utilcode.util.SizeUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.WorkTimeAdapter;
 import com.trs.aiweishi.app.AppConstant;
@@ -39,8 +39,6 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -79,6 +77,12 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
     LinearLayout monthDay;
     @BindView(R.id.recycleview_time)
     RecyclerView recycleTime;
+    @BindView(R.id.rl_yuyue_time)
+    RelativeLayout yyTime1;
+    @BindView(R.id.rl_yy_time)
+    RelativeLayout yyTime2;
+    @BindView(R.id.tv_yy_time)
+    TextView yyTime3;
 
     public static String TAG = "bean";
     public static String INTEXTRA = "extra";
@@ -95,7 +99,7 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
 
     @Override
     protected String initToolBarName() {
-        return "爱检测";
+        return "快乐检";
     }
 
     @Override
@@ -107,36 +111,57 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
     protected void initData() {
         int extra = getIntent().getIntExtra(INTEXTRA, 0);
 
-//        String id;
+        String reservable = "0";
         if (extra == 0) {
             Site.Monitor bean = (Site.Monitor) getIntent().getSerializableExtra(TAG);
-            tvName.setText(bean.getOrgName());
+            tvName.setText(Html.fromHtml(bean.getOrgName()));
             tvAddress.setText(Html.fromHtml(bean.getOrgAddr()));
             tvPhone.setText(bean.getTel());
-            tvCheckWay.setText(bean.getRemark());
-            tvCheckNote.setText("暂无");
-//            id = bean.getId();
+
+            if (TextUtils.isEmpty(bean.getDetectionWay()))
+                tvCheckWay.setText("暂无");
+            else
+                tvCheckWay.setText(bean.getDetectionWay());
+
+            if (TextUtils.isEmpty(bean.getDescription()))
+                tvCheckNote.setText("暂无");
+            else
+                tvCheckNote.setText(bean.getDescription());
+            ngoId = bean.getOrgId();
+            reservable = bean.getReservable();
+            ngoName = bean.getOrgName();
 
             lat = bean.getLat();
             lon = bean.getLon();
             title = String.valueOf(Html.fromHtml(bean.getOrgAddr()));
         } else {
             SearchBean.SearchData searBean = getIntent().getParcelableExtra(TAG);
-            tvName.setText(searBean.getORGNAME());
+            tvName.setText(Html.fromHtml(searBean.getORGNAME()));
             tvAddress.setText(Html.fromHtml(searBean.getORGADDR()));
             tvPhone.setText(searBean.getTEL());
             tvCheckWay.setText("暂无");
             tvCheckNote.setText("暂无");
-//            id = searBean.getID();
+//            ngoName = searBean.getORGNAME();
+            ngoId = searBean.getID();
 
             lat = searBean.getLAT();
             lon = searBean.getLON();
             title = String.valueOf(Html.fromHtml(searBean.getORGNAME()));
         }
 
-        //初始化检测时间
-        setTime("", "", "");
-        presenter.getNgoInfo(AppConstant.GET_NGO_INFO);
+        if ("1".equals(reservable)) {  //可预约
+            yyTime1.setVisibility(View.VISIBLE);
+            yyTime2.setVisibility(View.VISIBLE);
+            yyTime3.setVisibility(View.VISIBLE);
+
+            //初始化检测时间
+            setTime("", "", "");
+//        presenter.getNgoInfo(AppConstant.GET_NGO_INFO);
+
+            Map<String, String> param = new HashMap<>();
+            param.put("monitoringPointId", ngoId);
+            presenter.getYuYueTime(AppConstant.FIND_NGO_BYID, param);
+        }
     }
 
     @Override
@@ -157,7 +182,13 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
                 callPhone();
                 break;
             case R.id.tv_yuyue_sure:
-                showYuYueTime();
+                if (!TextUtils.isEmpty(yuyueTime.getText().toString().trim())) {
+                    if (yuyueTime.getText().toString().split(" ").length == 3)
+                        showYuYueTime();
+                    else
+                        ToastUtils.showShort(getResources().getString(R.string.check_time_warn));
+                } else
+                    ToastUtils.showShort(getResources().getString(R.string.check_time_warn));
                 break;
         }
     }
@@ -194,7 +225,12 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
                 .setOnClickListener(new AlertDialogUtil.OnClickListener() {
                     @Override
                     public void OnSureClick() {
-                        submitBooking();
+                        if (spUtils.getBoolean(AppConstant.IS_LOGIN)) {
+                            submitBooking();
+                        } else {
+                            ToastUtils.showShort(getResources().getString(R.string.login_warn));
+                            startActivity(new Intent(CheckDetailActivity.this, LoginActivity.class));
+                        }
                     }
 
                     @Override
@@ -211,13 +247,18 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
         String bookingTime = split[0] + " " + split[2].split("-")[0];
         Map<String, String> param = new HashMap<>();
         param.put("mobile", spUtils.getString(AppConstant.USER_PHONE));
-        param.put("nickName", spUtils.getString(AppConstant.USER_NAME));
+        if (!TextUtils.isEmpty(spUtils.getString(AppConstant.USER_NAME)))
+            param.put("nickName", spUtils.getString(AppConstant.USER_NAME));
+        else
+            param.put("nickName", spUtils.getString(AppConstant.USER_PHONE));
         param.put("way", "0");
         param.put("bookingTime", bookingTime);
         param.put("jiancedian", ngoId);
         param.put("monitoringPoint", ngoName);
         param.put("remarks", "");
         presenter.submitBooking(AppConstant.SUBMIT_BOOKING, param);
+
+        MProgressDialog.showProgress(this, config);
     }
 
     public void openMap() {
@@ -310,22 +351,16 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
                 dayView.setLayoutParams(para);
 
                 TextView tvMonth = dayView.findViewById(R.id.tv_yuyue_month);
-                tvMonth.setText((Calendar.getInstance().get(Calendar.MONTH) + 1) + "月"); //
+//                tvMonth.setText((Calendar.getInstance().get(Calendar.MONTH) + 1) + "月"); //
+                String[] splitTime = keyDay.split("-");
+                if ("01".equals(splitTime[2])) {
+                    tvMonth.setVisibility(View.VISIBLE);
+                    tvMonth.setText(splitTime[1] + "月");
+                }
+
                 TextView tvDay = dayView.findViewById(R.id.tv_yuyue_day);
                 String strDay = keyDay.substring(keyDay.length() - 2, keyDay.length());
                 tvDay.setText(strDay);
-
-                if ("01".equals(strDay))
-                    tvMonth.setVisibility(View.VISIBLE);
-
-//                final TextView dayTextView = new TextView(this);
-//                dayTextView.setGravity(Gravity.CENTER);
-//                dayTextView.setText(keyDay.substring(keyDay.length() - 2, keyDay.length()));
-//                dayTextView.setTextSize(14);
-//                dayTextView.setTextColor(getResources().getColor(R.color.color_75787b));
-//                LinearLayout.LayoutParams para = new LinearLayout.LayoutParams(SizeUtils.dp2px(50), SizeUtils.dp2px(50));
-//                para.weight = 1;
-//                dayTextView.setLayoutParams(para);
                 monthDay.addView(dayView);
             }
 
@@ -382,7 +417,7 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
         try {
             data = new JSONObject(json).getJSONArray("data").getJSONObject(0);
             ngoId = data.getString("NGOid");
-            ngoName = data.getString("NGOName");
+//            ngoName = data.getString("NGOName");
             Map<String, String> param = new HashMap<>();
             param.put("monitoringPointId", ngoId);
             presenter.getYuYueTime(AppConstant.FIND_NGO_BYID, param);
@@ -393,6 +428,8 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
 
     @Override
     public void submitBooking(String string) {
+        MProgressDialog.dismissProgress();
+
         try {
             JSONObject result = new JSONObject(string);
 //            int code = result.getInt("code");

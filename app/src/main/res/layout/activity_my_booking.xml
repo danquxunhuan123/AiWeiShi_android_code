@@ -89,8 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:gravity="center"
-            android:text="可以通过“首页-检测”
-或“NGO-NGO小组列表” 进行预约哦~"
+            android:text="@string/yuyue_way_warn"
             android:textColor="@color/color_75787b"
             android:textSize="@dimen/text_commen_size" />
     </LinearLayout>

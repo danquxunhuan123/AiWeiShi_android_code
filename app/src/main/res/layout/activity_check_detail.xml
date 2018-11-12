@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <include layout="@layout/toolbar_layout" />
@@ -17,7 +18,8 @@
             android:layout_height="match_parent"
             android:layout_below="@id/ll_toolbar"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <TextView
                 android:id="@+id/tv_name"
@@ -39,7 +41,6 @@
                 android:drawablePadding="10dp"
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp"
-                android:text="东城区交道口南大街北兵马司胡同1号"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="@dimen/text_commen_size" />
 
@@ -51,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="20dp"
-                android:drawableLeft="@mipmap/icon_location"
+                android:drawableLeft="@mipmap/icon_call"
                 android:drawablePadding="10dp"
                 android:textColor="@color/color_4670e0"
                 android:textSize="@dimen/text_commen_size" />
@@ -99,11 +100,12 @@
             <include layout="@layout/line_layout" />
 
             <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_yy_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="20dp"
-                android:visibility="visible"
                 android:text="@string/check_time"
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/text_commen_size" />
@@ -122,7 +124,8 @@
                 android:orientation="horizontal" />
 
             <RelativeLayout
-                android:visibility="visible"
+                android:visibility="gone"
+                android:id="@+id/rl_yy_time"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -135,9 +138,9 @@
                     android:id="@+id/iv_no_time_show"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:src="@mipmap/bg_no_yuyue"
-                    android:visibility="gone"
-                    android:layout_centerHorizontal="true"/>
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -145,12 +148,12 @@
     </ScrollView>
 
     <RelativeLayout
-        android:visibility="visible"
+        android:visibility="gone"
+        android:id="@+id/rl_yuyue_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/color_4670e0"
-        >
+        android:background="@color/color_4670e0">
 
         <ImageView
             android:id="@+id/iv_yuyue"
@@ -165,8 +168,8 @@
             android:id="@+id/tv_time_yuyue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_yuyue"
             android:layout_alignTop="@id/iv_yuyue"
+            android:layout_toRightOf="@id/iv_yuyue"
             android:text="检测时间"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_small_10sp" />
@@ -187,8 +190,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="@string/sure"
             android:padding="10dp"
+            android:text="@string/sure"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_commen_size" />
 

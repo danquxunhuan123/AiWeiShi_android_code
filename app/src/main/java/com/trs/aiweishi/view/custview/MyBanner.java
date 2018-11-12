@@ -2,11 +2,15 @@ package com.trs.aiweishi.view.custview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,9 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.trs.aiweishi.R;
+import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.bean.ListData;
 import com.trs.aiweishi.util.GlideUtils;
 import com.youth.banner.BannerConfig;
@@ -35,6 +41,7 @@ import java.util.List;
 public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListener {
     private ViewPager viewPager;
     private LinearLayout indicator;
+    private View currentIndicator = null;
     private TextView title;
     private List<View> imageViews;
     private MyPagerAdapter adapter;
@@ -46,6 +53,7 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
     private WeakHandler handler = new WeakHandler();
     private List<ListData> data;
     private int scaleType = 1;
+    private int startIndex;
     private ViewPager.OnPageChangeListener mOnPageChangeListener;
 
     private int count = 0;
@@ -53,8 +61,7 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
         @Override
         public void run() {
             if (count > 1 && isAutoPlay) {
-                currentItem = currentItem + 1;
-//                Log.i(tag, "curr:" + currentItem + " count:" + count);
+                currentItem++;
                 if (currentItem == 1) {
                     viewPager.setCurrentItem(currentItem, false);
                     handler.post(task);
@@ -100,13 +107,14 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
     }
 
     private void setData() {
+        startIndex = imageViews.size() * 100;
         if (adapter == null) {
             adapter = new MyPagerAdapter();
             viewPager.addOnPageChangeListener(this);
         }
         viewPager.setAdapter(adapter);
         viewPager.setPageMargin(SizeUtils.dp2px(10));
-        viewPager.setCurrentItem(imageViews.size() * 100);
+        viewPager.setCurrentItem(startIndex);
         ViewGroup.LayoutParams params = viewPager.getLayoutParams();
         params.width = ScreenUtils.getScreenWidth();
         params.height = params.width * 9 / 16;
@@ -285,12 +293,11 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
         int po = position % imageViews.size();
         title.setText(data.get(po).getTitle());
 
-        for (int i = 0; i < indicator.getChildCount(); i++) {
-            if (i == po)
-                indicator.getChildAt(i).setBackground(getResources().getDrawable(R.drawable.banner_indicator_select_view));
-            else
-                indicator.getChildAt(i).setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
-        }
+        if (currentIndicator != null)
+            currentIndicator.setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
+        View childAt = indicator.getChildAt(po);
+        childAt.setBackground(getResources().getDrawable(R.drawable.banner_indicator_select_view));
+        currentIndicator = childAt;
 
         currentItem = position;
         if (mOnPageChangeListener != null) {
@@ -329,7 +336,6 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
 
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-//            container.removeView((View) object);
         }
     }
 }

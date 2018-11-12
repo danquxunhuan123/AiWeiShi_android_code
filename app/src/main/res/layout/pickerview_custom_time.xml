@@ -21,7 +21,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="17dp"
             android:padding="8dp"
-            android:src="@mipmap/icon_down" />
+            android:src="@mipmap/icon_dow" />
 
         <TextView
             android:id="@+id/tv_finish"

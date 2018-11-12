@@ -10,15 +10,6 @@ public class BaseBean implements Serializable {
     public static final int ITEM_LOAD_MORE = 100; //加载更多
     protected int code;
     protected String desc;
-    protected transient boolean result;
-
-    public boolean isResult() {
-        return result;
-    }
-
-    public void setResult(boolean result) {
-        this.result = result;
-    }
 
     public String getDesc() {
         return desc;
@@ -51,7 +42,6 @@ public class BaseBean implements Serializable {
         return "BaseBean{" +
                 "code=" + code +
                 ", desc='" + desc + '\'' +
-                ", result=" + result +
                 ", type=" + type +
                 '}';
     }

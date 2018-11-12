@@ -27,8 +27,8 @@
                 android:background="@null"
                 android:onClick="toConfig"
                 android:padding="10dp"
-                android:src="@mipmap/icon_config"
-                android:visibility="invisible" />
+                android:src="@mipmap/icon_confi"
+                />
 
             <LinearLayout
                 android:id="@+id/ll_user"
@@ -47,13 +47,19 @@
 
                 <TextView
                     android:id="@+id/tv_user_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/iv_user_pic"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
+                    android:padding="5dp"
+                    android:gravity="center"
+                    android:background="@drawable/border_white_no_trans"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:text="@string/login"
-                    android:textColor="@color/color_343638"
+                    android:textColor="@color/color_4588ec"
                     android:textSize="@dimen/text_commen_size" />
 
             </LinearLayout>
@@ -86,22 +92,37 @@
                 android:src="@mipmap/icon_my_dbsx"/>
         </LinearLayout>
 
+        <!--<TextView-->
+            <!--android:id="@+id/tv_collect"-->
+            <!--style="@style/user_text_style"-->
+            <!--android:visibility="gone"-->
+            <!--android:drawableLeft="@mipmap/icon_collect"-->
+            <!--android:text="@string/collect" />-->
+
+        <!--<include layout="@layout/line_margin_layout" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_news_center"-->
+            <!--style="@style/user_text_style"-->
+            <!--android:visibility="gone"-->
+            <!--android:drawableLeft="@mipmap/icon_news_center"-->
+            <!--android:text="@string/news_center" />-->
+
         <TextView
-            android:id="@+id/tv_collect"
+            android:id="@+id/tv_checks"
             style="@style/user_text_style"
-            android:visibility="gone"
-            android:drawableLeft="@mipmap/icon_collect"
-            android:text="@string/collect" />
+            android:drawableLeft="@mipmap/icon_feedback"
+            android:text="@string/jiancebao" />
 
         <include layout="@layout/line_margin_layout" />
 
         <TextView
-            android:id="@+id/tv_news_center"
+            android:id="@+id/tv_check_result"
             style="@style/user_text_style"
-            android:visibility="gone"
-            android:drawableLeft="@mipmap/icon_news_center"
-            android:text="@string/news_center" />
+            android:drawableLeft="@mipmap/icon_check_result"
+            android:text="@string/jianceresult" />
 
+        <include layout="@layout/line_margin_layout" />
 
         <TextView
             android:id="@+id/tv_feedback"
@@ -126,9 +147,20 @@
                 android:drawableLeft="@mipmap/icon_update"
                 android:drawablePadding="10dp"
                 android:padding="10dp"
-                android:text="@string/version_update"
+                android:text="@string/current_version"
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/text_commen_size" />
+
+            <TextView
+                android:id="@+id/tv_version_warn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/version_update"
+                android:visibility="gone"
+                android:padding="3dp"
+                android:background="@drawable/update_warn_point"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_small_8sp" />
 
             <TextView
                 android:id="@+id/tv_version"

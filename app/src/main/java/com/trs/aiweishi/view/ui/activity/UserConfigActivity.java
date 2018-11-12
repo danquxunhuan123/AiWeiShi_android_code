@@ -49,6 +49,8 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -86,6 +88,8 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     TextView address;
     @BindView(R.id.tv_detail_address)
     TextView detailAddress;
+    @BindView(R.id.iv_back)
+    ImageView back;
 
     private ArrayList<JsonBean> options1Items = new ArrayList<>();
     private ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
@@ -93,8 +97,12 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     private TimePickerView pvTime;
     private UserData.User user;
 
+    private Uri cropUri;
     private Uri imageUriFromCamera;
     private Thread thread;
+    private final String EDIT_HEAD_AGAIN = "edit_head_again";
+    private final String LOGOUT_AGAIN = "logout_again";
+    private String againLogin = "";
     private boolean isLoaded = false;
     private boolean isChanged = false;  //是否修改过信息
     //    private int currOptions1 = 0, currOptions2 = 0, currOptions3 = 0;
@@ -145,6 +153,7 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     @Override
     protected void initData() {
         user = getIntent().getParcelableExtra(USER);
+
         mHandler.sendEmptyMessage(MSG_LOAD_DATA);
         umAuthListener.setOnThirdSucListener(this);
 
@@ -220,10 +229,19 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     }
 
     @Override
-    public void editHeadSuccess(BaseBean bean) {
-//        if (bean.isResult()){
-        saveInfo();
-//        }
+    public void editHeadSuccess(String res) {
+        try {
+            JSONObject obj = new JSONObject(res);
+            if (obj.getBoolean("result")) {
+                saveInfo();
+            } else {
+                againLogin = EDIT_HEAD_AGAIN;
+                login();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void saveInfo() {
@@ -244,12 +262,14 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
         } else {
             ToastUtils.showShort(obj.getDesc());
         }
+        back.setClickable(true);
         finish();
     }
 
     @Override
     public void refSesSuccess(BaseBean bean) {
         if (bean.getCode() == 404) {
+            againLogin = LOGOUT_AGAIN;
             login();
         } else if (bean.getCode() == 200) {
             logout();
@@ -261,7 +281,13 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
         UserBean bean = (UserBean) baseBean;
         if (bean.getCode() == 200) {
             spUtils.put(AppConstant.SESSION_ID, bean.getData().getCoSessionId());
-            logout();
+
+            //上传头像失败,重新登录上传
+            if (EDIT_HEAD_AGAIN.equals(againLogin))
+                saveEdit();
+
+            if (LOGOUT_AGAIN.equals(againLogin))
+                logout();
         }
     }
 
@@ -281,12 +307,12 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
             case PHOTO_ALBUM:
                 if (resultCode == RESULT_OK) {
                     imageUriFromCamera = data.getData();
-                    AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO);
+                    cropUri = AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO);
                 }
                 break;
             case TAKE_PHOTO:
                 if (resultCode == RESULT_OK) {
-                    AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO);
+                    cropUri = AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO);
                 }
                 break;
             case SHOW_PHOTO:
@@ -294,9 +320,9 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
                     try {
                         isChanged = true;
                         Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver()
-                                .openInputStream(imageUriFromCamera));
+                                .openInputStream(cropUri));
                         GlideUtils.loadCircleBitmapImg(this, bitmap, head);
-                        spUtils.put(AppConstant.USER_PIC, imageUriFromCamera.toString());
+                        spUtils.put(AppConstant.USER_PIC, cropUri.toString());
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -308,9 +334,9 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     }
 
     @Override
-    public void OnThirdSeccess(Map<String, String> data) {
-//        ToastUtils.showShort("success.........");
-        logout();
+    public void showError(Throwable e) {
+        super.showError(e);
+        back.setClickable(true);
     }
 
     /**
@@ -341,6 +367,7 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
      * 保存信息
      */
     private void saveEdit() {
+        back.setClickable(false);
         try {
             File file = new File(getExternalCacheDir().getPath() + "/image.jpeg");
             file = new CompressHelper.Builder(this)
@@ -390,6 +417,11 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
             param.put("coSessionId", spUtils.getString(AppConstant.SESSION_ID));
             presenter.refreshSession(param);
         }
+    }
+
+    @Override
+    public void OnThirdSeccess(Map<String, String> data) {
+        logout();
     }
 
     private void showDialog(final TextView textView) {

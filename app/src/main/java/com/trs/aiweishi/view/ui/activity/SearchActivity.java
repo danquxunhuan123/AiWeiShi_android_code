@@ -86,7 +86,7 @@ public class SearchActivity extends BaseActivity implements BaseAdapter.OnLoadMo
         SoftInputUtil.hideSoftInput(this, etSearch);
         Map<String, String> params = new HashMap<>();
         params.put("page", String.valueOf(page));
-        params.put("pagesize", String.valueOf(pagesize));
+//        params.put("pagesize", String.valueOf(pagesize));
         params.put("searchword", etSearch.getText().toString().trim());
 //        params.put("docchannel","");
 

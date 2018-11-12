@@ -2,6 +2,8 @@ package com.trs.aiweishi.http;
 
 
 import com.trs.aiweishi.base.BaseBean;
+import com.trs.aiweishi.bean.AdBean;
+import com.trs.aiweishi.bean.CheckResult;
 import com.trs.aiweishi.bean.DetailBean;
 import com.trs.aiweishi.bean.HomeBean;
 import com.trs.aiweishi.bean.ListDataBean;
@@ -12,16 +14,12 @@ import com.trs.aiweishi.bean.SiteBean;
 import com.trs.aiweishi.bean.UpdateBean;
 import com.trs.aiweishi.bean.UserBean;
 import com.trs.aiweishi.bean.UserData;
-import com.trs.aiweishi.bean.WorkTimeBean;
-import com.trs.aiweishi.bean.YuYueItem;
 
 import java.util.Map;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
-import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -120,7 +118,7 @@ public interface RetofitApi {
 
     @Multipart
     @POST()
-    Observable<BaseBean> editHeadImg(@Url String url,
+    Observable<ResponseBody> editHeadImg(@Url String url,
                                      @Part() MultipartBody.Part part);
 
     @GET()
@@ -129,6 +127,13 @@ public interface RetofitApi {
     @FormUrlEncoded
     @POST()
     Observable<ResponseBody> submitBooking(@Url String url, @FieldMap Map<String, String> param);
+
+    @GET()
+    Observable<AdBean> getAdData(@Url String adUrl);
+
+    @FormUrlEncoded
+    @POST()
+    Observable<CheckResult> getCheckInfo(@Url String url, @FieldMap Map<String, String> param);
 
 //    @FormUrlEncoded
 //    @POST()

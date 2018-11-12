@@ -34,9 +34,17 @@
                 android:textColor="@color/color_343638"
                 android:textSize="@dimen/text_commen_size" />
 
+            <ImageView
+                android:id="@+id/iv_player"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/icon_player"
+                android:visibility="gone"
+                android:layout_alignParentBottom="true"/>
+
             <TextView
                 android:id="@+id/tv_time"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"

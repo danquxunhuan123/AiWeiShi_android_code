@@ -52,7 +52,8 @@
                 android:paddingRight="5dp"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/text_commen_size" />
+                android:textSize="@dimen/text_commen_size"
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <LinearLayout
@@ -64,6 +65,17 @@
             android:orientation="horizontal" />
 
         <include layout="@layout/line_layout" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingRight="10dp"
+            android:text="艾医"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_title_size"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </RelativeLayout>

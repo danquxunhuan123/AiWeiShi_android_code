@@ -23,7 +23,8 @@
                 android:layout_marginTop="30dp"
                 android:text="@string/regist_psd"
                 android:textColor="@android:color/black"
-                android:textSize="23sp" />
+                android:textSize="23sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"

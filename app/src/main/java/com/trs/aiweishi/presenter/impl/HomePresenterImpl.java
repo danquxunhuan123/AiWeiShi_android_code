@@ -2,6 +2,7 @@ package com.trs.aiweishi.presenter.impl;
 
 import com.trs.aiweishi.base.BaseBean;
 import com.trs.aiweishi.base.BasePresenter;
+import com.trs.aiweishi.bean.AdBean;
 import com.trs.aiweishi.bean.UpdateBean;
 import com.trs.aiweishi.http.IResponseCallBack;
 import com.trs.aiweishi.model.IDataModel;
@@ -10,6 +11,7 @@ import com.trs.aiweishi.view.IBaseView;
 import com.trs.aiweishi.view.IHomeView;
 import com.trs.aiweishi.view.IMainView;
 import com.trs.aiweishi.view.INgoView;
+import com.trs.aiweishi.view.ISplashAdView;
 import com.trs.aiweishi.view.ITimeView;
 
 import java.io.IOException;
@@ -216,6 +218,21 @@ public class HomePresenterImpl extends BasePresenter implements IHomePresenter {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                baseView.showError(e);
+            }
+        });
+    }
+
+    @Override
+    public void getAdData(String adUrl) {
+        dataModel.getAdData(adUrl,new IResponseCallBack() {
+            @Override
+            public void onSuccess(Object obj) {
+                baseView.showSuccess((BaseBean) obj);
             }
 
             @Override

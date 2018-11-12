@@ -110,6 +110,7 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
                 params.put("city", "");
             else
                 params.put("city", Base64.encodeToString(adds[1].getBytes(), Base64.DEFAULT));
+
             if ("全部".equals(adds[2]))
                 params.put("country", "");
             else
@@ -117,9 +118,11 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
         } else {
             params.put("filterName", Base64.encodeToString("listSitesByFilter".getBytes(), Base64.DEFAULT));
         }
+
         params.put("siteType", Base64.encodeToString(String.valueOf(type).getBytes(), Base64.DEFAULT));
 
-        presenter.getLocationData(params);
+        if (presenter != null)
+            presenter.getLocationData(params);
     }
 
     @Override

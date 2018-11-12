@@ -15,8 +15,8 @@ import java.util.List;
 
 public class DataHelper {
     public static List<ListData> initHomeList(List<ListData> data, int huDongSize) {
-        int[] draws = new int[]{R.mipmap.icon_zx, R.mipmap.icon_jishu, R.mipmap.icon_zixun,
-                R.mipmap.icon_zhishi, R.mipmap.icon_yiyao, R.mipmap.icon_school
+        int[] draws = new int[]{R.mipmap.icon_zx, R.mipmap.icon_jishu, R.mipmap.icon_yiyao,
+                R.mipmap.icon_zixun, R.mipmap.icon_zhishi, R.mipmap.icon_school
         };
         for (int x = 0; x < data.size(); x++) {
             if (x == 0) {

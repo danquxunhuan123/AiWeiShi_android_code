@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -13,9 +14,10 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.maning.mndialoglibrary.MProgressDialog;
+import com.maning.mndialoglibrary.config.MDialogConfig;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppAplication;
 import com.trs.aiweishi.app.AppConstant;
@@ -26,8 +28,6 @@ import com.trs.aiweishi.util.DisposedUtil;
 import com.trs.aiweishi.view.IBaseView;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -35,6 +35,7 @@ import butterknife.Unbinder;
 public abstract class BaseActivity extends AppCompatActivity implements IBaseView {
     private Unbinder unBinder;
     protected SPUtils spUtils;
+    public MDialogConfig config;
 
     @BindView(R.id.tv_toolbar_name)
     TextView tvToolbarName;
@@ -44,18 +45,30 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         super.onCreate(savedInstanceState);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(initLayout());
+        if (isSetContentView()) {
+            setContentView(initLayout());
+            unBinder = ButterKnife.bind(this);
+            tvToolbarName.setText(initToolBarName());
+        }
 
         if (isTranslucent())
             setTranslucent(this);
 
-        unBinder = ButterKnife.bind(this);
-        checkPerssion();
         initUtil();
         initComponent();
         initListener();
-        initData();
-        tvToolbarName.setText(initToolBarName());
+
+        config = new MDialogConfig.Builder()
+                .isCanceledOnTouchOutside(true)
+                .build();
+
+        if (savedInstanceState != null)
+            initData(savedInstanceState);
+        else
+            initData();
+    }
+
+    protected void initData(Bundle savedInstanceState) {
     }
 
     private void initUtil() {
@@ -82,6 +95,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         return true;
     }
 
+    protected boolean isSetContentView() {
+        return true;
+    }
+
     /**
      * 使状态栏透明
      * 适用于图片作为背景的界面，此时需要图片填充到状态栏
@@ -96,8 +113,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             ViewGroup rootView = (ViewGroup) ((ViewGroup) activity
                     .findViewById(android.R.id.content)).getChildAt(0);
             if (isFitsSystemWindows()) {
-                rootView.setFitsSystemWindows(true);
-                rootView.setClipToPadding(true);
+                if (rootView != null) {
+                    rootView.setFitsSystemWindows(true);
+                    rootView.setClipToPadding(true);
+                }
             }
         }
     }
@@ -144,59 +163,30 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        unBinder.unbind();
+        if (unBinder != null)
+            unBinder.unbind();
         DisposedUtil.getInstance().dispose();
+        super.onDestroy();
     }
 
     public void onResume() {
-        super.onResume();
         MobclickAgent.onResume(this);
+        super.onResume();
     }
 
     public void onPause() {
-        super.onPause();
         MobclickAgent.onPause(this);
+        super.onPause();
     }
 
     @Override
     public void showSuccess(BaseBean baseBean) {
-        LogUtils.dTag(AppConstant.LOG_FLAG, baseBean.toString());
     }
 
     @Override
     public void showError(Throwable e) {
         e.printStackTrace();
-//        ToastUtils.showShort(e.getMessage());
-    }
-
-    private void checkPerssion() {
-        if (!PermissionUtils.isGranted(AppConstant.READ_PHONE_STATE
-                , AppConstant.WRITE_EXTERNAL_STORAGE
-                , AppConstant.ACCESS_COARSE_LOCATION
-                , AppConstant.READ_EXTERNAL_STORAGE
-                , AppConstant.ACCESS_WIFI_STATE
-                , AppConstant.CALL_PHONE)) {
-            PermissionUtils.permission(AppConstant.READ_PHONE_STATE
-                    , AppConstant.WRITE_EXTERNAL_STORAGE
-                    , AppConstant.ACCESS_COARSE_LOCATION
-                    , AppConstant.READ_EXTERNAL_STORAGE
-                    , AppConstant.ACCESS_WIFI_STATE
-                    , AppConstant.CALL_PHONE
-            ).callback(new PermissionUtils.FullCallback() {
-                @Override
-                public void onGranted(List<String> permissionsGranted) {
-//                    for (String perssion : permissionsGranted)
-//                        LogUtils.dTag(Logger.LOG_FLAG,perssion);
-                }
-
-                @Override
-                public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
-//                    for (String perssion : permissionsDenied)
-//                        LogUtils.dTag(Logger.LOG_FLAG,perssion);
-                }
-            }).request();
-        }
+        MProgressDialog.dismissProgress();
     }
 
 }

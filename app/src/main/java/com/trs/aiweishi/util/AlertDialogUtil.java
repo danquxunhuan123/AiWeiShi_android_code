@@ -80,13 +80,25 @@ public class AlertDialogUtil {
 
     /**
      * 给默认布局设置标题
-     *
-     * @param content
-     * @return
      */
     public AlertDialogUtil setDialogTitle(String content) {
         TextView title = view.findViewById(R.id.tv_dialog_title);
         title.setText(content);
+        return this;
+    }
+
+    /**
+     * 给默认布局设置标题
+     */
+    public AlertDialogUtil setCancleColor(int colorValue) {
+        TextView cancel = view.findViewById(R.id.dialog_cancel);
+        cancel.setTextColor(colorValue);
+        return this;
+    }
+
+    public AlertDialogUtil setSureColor(int colorValue) {
+        TextView sure = view.findViewById(R.id.dialog_sure);
+        sure.setTextColor(colorValue);
         return this;
     }
 

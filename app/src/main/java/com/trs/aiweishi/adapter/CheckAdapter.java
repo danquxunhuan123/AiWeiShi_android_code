@@ -34,11 +34,17 @@ public class CheckAdapter extends BaseAdapter {
     protected void bindMyViewHolder(MyHolder holder, int position) {
         final Site.Monitor bean = (Site.Monitor) list.get(position);
         ((TextView) holder.getView(R.id.tv_name)).setText(bean.getOrgName());
-        holder.getView(R.id.tv_yuyue).setBackground(null); // 可预约和暂停预约
-//        if ("0".equals(bean.getIsFree()))
+
+        if ("1".equals(bean.getReservable())) //可预约
+            holder.getView(R.id.tv_yuyue).setBackground(context.getResources().getDrawable(R.mipmap.icon_check_kyy));
+        else {
+            holder.getView(R.id.tv_yuyue).setBackground(context.getResources().getDrawable(R.mipmap.icon_check_ztyy)); // 暂停预约
+        }
+
+        if ("1".equals(bean.getIsFree()))
+            holder.getView(R.id.tv_free).setVisibility(View.VISIBLE);
+        else
             holder.getView(R.id.tv_free).setVisibility(View.GONE);
-//        else
-//            holder.getView(R.id.tv_free).setVisibility(View.VISIBLE);
 
         ((TextView) holder.getView(R.id.tv_address)).setText(bean.getOrgAddr());
 

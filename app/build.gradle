@@ -6,9 +6,14 @@ android {
         applicationId "com.trs.aiweishi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode 12
-        versionName "1.2"
+        multiDexEnabled true //解决方法数超过65536的问题
+        versionCode 122
+        versionName "1.2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a"
+        }
     }
     buildTypes {
         release {
@@ -110,6 +115,9 @@ dependencies {
     //Jsoup查找img标签
     compile "org.jsoup:jsoup:$rootProject.ext.jsoupVersion"
 
+    //pdfviewpager
+    compile "es.voghdev.pdfviewpager:library:$rootProject.ext.pdfViewPagerVerison"
+
     //友盟
     compile 'com.umeng.analytics:analytics:latest.integration'
     implementation files('libs/umeng-common-1.5.3.jar')
@@ -119,8 +127,14 @@ dependencies {
     implementation files('libs/umeng-share-wechat-simplify-6.9.2.jar')
     implementation files('libs/umeng-sharetool-6.9.2.jar')
 
+    //腾讯超级播放器
+    compile(name: 'LiteAVSDK_Player_5.3.6001', ext: 'aar')
+    compile(name: 'lib_tcsuperplayer', ext: 'aar')
+    compile "com.github.ctiao:DanmakuFlameMaster:$rootProject.ext.danmakuFlameVerison"
+    // 超级播放器弹幕集成的第三方库
+
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
 //    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
-//    // Optional, if you use support library fragments:
+////    // Optional, if you use support library fragments:
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
 }

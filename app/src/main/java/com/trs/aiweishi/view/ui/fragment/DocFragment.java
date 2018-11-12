@@ -1,15 +1,14 @@
 package com.trs.aiweishi.view.ui.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
+import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.DocAdapter;
 import com.trs.aiweishi.base.BaseBean;
@@ -112,6 +111,7 @@ public class DocFragment extends BaseFragment implements IHomeView
         }
         channel_list = bean.getChannel_list();
         presenter.getBannerData(channel_list.get(0).getUrl());
+        MProgressDialog.showProgress(context, config);
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -177,6 +177,8 @@ public class DocFragment extends BaseFragment implements IHomeView
 
     @Override
     public void showSuccess(BaseBean baseBean) {
+        MProgressDialog.dismissProgress();
+
         List<ListData> list_datas = ((ListDataBean) baseBean).getList_datas();
         ListData title = new ListData();
         title.setCname(channel_list.get(2).getCname());

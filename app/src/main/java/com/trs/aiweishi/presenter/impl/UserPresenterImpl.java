@@ -2,6 +2,7 @@ package com.trs.aiweishi.presenter.impl;
 
 import com.trs.aiweishi.base.BaseBean;
 import com.trs.aiweishi.base.BasePresenter;
+import com.trs.aiweishi.bean.CheckResult;
 import com.trs.aiweishi.http.IResponseCallBack;
 import com.trs.aiweishi.model.IDataModel;
 import com.trs.aiweishi.presenter.IBindPhoneView;
@@ -303,7 +304,11 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
             @Override
             public void onSuccess(Object obj) {
-                editVeiw.editHeadSuccess((BaseBean) obj);
+                try {
+                    editVeiw.editHeadSuccess(((ResponseBody) obj).string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -340,7 +345,7 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
             @Override
             public void onError(Throwable e) {
-                baseView.showError(e);
+                questionView.showError(e);
             }
         });
     }
@@ -380,7 +385,7 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
 
             @Override
             public void onError(Throwable e) {
-                baseView.showError(e);
+                 baseView.showError(e);
             }
         });
     }
@@ -395,6 +400,21 @@ public class UserPresenterImpl extends BasePresenter implements IUserPresenter {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                baseView.showError(e);
+            }
+        });
+    }
+
+    @Override
+    public void getCheckInfo(String url, Map<String, String> param) {
+        dataModel.getCheckInfo(url, param, new IResponseCallBack() {
+            @Override
+            public void onSuccess(Object obj) {
+                    baseView.showSuccess((BaseBean) obj);
             }
 
             @Override

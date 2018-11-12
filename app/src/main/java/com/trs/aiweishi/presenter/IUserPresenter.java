@@ -38,4 +38,6 @@ public interface IUserPresenter {
     void getHistoryBooked(String url, Map<String, String> param);
     void getUnBooked(String url, Map<String, String> param);
     void cancleBook(String url, Map<String, String> param);
+
+    void getCheckInfo(String checkResult, Map<String, String> param);
 }

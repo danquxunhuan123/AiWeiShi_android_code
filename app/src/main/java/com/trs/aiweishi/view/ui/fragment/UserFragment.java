@@ -1,12 +1,12 @@
 package com.trs.aiweishi.view.ui.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,11 +21,15 @@ import com.trs.aiweishi.base.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
 import com.trs.aiweishi.bean.UserData;
 import com.trs.aiweishi.presenter.IUserPresenter;
+import com.trs.aiweishi.util.AlertDialogUtil;
 import com.trs.aiweishi.util.DataCleanManager;
 import com.trs.aiweishi.util.GlideUtils;
 import com.trs.aiweishi.util.PopWindowUtil;
 import com.trs.aiweishi.util.UMShareUtil;
 import com.trs.aiweishi.view.IUserCenterView;
+import com.trs.aiweishi.view.ui.activity.AboutUsActivity;
+import com.trs.aiweishi.view.ui.activity.CheckInfosActivity;
+import com.trs.aiweishi.view.ui.activity.CheckResultActivity;
 import com.trs.aiweishi.view.ui.activity.FeedBackActivity;
 import com.trs.aiweishi.view.ui.activity.LoginActivity;
 import com.trs.aiweishi.view.ui.activity.MyBookingActivity;
@@ -40,7 +44,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import dagger.multibindings.ElementsIntoSet;
 
 /**
  * Created by Liufan on 2018/5/17.
@@ -59,20 +62,24 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
     TextView userName;
     @BindView(R.id.tv_version)
     TextView version;
+    @BindView(R.id.tv_checks)
+    TextView checks;
+    @BindView(R.id.tv_check_result)
+    TextView checkResult;
+    @BindView(R.id.tv_version_warn)
+    TextView versionWarn;
     @BindView(R.id.tv_cache)
     TextView cache;
-    @BindView(R.id.tv_collect)
-    TextView tvCollect;
-    @BindView(R.id.tv_news_center)
-    TextView tvNewsCenter;
+//    @BindView(R.id.tv_collect)
+//    TextView tvCollect;
+//    @BindView(R.id.tv_news_center)
+//    TextView tvNewsCenter;
     @BindView(R.id.tv_feedback)
     TextView tvFeedback;
     @BindView(R.id.tv_share)
     TextView tvShare;
-    @BindView(R.id.tv_about)
-    TextView tvAbout;
-    @BindView(R.id.ib_config)
-    ImageButton config;
+//    @BindView(R.id.ib_config)
+//    ImageButton config;
 
     public static final String PARAM1 = "param1";
     public static final String PARAM2 = "param2";
@@ -117,10 +124,14 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
 
         //有版本更新显示红点
         if (sp.getBoolean(AppConstant.IS_UPDATE, false)) {
-            version.setCompoundDrawablesWithIntrinsicBounds(
-                    getResources().getDrawable(R.drawable.update_warn_point)
-                    , null, null, null);
+//            version.setCompoundDrawablesWithIntrinsicBounds(
+//                    getResources().getDrawable(R.drawable.update_warn_point)
+//                    , null, null, null);
+            versionWarn.setVisibility(View.VISIBLE);
+        } else {
+            versionWarn.setVisibility(View.GONE);
         }
+
         version.setText(String.format(getResources().getString(R.string.version_name)
                 , AppUtils.getAppVersionName()));
         try {
@@ -141,18 +152,35 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
         return R.layout.fragment_user;
     }
 
-    @OnClick({R.id.ib_config, R.id.iv_user_pic, R.id.ll_clear_cache,
-            R.id.tv_feedback, R.id.tv_share, R.id.ll_check_version
-            , R.id.iv_my_yy, R.id.iv_my_dbsx, R.id.ll_user})
+    @OnClick({R.id.ib_config, R.id.ll_clear_cache, R.id.tv_feedback,
+            R.id.tv_share, R.id.ll_check_version, R.id.iv_my_yy,
+            R.id.iv_my_dbsx, R.id.ll_user, R.id.tv_about,R.id.tv_checks,R.id.tv_check_result})
     public void toConfig(View view) {
         switch (view.getId()) {
-            case R.id.ib_config:
-                Intent intent = new Intent(context, UserConfigActivity.class);
-                intent.putExtra(USER, user.getEntry());
-                startActivityForResult(intent, RESULT_CONFIG);
+            case R.id.tv_checks:
+                ToastUtils.showShort("敬请期待~");
+//                startActivity(new Intent(context, CheckInfosActivity.class));
                 break;
-            case R.id.iv_user_pic:
-                startActivityForResult(new Intent(context, LoginActivity.class), RESULT_USER);
+            case R.id.tv_check_result:
+                if (sp.getBoolean(AppConstant.IS_LOGIN)) {
+                    startActivity(new Intent(context, CheckResultActivity.class));
+                }else {
+                    startActivityForResult(new Intent(context, LoginActivity.class), RESULT_USER);
+                }
+                break;
+            case R.id.tv_about:
+                startActivity(new Intent(context, AboutUsActivity.class));
+                break;
+            case R.id.ib_config:
+                if (sp.getBoolean(AppConstant.IS_LOGIN)) {
+                    if (user == null)
+                        return;
+                    Intent intent = new Intent(context, UserConfigActivity.class);
+                    intent.putExtra(USER, user.getEntry());
+                    startActivityForResult(intent, RESULT_CONFIG);
+                } else
+                    startActivityForResult(new Intent(context, LoginActivity.class), RESULT_USER);
+//                    ToastUtils.showShort(getResources().getString(R.string.login_warn));
                 break;
             case R.id.tv_feedback:
                 if (sp.getBoolean(AppConstant.IS_LOGIN))
@@ -163,8 +191,21 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
             case R.id.ll_check_version:
                 //有版本点击应用宝页面
                 if (sp.getBoolean(AppConstant.IS_UPDATE, false)) {
+                    sp.put(AppConstant.CANCLE_UPDATE, false);
+
                     Uri uri = Uri.parse(sp.getString(AppConstant.YINGYONGBAO));
                     startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                } else {
+                    final AlertDialogUtil dialogUtil = new AlertDialogUtil(context);
+                    dialogUtil.setContentView(R.layout.version_warn_layout)
+                            .setViewText(R.id.tv_dialog_content
+                                    , getResources().getString(R.string.no_update_warn))
+                            .setViewClickListener(R.id.btn_ok, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialogUtil.dismiss();
+                                }
+                            }).create();
                 }
                 break;
             case R.id.tv_share:
@@ -180,6 +221,7 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
                     ToastUtils.showShort(getResources().getString(R.string.login_warn));
                 break;
             case R.id.iv_my_yy:
+//                ToastUtils.showShort("敬请期待~");
                 if (sp.getBoolean(AppConstant.IS_LOGIN))
                     startActivity(new Intent(context, MyBookingActivity.class));
                 else
@@ -187,9 +229,13 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
                 break;
             case R.id.ll_user:
                 if (sp.getBoolean(AppConstant.IS_LOGIN)) {
+                    if (user == null)
+                        return;
                     Intent intent1 = new Intent(context, UserConfigActivity.class);
                     intent1.putExtra(USER, user.getEntry());
                     startActivityForResult(intent1, RESULT_CONFIG);
+                } else {
+                    startActivityForResult(new Intent(context, LoginActivity.class), RESULT_USER);
                 }
                 break;
         }
@@ -281,16 +327,18 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
     }
 
     private void logoutShow() {
-        config.setVisibility(View.INVISIBLE);
-        ivUserPic.setClickable(true);
+//        config.setVisibility(View.INVISIBLE);
+//        ivUserPic.setClickable(true);
 
         userName.setText(context.getResources().getString(R.string.login));
+        userName.setTextColor(getResources().getColor(R.color.color_4588ec));
+        userName.setBackground(getResources().getDrawable(R.drawable.border_white_no_trans));
         GlideUtils.loadLocalImg(context, R.mipmap.icon_user_pic_default, ivUserPic);
     }
 
     private void loginShow() {
-        config.setVisibility(View.VISIBLE);
-        ivUserPic.setClickable(false);
+//        config.setVisibility(View.VISIBLE);
+//        ivUserPic.setClickable(false);
 
         if (sp.getInt(AppConstant.AUTH_SITE) != 0) { //三方登录
             user = new UserData();
@@ -301,6 +349,8 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
 
             GlideUtils.loadCircleUrlImg(context, user.getEntry().getHeadUrl(), ivUserPic);
             userName.setText(sp.getString(AppConstant.USER_NAME));
+            userName.setTextColor(Color.WHITE);
+            userName.setBackground(null);
         } else //普通登录
             requestUserInfo();
     }
@@ -321,6 +371,8 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
                 userName.setText(user.getEntry().getNickName());
                 sp.put(AppConstant.USER_NAME, user.getEntry().getNickName());
             }
+            userName.setTextColor(Color.WHITE);
+            userName.setBackground(null);
         }
     }
 

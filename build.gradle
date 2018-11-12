@@ -27,6 +27,11 @@ allprojects {
         maven {
             url 'https://jitpack.io'
         }
+
+        flatDir {
+            dirs 'libs'
+            dirs project(':app').file('libs')
+        }
     }
 }
 
@@ -82,10 +87,15 @@ ext {
     testEspressoVersion = '3.0.2'
     //Jsoup查找img标签
     jsoupVersion = '1.10.2'
+    //pdfViewPagerVerison
+    pdfViewPagerVerison = '1.0.5'
     //picker
     pickerViewVerison = '4.1.4'
     //progress
     progressVerison = 'V1.1.0'
     //CompressHelper
     compressHelperVerison = '1.0.5'
+    //环形进度条
+    // 超级播放器弹幕集成的第三方库
+    danmakuFlameVerison = '0.5.3'
 }

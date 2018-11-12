@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
+import com.trs.aiweishi.base.BaseActivity;
+import com.trs.aiweishi.view.ui.activity.DetailActivity;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -33,6 +36,7 @@ public class UMShareUtil {
 
     public void share(Activity context, SHARE_MEDIA modeia,String title,String description,
                       String thumbUrl, String url) {
+        MProgressDialog.showProgress(context, ((BaseActivity)context).config);
         UMImage thumb;
         if (TextUtils.isEmpty(thumbUrl))
             thumb = new UMImage(context, R.mipmap.ic_launcher);
@@ -71,6 +75,7 @@ public class UMShareUtil {
          */
         @Override
         public void onResult(SHARE_MEDIA platform) {
+            MProgressDialog.dismissProgress();
             listener.onShareSuccess(platform);
         }
 
@@ -81,6 +86,7 @@ public class UMShareUtil {
          */
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
+            MProgressDialog.dismissProgress();
             t.printStackTrace();
             listener.onShareError(platform, t);
         }
@@ -91,6 +97,7 @@ public class UMShareUtil {
          */
         @Override
         public void onCancel(SHARE_MEDIA platform) {
+            MProgressDialog.dismissProgress();
         }
     };
 

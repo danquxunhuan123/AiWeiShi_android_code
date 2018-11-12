@@ -23,6 +23,7 @@ public class AppConstant {
     public static String SEARCH_JCD = "http://139.199.128.170/search/jianchadian.jsp";
     public static String UPDATE = "http://www.iws365.com/bx/version.json";
     public static String YINGYONGBAO = "yingyongbao_url";
+    public static String AD_URL = "http://www.iws365.com/banner/index.json";
 
     public static  String GET_NGO_INFO = "http://139.199.128.170/wcm/rws/api/getNGOinfos.jsp";
     public static  String SUBMIT_BOOKING = "http://139.199.128.170/wcm/rws/api/submitBooking.jsp";
@@ -45,4 +46,13 @@ public class AppConstant {
     public static String AUTH_SITE = "auth_site";
     public static String IS_UPDATE = "is_update";
     public static String CANCLE_UPDATE = "cancle_update";
+    public static String APP_LAST_VERSION = "app_last_version";
+    public static String VERSION_NAME = "version_name";
+//    public static String AD_FILE_PATH = "ad_file_path";
+    public static java.lang.String AD_FILE_UPDATE_TIME = "ad_file_update_time";
+    public static String AD_PIC_CACHE = "ad_pic_cache";
+    public static String AD_PIC = "ad_pic";
+    public static String AD_IS_SHOW = "ad_is_show";
+    public static String AD_PIC_URL = "ad_pic_url";
+    public static String CHECK_RESULT = "http://139.199.128.170/wcm/rws/api/getCheckResult.jsp";
 }

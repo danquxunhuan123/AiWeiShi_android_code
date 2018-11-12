@@ -24,7 +24,8 @@
                 android:layout_marginTop="30dp"
                 android:text="@string/regist"
                 android:textColor="@android:color/black"
-                android:textSize="23sp" />
+                android:textSize="23sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/et_name"

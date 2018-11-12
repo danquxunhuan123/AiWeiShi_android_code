@@ -28,6 +28,7 @@ public class ZiXunFragment extends BaseFragment implements BaseAdapter.OnLoadMor
     RecyclerView recyclerView;
 
     protected static String mParam1 = "url";
+    protected static String C_NAME = "cname";
     private ZiXunAdapter adapter;
     private List<ListData> list_datas;
     private ListDataBean dataBean;
@@ -37,10 +38,11 @@ public class ZiXunFragment extends BaseFragment implements BaseAdapter.OnLoadMor
     public ZiXunFragment() {
     }
 
-    public static ZiXunFragment newInstance(String param1) {
+    public static ZiXunFragment newInstance(String param1,String cname) {
         ZiXunFragment fragment = new ZiXunFragment();
         Bundle args = new Bundle();
         args.putString(mParam1, param1);
+        args.putString(C_NAME, cname);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,6 +64,7 @@ public class ZiXunFragment extends BaseFragment implements BaseAdapter.OnLoadMor
 
         if (getArguments() != null) {
             url = getArguments().getString(mParam1);
+            adapter.setCname(getArguments().getString(C_NAME));
             presenter.getChannelData(url);
         }
     }

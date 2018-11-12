@@ -1,7 +1,6 @@
 package com.trs.aiweishi.view.ui.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.location.Address;
 import com.baidu.location.BDLocation;
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
@@ -25,8 +23,7 @@ import com.trs.aiweishi.base.BaseActivity;
 import com.trs.aiweishi.base.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
 import com.trs.aiweishi.bean.JsonBean;
-import com.trs.aiweishi.location.LocationHelper;
-import com.trs.aiweishi.util.DataHelper;
+import com.trs.aiweishi.helper.LocationHelper;
 import com.trs.aiweishi.util.GetJsonDataUtil;
 import com.trs.aiweishi.view.ui.fragment.CheckFragment;
 
@@ -222,7 +219,7 @@ public class CheckActivity extends BaseActivity implements
         if (adapter == null) {
             adapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
             viewPager.setAdapter(adapter);
-            viewPager.setOffscreenPageLimit(titles.size());
+            viewPager.setOffscreenPageLimit(titles.size());  //titles.size()
             tabLayout.setupWithViewPager(viewPager);
         } else {
             adapter.update(fragments);
@@ -261,7 +258,7 @@ public class CheckActivity extends BaseActivity implements
                 String CityName = jsonBean.get(i).getCityList().get(c).getName();
                 cityList.add(CityName);//添加城市
                 ArrayList<String> City_AreaList = new ArrayList<>();//该城市的所有地区列表
-//                City_AreaList.add("全部");
+                City_AreaList.add("全部");
                 //如果无地区数据，建议添加空字符串，防止数据为null 导致三个选项长度不匹配造成崩溃
                 if (jsonBean.get(i).getCityList().get(c).getArea() == null
                         || jsonBean.get(i).getCityList().get(c).getArea().size() == 0) {

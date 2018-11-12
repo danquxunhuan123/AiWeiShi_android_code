@@ -7,7 +7,7 @@ import com.trs.aiweishi.base.BaseBean;
  */
 
 public interface IUserEditerView extends IBaseView {
-    void editHeadSuccess(BaseBean bean);
+    void editHeadSuccess(String res);
     void refSesSuccess(BaseBean bean);
     void loginSuccess(BaseBean bean);
     void saveInfoSuccess(BaseBean obj);

@@ -20,12 +20,17 @@
 
         <TextView
             android:id="@+id/tv_toolbar_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="50dp"
+            android:ellipsize="middle"
+            android:gravity="center"
+            android:singleLine="true"
             android:textColor="@color/color_565656"
-            android:textSize="@dimen/size_17sp" />
-
+            android:textSize="@dimen/size_17sp"
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/ib_share"
@@ -35,8 +40,14 @@
             android:background="@null"
             android:onClick="share"
             android:scaleType="centerInside"
-            android:src="@mipmap/icon_share_detail"/>
+            android:src="@mipmap/icon_share_detail" />
     </android.support.v7.widget.Toolbar>
+
+    <ViewStub
+        android:id="@+id/vs_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/super_player_layout" />
 
     <WebView
         android:id="@+id/webview"

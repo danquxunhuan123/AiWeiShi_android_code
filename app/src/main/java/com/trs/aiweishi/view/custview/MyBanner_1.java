@@ -20,9 +20,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.BarUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.trs.aiweishi.R;
+import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.bean.ListData;
 import com.trs.aiweishi.util.GlideUtils;
 import com.trs.aiweishi.view.ui.activity.SearchActivity;
@@ -39,6 +41,7 @@ import java.util.List;
 public class MyBanner_1 extends FrameLayout implements ViewPager.OnPageChangeListener, View.OnClickListener {
     private ViewPager viewPager;
     private LinearLayout indicator;
+    private View currentIndicator = null;
     private TextView title;
     private TextView search;
     private List<View> imageViews;
@@ -253,7 +256,7 @@ public class MyBanner_1 extends FrameLayout implements ViewPager.OnPageChangeLis
 
     @Override
     public void onClick(View v) {
-        context.startActivity(new Intent(context,SearchActivity.class));
+        context.startActivity(new Intent(context, SearchActivity.class));
     }
 
     public interface OnItemClickListener {
@@ -296,12 +299,18 @@ public class MyBanner_1 extends FrameLayout implements ViewPager.OnPageChangeLis
         int po = position % imageViews.size();
         title.setText(data.get(po).getTitle());
 
-        for (int i = 0; i < indicator.getChildCount(); i++) {
-            if (i == po)
-                indicator.getChildAt(i).setBackground(getResources().getDrawable(R.drawable.banner_indicator_select_view));
-            else
-                indicator.getChildAt(i).setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
-        }
+        if (currentIndicator != null)
+            currentIndicator.setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
+
+        View childAt = indicator.getChildAt(po);
+        childAt.setBackground(getResources().getDrawable(R.drawable.banner_indicator_select_view));
+        currentIndicator = childAt;
+//        for (int i = 0; i < indicator.getChildCount(); i++) {
+//            if (i == po)
+//                indicator.getChildAt(i).setBackground(getResources().getDrawable(R.drawable.banner_indicator_select_view));
+//            else
+//                indicator.getChildAt(i).setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
+//        }
 
         currentItem = position;
         if (mOnPageChangeListener != null) {
@@ -340,7 +349,6 @@ public class MyBanner_1 extends FrameLayout implements ViewPager.OnPageChangeLis
 
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-//            container.removeView((View) object);
         }
     }
 }

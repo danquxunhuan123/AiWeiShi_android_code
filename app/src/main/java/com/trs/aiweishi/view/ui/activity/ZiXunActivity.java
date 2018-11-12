@@ -95,6 +95,7 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
 
     @Override
     protected String initToolBarName() {
+        toolbarName = getIntent().getStringExtra(PARAM2);
         return toolbarName;
     }
 
@@ -126,7 +127,6 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
     @Override
     protected void initData() {
         bean = getIntent().getParcelableExtra(PARAM);
-        toolbarName = getIntent().getStringExtra(PARAM2);
         presenter.getChannelData(bean.getUrl());
     }
 
@@ -153,7 +153,11 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data.getImages()), ivPicOne);
                 }
                 tvNameOne.setText(data.getTitle());
-                tvTimeOne.setText(data.getTime().split(" ")[0]);
+
+                if ("知识".equals(toolbarName) || "校园".equals(toolbarName))
+                    tvTimeOne.setVisibility(View.GONE);
+                else
+                    tvTimeOne.setText(data.getTime().split(" ")[0]);
             } else if (list_datas.size() == 2) {
                 item.setVisibility(View.VISIBLE);
                 item1.setVisibility(View.VISIBLE);
@@ -168,7 +172,11 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data.getImages()), ivPicOne);
                 }
                 tvNameOne.setText(data.getTitle());
-                tvTimeOne.setText(data.getTime().split(" ")[0]);
+
+                if ("知识".equals(toolbarName) || "校园".equals(toolbarName))
+                    tvTimeOne.setVisibility(View.GONE);
+                else
+                    tvTimeOne.setText(data.getTime().split(" ")[0]);
                 //two
                 data1 = list_datas.get(1);
                 if (TextUtils.isEmpty(getImg(data1.getImages()))) {
@@ -178,7 +186,11 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data1.getImages()), ivPicTwo);
                 }
                 tvNameTwo.setText(data1.getTitle());
-                tvTimeTwo.setText(data1.getTime().split(" ")[0]);
+
+                if ("知识".equals(toolbarName) || "校园".equals(toolbarName))
+                    tvTimeTwo.setVisibility(View.GONE);
+                else
+                    tvTimeTwo.setText(data1.getTime().split(" ")[0]);
             } else {
                 item.setVisibility(View.VISIBLE);
                 item1.setVisibility(View.VISIBLE);
@@ -193,7 +205,11 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data.getImages()), ivPicOne);
                 }
                 tvNameOne.setText(data.getTitle());
-                tvTimeOne.setText(data.getTime().split(" ")[0]);
+
+                if ("知识".equals(toolbarName) || "校园".equals(toolbarName))
+                    tvTimeOne.setVisibility(View.GONE);
+                else
+                    tvTimeOne.setText(data.getTime().split(" ")[0]);
                 //two
                 data1 = list_datas.get(1);
                 if (TextUtils.isEmpty(getImg(data1.getImages()))) {
@@ -203,7 +219,11 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data1.getImages()), ivPicTwo);
                 }
                 tvNameTwo.setText(data1.getTitle());
-                tvTimeTwo.setText(data1.getTime().split(" ")[0]);
+
+                if ("知识".equals(toolbarName) || "校园".equals(toolbarName))
+                    tvTimeTwo.setVisibility(View.GONE);
+                else
+                    tvTimeTwo.setText(data1.getTime().split(" ")[0]);
                 //three
                 data2 = list_datas.get(2);
                 if (TextUtils.isEmpty(getImg(data2.getImages()))) {
@@ -213,7 +233,11 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
                     GlideUtils.loadUrlImg(this, getImg(data2.getImages()), ivPicThree);
                 }
                 tvNameThree.setText(data2.getTitle());
-                tvTimeThree.setText(data2.getTime().split(" ")[0]);
+
+                if ("知识".equals(toolbarName) || "校园".equals(toolbarName))
+                    tvTimeThree.setVisibility(View.GONE);
+                else
+                    tvTimeThree.setText(data2.getTime().split(" ")[0]);
             }
         } else {
             top.setVisibility(View.GONE);
@@ -233,12 +257,12 @@ public class ZiXunActivity extends BaseActivity implements OnChannelListener {
         if (channel_list != null && channel_list.size() > 0) {
             for (int x = 0; x < channel_list.size(); x++) {
                 titles.add(channel_list.get(x).getCname());
-                fragments.add(ZiXunFragment.newInstance(channel_list.get(x).getUrl()));
+                fragments.add(ZiXunFragment.newInstance(channel_list.get(x).getUrl(), toolbarName));
             }
 
             FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
             viewPager.setAdapter(adapter);
-            viewPager.setOffscreenPageLimit(fragments.size());
+            viewPager.setOffscreenPageLimit(fragments.size());  //fragments.size()
             tabLayout.setupWithViewPager(viewPager);
         }
     }

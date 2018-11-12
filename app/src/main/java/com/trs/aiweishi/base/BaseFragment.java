@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.blankj.utilcode.util.ToastUtils;
+import com.maning.mndialoglibrary.MProgressDialog;
+import com.maning.mndialoglibrary.config.MDialogConfig;
 import com.trs.aiweishi.app.AppAplication;
 import com.trs.aiweishi.di.component.DaggerFragmentComponent;
 import com.trs.aiweishi.di.component.FragmentComponent;
@@ -30,6 +32,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView{
 
     protected FragmentActivity context;
     private Unbinder bind;
+    protected MDialogConfig config;
 //    private View contentView;
 
     @Override
@@ -55,6 +58,9 @@ public abstract class BaseFragment extends Fragment implements IBaseView{
         super.onViewCreated(view, savedInstanceState);
         bind = ButterKnife.bind(this, view);
         context = getActivity();
+        config = new MDialogConfig.Builder()
+                .isCanceledOnTouchOutside(true)
+                .build();
         initComponent();
         initData();
     }
@@ -83,6 +89,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView{
     @Override
     public void showError(Throwable e) {
 //        e.printStackTrace();
+        MProgressDialog.dismissProgress();
         ToastUtils.showShort(e.getMessage());
     }
 

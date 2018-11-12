@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ObjectUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.base.BaseAdapter;
 import com.trs.aiweishi.bean.ListData;
@@ -47,6 +48,7 @@ public class ListNgoAdapter extends BaseAdapter {
         holder.getView(R.id.tv_yuyue).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ToastUtils.showShort("敬请期待~");
 //                Intent intent = new Intent(context, CheckDetailActivity.class);
 //                intent.putExtra(CheckDetailActivity.TAG, bean);
 //                context.startActivity(intent);
@@ -55,7 +57,7 @@ public class ListNgoAdapter extends BaseAdapter {
         holder.getView(R.id.tv_shenqing).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ToastUtils.showShort("敬请期待~");
             }
         });
         ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());

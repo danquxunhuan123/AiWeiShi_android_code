@@ -2,6 +2,7 @@ package com.trs.aiweishi.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
@@ -23,6 +24,8 @@ import java.util.List;
  */
 
 public class ZiXunAdapter extends BaseAdapter {
+    private String cname;
+
     public ZiXunAdapter(List list, Context context) {
         super(list, context);
     }
@@ -46,7 +49,18 @@ public class ZiXunAdapter extends BaseAdapter {
         }
 
         ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());
-        ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
+
+        ImageView player = (ImageView) holder.getView(R.id.iv_player);
+        if ("视频".equals(bean.getArticleType())) {
+            player.setVisibility(View.VISIBLE);
+        } else {
+            player.setVisibility(View.GONE);
+        }
+
+        if ("知识".equals(cname) || "校园".equals(cname))
+            (holder.getView(R.id.tv_time)).setVisibility(View.GONE);
+        else
+            ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
 
 //        ((ImageView)holder.getView(R.id.iv_pic)).setImageResource(R.mipmap.icon_pic);
 
@@ -55,10 +69,15 @@ public class ZiXunAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra(DetailActivity.TITLE_NAME, bean.getCname());
+                intent.putExtra(DetailActivity.PARCELABLE, (Parcelable) bean);
                 intent.putExtra(DetailActivity.URL, bean.getUrl());
                 context.startActivity(intent);
             }
         });
+    }
+
+    public void setCname(String cname) {
+        this.cname = cname;
     }
 
 }

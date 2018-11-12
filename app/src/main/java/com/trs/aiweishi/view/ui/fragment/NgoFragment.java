@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.BarUtils;
+import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.NgoAdapter;
 import com.trs.aiweishi.base.BaseBean;
@@ -50,9 +51,7 @@ public class NgoFragment extends BaseFragment implements INgoView
     private int count_2 = 0;
     private List<ListData> channel_list;
 
-    public NgoFragment() {
-
-    }
+    public NgoFragment() { }
 
     public static NgoFragment newInstance(ListData channelBean) {
         NgoFragment fragment = new NgoFragment();
@@ -111,6 +110,7 @@ public class NgoFragment extends BaseFragment implements INgoView
         }
         channel_list = bean.getChannel_list();
         presenter.getNgoData(0, channel_list.get(0).getUrl());
+        MProgressDialog.showProgress(context, config);
     }
 
     @Override
@@ -162,6 +162,8 @@ public class NgoFragment extends BaseFragment implements INgoView
 
     @Override
     public void showSuccess(BaseBean baseBean) {
+        MProgressDialog.dismissProgress();
+
         List<ListData> data = ((ListDataBean) baseBean).getList_datas();
         ListData title = new ListData();
         title.setCname(channel_list.get(2).getCname());
