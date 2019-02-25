@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -13,20 +12,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.BarUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.view.IBaseView;
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.maning.mndialoglibrary.config.MDialogConfig;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppAplication;
 import com.trs.aiweishi.app.AppConstant;
-import com.trs.aiweishi.di.component.ActivityComponent;
-import com.trs.aiweishi.di.component.DaggerActivityComponent;
-import com.trs.aiweishi.di.module.ActivityModule;
-import com.trs.aiweishi.util.DisposedUtil;
-import com.trs.aiweishi.view.IBaseView;
+import com.trs.aiweishi.dagger.component.ActivityComponent;
+import com.trs.aiweishi.dagger.component.DaggerActivityComponent;
+import com.trs.aiweishi.dagger.module.ActivityModule;
+import com.lf.http.utils.DisposedUtil;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         if (isTranslucent())
             setTranslucent(this);
 
+        PushAgent.getInstance(this).onAppStart();
         initUtil();
         initComponent();
         initListener();
@@ -185,8 +186,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     @Override
     public void showError(Throwable e) {
-        e.printStackTrace();
         MProgressDialog.dismissProgress();
+        e.printStackTrace();
     }
 
 }

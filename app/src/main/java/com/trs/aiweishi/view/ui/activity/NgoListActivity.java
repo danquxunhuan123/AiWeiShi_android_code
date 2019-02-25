@@ -4,14 +4,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 
 import com.trs.aiweishi.R;
-import com.trs.aiweishi.adapter.ListDataAdapter;
 import com.trs.aiweishi.adapter.ListNgoAdapter;
 import com.trs.aiweishi.base.BaseActivity;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.bean.ListData;
-import com.trs.aiweishi.bean.ListDataBean;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.bean.ListData;
+import com.lf.http.bean.ListDataBean;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.RecycleviewUtil;
 
 import java.util.List;

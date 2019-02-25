@@ -9,8 +9,8 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.presenter.IUserPresenter;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.presenter.IUserPresenter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +57,7 @@ public class FeedBackActivity extends BaseActivity {
     @Override
     public void showSuccess(BaseBean baseBean) {
 //        if (baseBean.getCode() == 0)
+        feedBack.setText("");
         ToastUtils.showShort(baseBean.getDesc());
     }
 

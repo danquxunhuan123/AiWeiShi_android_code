@@ -5,24 +5,18 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.blankj.utilcode.util.TimeUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.presenter.IUserPresenter;
-import com.trs.aiweishi.presenter.impl.UserPresenterImpl;
+import com.lf.http.presenter.IUserPresenter;
 import com.trs.aiweishi.util.Utils;
 import com.trs.aiweishi.util.WebViewUtils;
-import com.trs.aiweishi.view.IQuestionView;
-
-import java.util.Date;
+import com.lf.http.view.IQuestionView;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import okhttp3.ResponseBody;
 
 public class MyQuestionActivity extends BaseActivity implements IQuestionView {
     @Inject
@@ -67,7 +61,7 @@ public class MyQuestionActivity extends BaseActivity implements IQuestionView {
     }
 
     @Override
-    public void loginQuesiton(ResponseBody responseBody) {
+    public void loginQuesiton(String result) {
         long ts = System.currentTimeMillis();
         StringBuilder sha1 = new StringBuilder()
                 .append(appId)

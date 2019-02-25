@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/color_f3f3f3"
+                android:padding="10dp"
+                android:text="请选择检测点何处错误（可多选）"
+                android:textColor="@color/color_75787b"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/cb_check_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableRight="@drawable/radio_button_selector"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="检测点名称"
+                android:textSize="@dimen/size_16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:background="@color/color_eeeeee" />
+
+            <CheckBox
+                android:id="@+id/cb_check_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableRight="@drawable/radio_button_selector"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="检测点地址"
+                android:textSize="@dimen/size_16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:background="@color/color_eeeeee" />
+
+            <CheckBox
+                android:id="@+id/cb_check_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableRight="@drawable/radio_button_selector"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="检测点电话"
+                android:textSize="@dimen/size_16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:background="@color/color_eeeeee" />
+
+            <CheckBox
+                android:id="@+id/cb_check_way"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableRight="@drawable/radio_button_selector"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="检测方式"
+                android:textSize="@dimen/size_16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:background="@color/color_eeeeee" />
+
+            <CheckBox
+                android:id="@+id/cb_check_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableRight="@drawable/radio_button_selector"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="检测说明"
+                android:textSize="@dimen/size_16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:background="@color/color_eeeeee" />
+
+            <CheckBox
+                android:id="@+id/cb_check_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableRight="@drawable/radio_button_selector"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="可预约时间"
+                android:textSize="@dimen/size_16sp" />
+            <!--<RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/rb_check_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@drawable/radio_button_selector"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="检测点名称"
+                    android:textSize="@dimen/size_16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/color_eeeeee" />
+
+                <RadioButton
+                    android:id="@+id/rb_check_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@drawable/radio_button_selector"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="检测点地址"
+                    android:textSize="@dimen/size_16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/color_eeeeee" />
+
+                <RadioButton
+                    android:id="@+id/rb_check_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@drawable/radio_button_selector"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="检测点电话"
+                    android:textSize="@dimen/size_16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/color_eeeeee" />
+
+                <RadioButton
+                    android:id="@+id/rb_check_way"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@drawable/radio_button_selector"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="检测方式"
+                    android:textSize="@dimen/size_16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/color_eeeeee" />
+
+                <RadioButton
+                    android:id="@+id/rb_check_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@drawable/radio_button_selector"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="检测说明"
+                    android:textSize="@dimen/size_16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/color_eeeeee" />
+
+                <RadioButton
+                    android:id="@+id/rb_check_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@drawable/radio_button_selector"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="可预约时间"
+                    android:textSize="@dimen/size_16sp" />
+            </RadioGroup>-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/color_f3f3f3"
+                android:padding="10dp"
+                android:text="请描述具体问题"
+                android:textColor="@color/color_75787b"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/edit_content"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="@null"
+                android:gravity="left"
+                android:padding="10dp"
+                android:textSize="@dimen/text_commen_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/color_f3f3f3"
+                android:padding="10dp"
+                android:text="联系方式"
+                android:textColor="@color/color_75787b"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="联系电话"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/size_16sp" />
+
+                <EditText
+                    android:id="@+id/et_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="便于我们与您联系"
+                    android:padding="10dp"
+                    android:textSize="@dimen/size_16sp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:background="@color/color_eeeeee" />
+
+            <Button
+                android:id="@+id/but_report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/blue_corner_shape"
+                android:onClick="report"
+                android:text="@string/commit"
+                android:textColor="@color/color_f6f6f6"
+                android:textSize="@dimen/size_17sp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

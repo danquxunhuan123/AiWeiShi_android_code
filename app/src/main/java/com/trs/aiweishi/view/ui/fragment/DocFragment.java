@@ -11,14 +11,14 @@ import com.blankj.utilcode.util.ObjectUtils;
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.DocAdapter;
-import com.trs.aiweishi.base.BaseBean;
+import com.lf.http.bean.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
-import com.trs.aiweishi.bean.ListData;
-import com.trs.aiweishi.bean.ListDataBean;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.ListData;
+import com.lf.http.bean.ListDataBean;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.DataHelper;
 import com.trs.aiweishi.util.RecycleviewUtil;
-import com.trs.aiweishi.view.IHomeView;
+import com.lf.http.view.IHomeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,6 @@ public class DocFragment extends BaseFragment implements IHomeView
     public static String mParam1;
     private List<ListData> bannerDatas = new ArrayList<>();
     private List<ListData> list = new ArrayList<>();
-    private DocAdapter adapter;  //
     private final int SPAN_COUNT = 3;
     private List<ListData> channel_list;
 
@@ -191,7 +190,7 @@ public class DocFragment extends BaseFragment implements IHomeView
 
         list = DataHelper.initDocList(list, list1);
 
-        adapter = new DocAdapter(list, context, bannerDatas);
+        DocAdapter adapter = new DocAdapter(list, context, bannerDatas);
         RecycleviewUtil.initGridRecycleView(recycleview, adapter, context, SPAN_COUNT);
     }
 

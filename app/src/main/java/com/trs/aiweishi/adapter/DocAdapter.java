@@ -11,14 +11,12 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.trs.aiweishi.R;
-import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.bean.ListData;
+import com.lf.http.bean.ListData;
 import com.trs.aiweishi.bean.TextDrawableBean;
 import com.trs.aiweishi.util.BannerHelper;
 import com.trs.aiweishi.util.GlideUtils;
 import com.trs.aiweishi.view.custview.MyBanner_1;
-import com.trs.aiweishi.view.ui.activity.CheckActivity;
 import com.trs.aiweishi.view.ui.activity.DetailActivity;
 import com.trs.aiweishi.view.ui.activity.ListDataActivity;
 import com.trs.aiweishi.view.ui.activity.ZiXunActivity;
@@ -118,6 +116,13 @@ public class DocAdapter extends BaseAdapter implements MyBanner_1.OnItemClickLis
                     imageView.setVisibility(View.GONE);
                 }
 
+                ImageView player = (ImageView) holder.getView(R.id.iv_player);
+                if ("视频".equals(bean.getArticleType())) {
+                    player.setVisibility(View.VISIBLE);
+                } else {
+                    player.setVisibility(View.GONE);
+                }
+
                 ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());
                 if (!StringUtils.isEmpty(bean.getTime()))
                     ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
@@ -126,6 +131,7 @@ public class DocAdapter extends BaseAdapter implements MyBanner_1.OnItemClickLis
                     public void onClick(View v) {
                         Intent intent = new Intent(context, DetailActivity.class);
                         intent.putExtra(DetailActivity.TITLE_NAME, bean.getCname());
+                        intent.putExtra(DetailActivity.PARCELABLE, (Parcelable) bean);
                         intent.putExtra(DetailActivity.URL, bean.getUrl());
                         context.startActivity(intent);
                     }

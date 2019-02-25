@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 import com.blankj.utilcode.util.ScreenUtils;
-import com.trs.aiweishi.bean.ListData;
+import com.lf.http.bean.ListData;
 import com.trs.aiweishi.listener.CustPagerTransformer;
 import com.trs.aiweishi.util.loader.GlideImageLoader;
 import com.trs.aiweishi.view.custview.MyBanner;

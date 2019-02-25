@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.AppUtils;
 
@@ -22,23 +23,25 @@ import java.util.List;
  */
 
 public class AlbumUtil {
-    public static Uri takePhone(Activity activity, int requestCode) {
-        File photoFile = new File(activity.getExternalCacheDir(), "image.jpeg");
+    public static Uri takePhone(Context context, int requestCode,String fileName) {
+//        File photoFile = new File(activity.getExternalCacheDir(), "image.jpeg");
+        File photoFile = new File(context.getExternalCacheDir(), fileName);
 
-        Uri imageUriFromCamera = getUriForFile(activity, photoFile);
+        Uri imageUriFromCamera = getUriForFile(context, photoFile);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            grantPermissions(activity, intent, imageUriFromCamera, true);
+            grantPermissions(context, intent, imageUriFromCamera, true);
         }
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUriFromCamera);
-        activity.startActivityForResult(intent, requestCode);
+        ((AppCompatActivity)context).startActivityForResult(intent, requestCode);
 
         return imageUriFromCamera;
     }
 
-    public static void openAlbum(Activity activity, int requestCode) {
-        File outputImage = new File(activity.getExternalCacheDir(), "image.jpeg");
+    public static void openAlbum(Context context, int requestCode,String fileName) {
+//        File outputImage = new File(activity.getExternalCacheDir(), "image.jpeg");
+        File outputImage = new File(context.getExternalCacheDir(), fileName);
         try {
             if (outputImage.exists()) {
                 outputImage.delete();
@@ -48,18 +51,19 @@ public class AlbumUtil {
             e.printStackTrace();
         }
 
-        Uri outputUri = getUriForFile(activity, outputImage);
+        Uri outputUri = getUriForFile(context, outputImage);
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            grantPermissions(activity, intent, outputUri, true);
+            grantPermissions(context, intent, outputUri, true);
         }
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);  //图片的输出位置
-        activity.startActivityForResult(intent, requestCode);
+        ((AppCompatActivity)context).startActivityForResult(intent, requestCode);
     }
 
-    public static Uri startCrop(Activity activity, Uri uri, int requestCode) {
-        File camerafile = new File(activity.getExternalCacheDir(), "image.jpeg");
+    public static Uri startCrop(Activity activity, Uri uri, int requestCode,String fileName) {
+//        File camerafile = new File(activity.getExternalCacheDir(), "image.jpeg");
+        File camerafile = new File(activity.getExternalCacheDir(), fileName);
         Intent intent = new Intent("com.android.camera.action.CROP");
         Uri imageUri = getUriForFile(activity, camerafile);
         intent.setDataAndType(uri, "image/*");
@@ -73,10 +77,10 @@ public class AlbumUtil {
         return imageUri;
     }
 
-    private static Uri getUriForFile(Activity activity, File camerafile) {
+    private static Uri getUriForFile(Context context, File camerafile) {
         Uri fileUri;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            fileUri = FileProvider.getUriForFile(activity, activity.getPackageName() + ".fileprovider", camerafile);
+            fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", camerafile);
         } else {
             fileUri = Uri.fromFile(camerafile);
         }

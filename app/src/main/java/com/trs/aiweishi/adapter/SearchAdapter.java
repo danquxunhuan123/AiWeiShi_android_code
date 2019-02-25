@@ -2,21 +2,14 @@ package com.trs.aiweishi.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.ObjectUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.bean.ListData;
-import com.trs.aiweishi.bean.SearchBean;
-import com.trs.aiweishi.util.GlideUtils;
-import com.trs.aiweishi.view.ui.activity.CheckDetailActivity;
+import com.lf.http.bean.SearchBean;
 import com.trs.aiweishi.view.ui.activity.DetailActivity;
 
 import java.util.List;

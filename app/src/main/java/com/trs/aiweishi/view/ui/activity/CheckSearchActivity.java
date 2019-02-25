@@ -9,9 +9,9 @@ import com.trs.aiweishi.adapter.CheckSearchAdapter;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.bean.SearchBean;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.bean.SearchBean;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.RecycleviewUtil;
 import com.trs.aiweishi.util.SoftInputUtil;
 

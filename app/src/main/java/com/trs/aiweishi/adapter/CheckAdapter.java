@@ -1,18 +1,15 @@
 package com.trs.aiweishi.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.NonNull;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.bean.Site;
-import com.trs.aiweishi.view.ui.activity.CheckDetailActivity;
+import com.lf.http.bean.Site;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -51,11 +48,19 @@ public class CheckAdapter extends BaseAdapter {
         holder.getItemView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, CheckDetailActivity.class);
-                intent.putExtra(CheckDetailActivity.TAG, bean);
-                context.startActivity(intent);
+                listener.onCheckClick((Parcelable) bean);
             }
         });
+    }
+
+    private OnCheckClickListener listener;
+
+    public void setOnCheckClickListener(OnCheckClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnCheckClickListener {
+        void onCheckClick(Parcelable parcelable);
     }
 
 }

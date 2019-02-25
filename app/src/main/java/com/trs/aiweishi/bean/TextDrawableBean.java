@@ -1,6 +1,6 @@
 package com.trs.aiweishi.bean;
 
-import com.trs.aiweishi.base.BaseBean;
+import com.lf.http.bean.BaseBean;
 
 /**
  * Created by Liufan on 2018/6/26.

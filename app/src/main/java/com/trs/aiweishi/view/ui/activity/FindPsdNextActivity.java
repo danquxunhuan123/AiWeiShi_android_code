@@ -8,8 +8,8 @@ import android.widget.EditText;
 import com.blankj.utilcode.util.ToastUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.presenter.IUserPresenter;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.presenter.IUserPresenter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +28,6 @@ public class FindPsdNextActivity extends BaseActivity {
     @BindView(R.id.et_psd_sure)
     EditText etPsdSure;
 
-    private String userName;
-    private String code;
-
     public static String CODE = "code";
     public static String USER_NAME = "user_name";
 
@@ -40,10 +37,7 @@ public class FindPsdNextActivity extends BaseActivity {
     }
 
     @Override
-    protected void initData() {
-        userName = getIntent().getStringExtra(USER_NAME);
-        code = getIntent().getStringExtra(CODE);
-    }
+    protected void initData() {}
 
     @Override
     public int initLayout() {
@@ -51,6 +45,8 @@ public class FindPsdNextActivity extends BaseActivity {
     }
 
     public void commit(View view) {
+        String userName = getIntent().getStringExtra(USER_NAME);
+        String code = getIntent().getStringExtra(CODE);
         String nPsd = etPsd.getText().toString().trim();
         String psdSure = etPsdSure.getText().toString().trim();
 
@@ -61,9 +57,9 @@ public class FindPsdNextActivity extends BaseActivity {
         Map<String, String> params = new HashMap<>();
         params.put("attrName", Base64.encodeToString("mobile".getBytes(), Base64.DEFAULT));
         params.put("attrValue", Base64.encodeToString(userName.getBytes(), Base64.DEFAULT));
-        params.put("activationCode", Base64.encodeToString(code.getBytes(), Base64.DEFAULT));
         params.put("newPassword", Base64.encodeToString(nPsd.getBytes(), Base64.DEFAULT));
         params.put("ensurePassword", Base64.encodeToString(psdSure.getBytes(), Base64.DEFAULT));
+        params.put("activationCode", Base64.encodeToString(code.getBytes(), Base64.DEFAULT));
         presenter.findPsd(params);
     }
 

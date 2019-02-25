@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_f3f3f3"
+        android:padding="10dp"
+        android:text="请选择您遇到的错误"
+        android:textColor="@color/color_75787b"
+        android:textSize="16sp" />
+
+    <com.trs.aiweishi.view.custview.DrawableCenterTextView
+        android:id="@+id/tv_report_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/color_e6edf7"
+        android:drawableLeft="@mipmap/icon_report_data"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:text="报告数据问题"
+        android:textColor="@color/color_2f4459"
+        android:textSize="16sp" />
+
+    <com.trs.aiweishi.view.custview.DrawableCenterTextView
+        android:id="@+id/tv_add_check_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/color_e6edf7"
+        android:drawableLeft="@mipmap/icon_add_check_info"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:text="添加检测机构信息"
+        android:textColor="@color/color_2f4459"
+        android:textSize="16sp" />
+
+    <com.trs.aiweishi.view.custview.DrawableCenterTextView
+        android:id="@+id/tv_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/color_e6edf7"
+        android:drawableLeft="@mipmap/icon_check_feedback"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:text="应用反馈意见"
+        android:textColor="@color/color_2f4459"
+        android:textSize="16sp" />
+</LinearLayout>

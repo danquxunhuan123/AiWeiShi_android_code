@@ -5,23 +5,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import com.blankj.utilcode.util.CacheUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.bean.AdBean;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.bean.AdBean;
 import com.trs.aiweishi.brocast.NetWorkReceiver;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.GlideUtils;
 import com.trs.aiweishi.view.ui.fragment.AdDialogFragment;
 
-import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,9 +51,9 @@ public class SplashActivity extends BaseActivity {
 
                     Intent intent = new Intent(SplashActivity.this, DetailActivity.class);
 //                    intent.putExtra(DetailActivity.URL, spUtils.getString(AppConstant.AD_PIC_URL));
-                    intent.putExtra(DetailActivity.TYPE, -1); //广告类型
+                    intent.putExtra(DetailActivity.TYPE, DetailActivity.AD_TYPE); //广告类型
                     intent.putExtra(DetailActivity.PARCELABLE, (Parcelable) bean);
-                    intent.putExtra(DetailActivity.TITLE_NAME,bean.getAdTitle());
+                    intent.putExtra(DetailActivity.TITLE_NAME, bean.getAdTitle());
                     startActivity(intent);
 
                     finish();
@@ -68,7 +67,7 @@ public class SplashActivity extends BaseActivity {
             adFragment = AdDialogFragment.newInstance();
             adFragment.setHandle(handler);
             adFragment.show(getSupportFragmentManager(), AdDialogFragment.TAG);
-        }else {
+        } else {
             handler.sendEmptyMessage(1);
         }
     }
@@ -92,15 +91,18 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void getNetAdPic() {
-        GlideUtils.loadUrlToFile(this, bean.getImageUrl(), new AdDialogFragment.OnPicDownloadListener() {
-            @Override
-            public void OnPicDownload(Bitmap resource) {
-                CacheUtils.getInstance(getExternalCacheDir()).put(AppConstant.AD_PIC_CACHE, resource); //缓存图片
-                spUtils.put(AppConstant.AD_FILE_UPDATE_TIME, bean.getUpdateTime()); //更新时间
-                spUtils.put(AppConstant.AD_IS_SHOW, bean.getIsShow()); //是否显示
-                spUtils.put(AppConstant.AD_PIC_URL, bean.getAdUrl()); //图片跳转地址
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (!isDestroyed())
+                GlideUtils.loadUrlToFile(this, bean.getImageUrl(), new AdDialogFragment.OnPicDownloadListener() {
+                    @Override
+                    public void OnPicDownload(Bitmap resource) {
+                        CacheUtils.getInstance(getExternalCacheDir()).put(AppConstant.AD_PIC_CACHE, resource); //缓存图片
+                        spUtils.put(AppConstant.AD_FILE_UPDATE_TIME, bean.getUpdateTime()); //更新时间
+                        spUtils.put(AppConstant.AD_IS_SHOW, bean.getIsShow()); //是否显示
+                        spUtils.put(AppConstant.AD_PIC_URL, bean.getAdUrl()); //图片跳转地址
+                    }
+                });
+        }
     }
 
     @Override
@@ -120,6 +122,7 @@ public class SplashActivity extends BaseActivity {
         registerReceiver(netWorkReceiver, filter);
     }
 
+    @SuppressLint("WrongConstant")
     private void checkPerssion() {
         if (!PermissionUtils.isGranted(AppConstant.READ_PHONE_STATE
                 , AppConstant.WRITE_EXTERNAL_STORAGE
@@ -158,4 +161,5 @@ public class SplashActivity extends BaseActivity {
         unregisterReceiver(netWorkReceiver);
         super.onDestroy();
     }
+
 }

@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:background="@drawable/check_corner_shape">
+
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="申请免费检测包"
+        android:textStyle="bold"
+        android:layout_margin="20dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/dialog_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请填写完整的收获地址"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/dialog_title"
+        android:background="@drawable/gray_shape"
+        android:gravity="left"
+        android:padding="5dp"
+        android:textColor="@color/color_343638"
+        android:textColorHint="@android:color/darker_gray"
+        android:textSize="14sp" />
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/dialog_content"
+        android:background="@color/color_eeeeee"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_line"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:textStyle="bold"
+            android:text="@string/cancle"
+            android:textColor="@color/color_3169b3"
+            android:textSize="@dimen/text_title_size" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/color_eeeeee"/>
+        <Button
+            android:id="@+id/dialog_btn_sure"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:textStyle="bold"
+            android:text="@string/sure"
+            android:textColor="@color/color_3169b3"
+            android:textSize="@dimen/text_title_size" />
+    </LinearLayout>
+
+</RelativeLayout>

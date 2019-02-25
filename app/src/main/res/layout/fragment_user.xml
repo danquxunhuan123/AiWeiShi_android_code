@@ -99,8 +99,6 @@
             <!--android:drawableLeft="@mipmap/icon_collect"-->
             <!--android:text="@string/collect" />-->
 
-        <!--<include layout="@layout/line_margin_layout" />-->
-
         <!--<TextView-->
             <!--android:id="@+id/tv_news_center"-->
             <!--style="@style/user_text_style"-->
@@ -111,7 +109,7 @@
         <TextView
             android:id="@+id/tv_checks"
             style="@style/user_text_style"
-            android:drawableLeft="@mipmap/icon_feedback"
+            android:drawableLeft="@mipmap/icon_my_package"
             android:text="@string/jiancebao" />
 
         <include layout="@layout/line_margin_layout" />
@@ -120,6 +118,7 @@
             android:id="@+id/tv_check_result"
             style="@style/user_text_style"
             android:drawableLeft="@mipmap/icon_check_result"
+            android:drawablePadding="13dp"
             android:text="@string/jianceresult" />
 
         <include layout="@layout/line_margin_layout" />

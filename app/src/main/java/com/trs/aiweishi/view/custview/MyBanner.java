@@ -2,15 +2,10 @@ package com.trs.aiweishi.view.custview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,12 +16,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.trs.aiweishi.R;
-import com.trs.aiweishi.app.AppConstant;
-import com.trs.aiweishi.bean.ListData;
+import com.lf.http.bean.ListData;
 import com.trs.aiweishi.util.GlideUtils;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.WeakHandler;
@@ -43,24 +36,22 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
     private LinearLayout indicator;
     private View currentIndicator = null;
     private TextView title;
-    private List<View> imageViews;
-    private MyPagerAdapter adapter;
     private Context context;
+    private int itemCount = 0;
     private int delayTime = BannerConfig.TIME;
     private int currentItem = 0;
     private boolean isAutoPlay = BannerConfig.IS_AUTO_PLAY;
     private boolean isStarting;
     private WeakHandler handler = new WeakHandler();
+    private  List<View> imageViews = new ArrayList<>();
     private List<ListData> data;
     private int scaleType = 1;
-    private int startIndex;
-    private ViewPager.OnPageChangeListener mOnPageChangeListener;
+//    private ViewPager.OnPageChangeListener mOnPageChangeListener;
 
-    private int count = 0;
     private final Runnable task = new Runnable() {
         @Override
         public void run() {
-            if (count > 1 && isAutoPlay) {
+            if (itemCount > 1 && isAutoPlay) {
                 currentItem++;
                 if (currentItem == 1) {
                     viewPager.setCurrentItem(currentItem, false);
@@ -84,83 +75,55 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
 
     public MyBanner(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        imageViews = new ArrayList<>();
         this.context = context;
         handleTypedArray(context, attrs);
-        initView(context, attrs);
     }
 
     private void handleTypedArray(Context context, AttributeSet attrs) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, com.youth.banner.R.styleable.Banner);
         scaleType = typedArray.getInt(com.youth.banner.R.styleable.Banner_image_scale_type, scaleType);
+        typedArray.recycle();
+
+        initView(context);
     }
 
-    private void initView(Context context, AttributeSet attrs) {
+    private void initView(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.banner_layout, this, true);
         viewPager = view.findViewById(R.id.viewpager);
         title = view.findViewById(R.id.tv_banner_title);
         indicator = view.findViewById(R.id.ll_indicator);
     }
 
-    public void setOnPageChangeListener(ViewPager.OnPageChangeListener onPageChangeListener) {
-        mOnPageChangeListener = onPageChangeListener;
-    }
-
-    private void setData() {
-        startIndex = imageViews.size() * 100;
-        if (adapter == null) {
-            adapter = new MyPagerAdapter();
-            viewPager.addOnPageChangeListener(this);
-        }
-        viewPager.setAdapter(adapter);
-        viewPager.setPageMargin(SizeUtils.dp2px(10));
-        viewPager.setCurrentItem(startIndex);
-        ViewGroup.LayoutParams params = viewPager.getLayoutParams();
-        params.width = ScreenUtils.getScreenWidth();
-        params.height = params.width * 9 / 16;
-        viewPager.setLayoutParams(params);
-
-        if (isAutoPlay)
-            startAutoPlay();
-    }
-
     public MyBanner setOffscreenPageLimit(int limit) {
-        if (viewPager != null) {
-            viewPager.setOffscreenPageLimit(limit);
-        }
-        return this;
-    }
-
-    public MyBanner setPagerMargin(float margin) {
-        if (viewPager != null) {
-            viewPager.setPageMargin(SizeUtils.dp2px(margin));
-        }
-        return this;
-    }
-
-    public MyBanner setPageTransformer(boolean reverseDrawingOrder, ViewPager.PageTransformer transformer) {
-        if (viewPager != null) {
-            viewPager.setPageTransformer(reverseDrawingOrder, transformer);
-        }
+        viewPager.setOffscreenPageLimit(limit);
         return this;
     }
 
     public MyBanner setImages(List<ListData> data) {
         this.data = data;
+        itemCount = data.size();
+        return this;
+    }
+
+    public MyBanner start() {
+        isStarting = true;
+        setImageList();
         return this;
     }
 
     private void setImageList() {
-        indicator.removeAllViews();
         imageViews.clear();
-        count = data.size();
-        if (data == null || data.size() <= 0) {
+        indicator.removeAllViews();
+        if (data == null || itemCount <= 0) {
             return;
         }
 
-        for (int i = 0; i < data.size(); i++) {
-            RoundImageView imageView = new RoundImageView(context);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                SizeUtils.dp2px(20), SizeUtils.dp2px(5));
+        param.leftMargin = 10;
+        for (int i = 0; i < itemCount; i++) {
             //imageview
+            RoundImageView imageView = new RoundImageView(context);
             final int finalI = i;
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
@@ -171,22 +134,35 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
             imageView.setCurrMode(RoundImageView.MODE_ROUND);
             setScaleType(imageView);
             GlideUtils.loadUrlImg(context, data.get(i).getImages().get(0).getSrc(), imageView);
-
+            imageViews.add(imageView);
             //indicator
             View point = new View(context);
             point.setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
-            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                    SizeUtils.dp2px(20), SizeUtils.dp2px(5));
-            param.leftMargin = 10;
             point.setLayoutParams(param);
             indicator.addView(point);
-
-            imageViews.add(imageView);
         }
 
         title.setText(data.get(0).getTitle());
         indicator.getChildAt(0).setBackground(getResources().getDrawable(R.drawable.banner_indicator_normal_view));
+
+        MyPagerAdapter adapter = null;
+        if (adapter == null) {
+            adapter = new MyPagerAdapter();
+            viewPager.addOnPageChangeListener(this);
+        }
+        viewPager.setAdapter(adapter);
+        viewPager.setPageMargin(SizeUtils.dp2px(10));
+        viewPager.setCurrentItem(itemCount * 100);
+
+        ViewGroup.LayoutParams params = viewPager.getLayoutParams();
+        params.width = ScreenUtils.getScreenWidth();
+        params.height = params.width * 9 / 16;
+        viewPager.setLayoutParams(params);
+
+        if (isAutoPlay)
+            startAutoPlay();
     }
+
 
     private void setScaleType(ImageView view) {
         switch (scaleType) {
@@ -217,19 +193,8 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
         }
     }
 
-    public MyBanner start() {
-        isStarting = true;
-        setImageList();
-        setData();
-        return this;
-    }
-
     public boolean isStarting() {
         return isStarting;
-    }
-
-    public void setStarting(boolean starting) {
-        isStarting = starting;
     }
 
     public MyBanner isAutoPlay(boolean isAutoPlay) {
@@ -254,17 +219,12 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        //        void OnItemClick(String img);
         void OnItemClick(int position);
     }
 
     public MyBanner setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
         return this;
-    }
-
-    public void releaseBanner() {
-        handler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -283,14 +243,14 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (mOnPageChangeListener != null) {
-            mOnPageChangeListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
-        }
+//        if (mOnPageChangeListener != null) {
+//            mOnPageChangeListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
+//        }
     }
 
     @Override
     public void onPageSelected(int position) {
-        int po = position % imageViews.size();
+        int po = position % itemCount;
         title.setText(data.get(po).getTitle());
 
         if (currentIndicator != null)
@@ -298,18 +258,17 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
         View childAt = indicator.getChildAt(po);
         childAt.setBackground(getResources().getDrawable(R.drawable.banner_indicator_select_view));
         currentIndicator = childAt;
-
         currentItem = position;
-        if (mOnPageChangeListener != null) {
-            mOnPageChangeListener.onPageSelected(position);
-        }
+//        if (mOnPageChangeListener != null) {
+//            mOnPageChangeListener.onPageSelected(position);
+//        }
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        if (mOnPageChangeListener != null) {
-            mOnPageChangeListener.onPageScrollStateChanged(state);
-        }
+//        if (mOnPageChangeListener != null) {
+//            mOnPageChangeListener.onPageScrollStateChanged(state);
+//        }
     }
 
     private class MyPagerAdapter extends PagerAdapter {
@@ -326,7 +285,7 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            View view = imageViews.get(position % imageViews.size());
+            View view = imageViews.get(position % itemCount);
             if (view.getParent() != null) {
                 container.removeView(view);
             }
@@ -338,4 +297,30 @@ public class MyBanner extends FrameLayout implements ViewPager.OnPageChangeListe
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         }
     }
+
+    //    public void setOnPageChangeListener(ViewPager.OnPageChangeListener onPageChangeListener) {
+//        mOnPageChangeListener = onPageChangeListener;
+//    }
+
+//    public MyBanner setPagerMargin(float margin) {
+//        if (viewPager != null) {
+//            viewPager.setPageMargin(SizeUtils.dp2px(margin));
+//        }
+//        return this;
+//    }
+//
+//    public MyBanner setPageTransformer(boolean reverseDrawingOrder, ViewPager.PageTransformer transformer) {
+//        if (viewPager != null) {
+//            viewPager.setPageTransformer(reverseDrawingOrder, transformer);
+//        }
+//        return this;
+//    }
+
+    //    public void setStarting(boolean starting) {
+//        isStarting = starting;
+//    }
+
+//    public void releaseBanner() {
+//        handler.removeCallbacksAndMessages(null);
+//    }
 }

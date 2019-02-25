@@ -13,11 +13,11 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.maning.mndialoglibrary.config.MDialogConfig;
 import com.trs.aiweishi.app.AppAplication;
-import com.trs.aiweishi.di.component.DaggerFragmentComponent;
-import com.trs.aiweishi.di.component.FragmentComponent;
-import com.trs.aiweishi.di.module.FragmentModule;
-import com.trs.aiweishi.util.DisposedUtil;
-import com.trs.aiweishi.view.IBaseView;
+import com.trs.aiweishi.dagger.component.DaggerFragmentComponent;
+import com.trs.aiweishi.dagger.component.FragmentComponent;
+import com.trs.aiweishi.dagger.module.FragmentModule;
+import com.lf.http.utils.DisposedUtil;
+import com.lf.http.view.IBaseView;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -88,7 +88,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView{
 
     @Override
     public void showError(Throwable e) {
-//        e.printStackTrace();
+        e.printStackTrace();
         MProgressDialog.dismissProgress();
         ToastUtils.showShort(e.getMessage());
     }

@@ -6,10 +6,9 @@ import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.ChecksInfoAdapter;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.bean.CheckResult;
-import com.trs.aiweishi.presenter.IHomePresenter;
-import com.trs.aiweishi.presenter.IUserPresenter;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.bean.CheckResult;
+import com.lf.http.presenter.IUserPresenter;
 import com.trs.aiweishi.util.RecycleviewUtil;
 
 import java.util.HashMap;
@@ -46,15 +45,15 @@ public class CheckInfosActivity extends BaseActivity {
     @Override
     protected void initData() {
         Map<String, String> param = new HashMap<>();
-        param.put("mobile",getIntent().getExtras().getString(USER_PHONE));
-        presenter.getCheckInfo(AppConstant.CHECK_RESULT,param);
+        param.put("mobile", getIntent().getExtras().getString(USER_PHONE));
+        presenter.getCheckInfo(AppConstant.CHECK_RESULT, param);
     }
 
     @Override
     public void showSuccess(BaseBean baseBean) {
         CheckResult result = (CheckResult) baseBean;
-        ChecksInfoAdapter adapter = new ChecksInfoAdapter(result.getData(),this);
-        RecycleviewUtil.initLinearRecycleView(rvChecks,adapter,this);
+        ChecksInfoAdapter adapter = new ChecksInfoAdapter(result.getData(), this);
+        RecycleviewUtil.initLinearRecycleView(rvChecks, adapter, this);
     }
 
     @OnClick(R.id.iv_back)

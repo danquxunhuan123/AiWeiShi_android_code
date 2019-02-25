@@ -9,10 +9,10 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.bean.UserBean;
-import com.trs.aiweishi.presenter.IBindPhoneView;
-import com.trs.aiweishi.presenter.IUserPresenter;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.bean.UserBean;
+import com.lf.http.presenter.IBindPhoneView;
+import com.lf.http.presenter.IUserPresenter;
 import com.trs.aiweishi.util.Utils;
 
 import java.util.HashMap;
@@ -37,7 +37,8 @@ public class BindPhoneActivity extends BaseActivity implements IBindPhoneView {
     public static String AUTH_SITE = "auth_site";
     public static String ACCESS_TOKEN = "access_token";
     public static String AUTH = "auth";
-
+    private String userName;
+    private String psd;
     private String user_name;
     private String user_pic;
     private String uid = "";
@@ -50,39 +51,6 @@ public class BindPhoneActivity extends BaseActivity implements IBindPhoneView {
     protected void initComponent() {
         getActivityComponent().inject(this);
     }
-
-    public void bind(View view) {
-        if (TextUtils.isEmpty(etUsername.getText().toString().trim())
-                || TextUtils.isEmpty(etPsd.getText().toString().trim())) {
-            ToastUtils.showShort(getResources().getString(R.string.phone_psd_empty_warn));
-            return;
-        }
-        requestUserInfo();
-//        addAccountMapping();
-    }
-
-    private void addAccountMapping() {
-        Map<String, String> params = new HashMap<>();
-        params.put("uid", Base64.encodeToString(uid.getBytes(), Base64.DEFAULT));
-        params.put("authSite", Base64.encodeToString(auth_site.getBytes(), Base64.DEFAULT));//
-        params.put("accessToken", Base64.encodeToString(access_token.getBytes(), Base64.DEFAULT));
-        params.put("userName", Base64.encodeToString(etUsername.getText().toString().trim().getBytes(), Base64.DEFAULT));
-        params.put("password", Base64.encodeToString(etPsd.getText().toString().trim().getBytes(), Base64.DEFAULT));
-        params.put("isBindExistUser", Base64.encodeToString(isBindExistUser.getBytes(), Base64.DEFAULT));
-        presenter.addAccountMapping(params);
-    }
-
-    private void requestUserInfo() {
-        Map<String, String> param = new HashMap();
-        param.put("userName", Base64.encodeToString(etUsername.getText().toString().trim().getBytes(), Base64.DEFAULT));
-        presenter.getUserInfo(1, param);
-    }
-
-    @OnClick(R.id.iv_back)
-    public void onViewClicked() {
-        finish();
-    }
-
 
     @Override
     protected void initData() {
@@ -99,9 +67,51 @@ public class BindPhoneActivity extends BaseActivity implements IBindPhoneView {
         return R.layout.activity_bind_phone;
     }
 
+
+    public void bind(View view) {
+        userName = etUsername.getText().toString().trim();
+        psd = etPsd.getText().toString().trim();
+        if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(psd)) {
+            ToastUtils.showShort(getResources().getString(R.string.phone_psd_empty_warn));
+            return;
+        }
+        requestUserInfo();
+//        addAccountMapping();
+    }
+
+    private void requestUserInfo() {
+        Map<String, String> param = new HashMap();
+        param.put("userName", Base64.encodeToString(userName.getBytes(), Base64.DEFAULT));
+        presenter.getUserInfo(1, param);
+    }
+
+    @Override
+    public void getUserInfo(BaseBean bean) {
+        if (bean.getCode() == 0) {
+            isBindExistUser = "false";
+        }
+        if (bean.getCode() == -14) {
+            isBindExistUser = "true";
+        }
+
+        addAccountMapping();
+    }
+
+    private void addAccountMapping() {
+        Map<String, String> params = new HashMap<>();
+        params.put("uid", Base64.encodeToString(uid.getBytes(), Base64.NO_WRAP));
+        params.put("authSite", Base64.encodeToString(auth_site.getBytes(), Base64.NO_WRAP));//
+        params.put("accessToken", Base64.encodeToString(access_token.getBytes(), Base64.NO_WRAP));
+        params.put("userName", Base64.encodeToString(userName.getBytes(), Base64.NO_WRAP));
+        params.put("mobile", Base64.encodeToString(userName.getBytes(), Base64.NO_WRAP));
+        params.put("password", Base64.encodeToString(psd.getBytes(), Base64.NO_WRAP));
+        params.put("isBindExistUser", Base64.encodeToString(isBindExistUser.getBytes(), Base64.NO_WRAP));
+        presenter.addAccountMapping(params);
+    }
+
     @Override
     public void showSuccess(BaseBean baseBean) {
-        if (baseBean.getCode() == 0 || baseBean.getCode() == 14) { // 操作成功
+        if (baseBean.getCode() == 0) { //  || baseBean.getCode() == 14
             loginByUID();
         } else {
             ToastUtils.showShort(baseBean.getDesc());
@@ -135,16 +145,8 @@ public class BindPhoneActivity extends BaseActivity implements IBindPhoneView {
         }
     }
 
-    @Override
-    public void getUserInfo(BaseBean bean) {
-        if (bean.getCode() == 0) {
-            isBindExistUser = "false";
-        }
-        if (bean.getCode() == -14) {
-            isBindExistUser = "true";
-        }
-
-        addAccountMapping();
+    @OnClick(R.id.iv_back)
+    public void onViewClicked() {
+        finish();
     }
-
 }

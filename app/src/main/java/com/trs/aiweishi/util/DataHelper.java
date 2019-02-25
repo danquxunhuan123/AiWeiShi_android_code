@@ -1,10 +1,8 @@
 package com.trs.aiweishi.util;
 
-import android.content.Context;
-
 import com.trs.aiweishi.R;
-import com.trs.aiweishi.bean.ListData;
-import com.trs.aiweishi.bean.Site;
+import com.lf.http.bean.ListData;
+import com.lf.http.bean.Site;
 import com.trs.aiweishi.bean.TextDrawableBean;
 
 import java.util.List;

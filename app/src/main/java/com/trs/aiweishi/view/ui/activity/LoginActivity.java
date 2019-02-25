@@ -3,28 +3,28 @@ package com.trs.aiweishi.view.ui.activity;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.bean.UserBean;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.bean.UserBean;
 import com.trs.aiweishi.listener.MyUMAuthListener;
-import com.trs.aiweishi.presenter.IUserPresenter;
+import com.lf.http.presenter.IUserPresenter;
 import com.trs.aiweishi.util.Utils;
-import com.trs.aiweishi.view.IUserView;
+import com.lf.http.view.IUserView;
 import com.trs.aiweishi.view.ui.fragment.UserFragment;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,9 +47,12 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
     EditText psd;
     @BindView(R.id.but_login)
     Button butLogin;
+    @BindView(R.id.iv_psd_visibled)
+    ImageView psdVisiled;
 
     public static LoginActivity instance = null;
 
+    private boolean psdIsVisible = false;
     private String authSite = "";
     private int auth = 0;
     private Map<String, String> data;
@@ -124,9 +127,21 @@ public class LoginActivity extends BaseActivity implements IUserView, MyUMAuthLi
     }
 
     @OnClick({R.id.tv_regist, R.id.tv_forget_psd, R.id.iv_back
-            , R.id.ll_qq_login, R.id.ll_weixin_login, R.id.ll_weibo_login})
+            , R.id.ll_qq_login, R.id.ll_weixin_login, R.id.ll_weibo_login
+            , R.id.iv_psd_visibled})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.iv_psd_visibled:
+                if (!psdIsVisible) {
+                    psdVisiled.setImageDrawable(getResources().getDrawable(R.mipmap.icon_pwd_visible));
+                    psd.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    psdIsVisible = true;
+                } else {
+                    psdVisiled.setImageDrawable(getResources().getDrawable(R.mipmap.icon_pwd_invisible));
+                    psd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    psdIsVisible = false;
+                }
+                break;
             case R.id.tv_regist:
                 startActivity(new Intent(this, RegistActivity.class));
                 break;

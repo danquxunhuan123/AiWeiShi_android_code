@@ -16,21 +16,20 @@
             android:id="@+id/iv_pic"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:scaleType="centerCrop"
             android:layout_marginRight="10dp"
+            android:scaleType="centerCrop"
             android:visibility="gone" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            >
+            android:layout_height="80dp">
 
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
                 android:ellipsize="end"
+                android:maxLines="2"
                 android:textColor="@color/color_343638"
                 android:textSize="@dimen/text_commen_size" />
 
@@ -38,16 +37,16 @@
                 android:id="@+id/iv_player"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_alignParentBottom="true"
                 android:src="@mipmap/icon_player"
-                android:visibility="gone"
-                android:layout_alignParentBottom="true"/>
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
                 android:gravity="right"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="@dimen/text_small_size" />

@@ -1,27 +1,19 @@
 package com.trs.aiweishi.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
-import com.blankj.utilcode.util.CacheUtils;
-import com.blankj.utilcode.util.FileUtils;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
-import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.view.ui.fragment.AdDialogFragment;
 
 import java.io.File;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Liufan on 2018/7/2.

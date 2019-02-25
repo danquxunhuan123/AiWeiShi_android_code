@@ -7,17 +7,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.bean.ListData;
+import com.lf.http.bean.ListData;
 import com.trs.aiweishi.bean.TextDrawableBean;
 import com.trs.aiweishi.util.BannerHelper;
 import com.trs.aiweishi.util.GlideUtils;
@@ -40,7 +38,6 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
 
     public HomeAdapter(List list, Context context, List<ListData> bannerData) {
         super(list, context);
-
         this.bannerData = bannerData;
     }
 
@@ -133,7 +130,7 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                                 Intent intent = new Intent(context, DetailActivity.class);
                                 intent.putExtra(DetailActivity.URL, AppConstant.XIAOSI);
                                 intent.putExtra(DetailActivity.TITLE_NAME, "智慧咨询");
-                                intent.putExtra(DetailActivity.TYPE, 3);
+                                intent.putExtra(DetailActivity.TYPE, DetailActivity.XIAOSI_TYPE);
                                 context.startActivity(intent);
                             } else if (context.getResources().getString(R.string.jc).equals(bean.getCname())) {
                                 context.startActivity(new Intent(context, CheckActivity.class));
@@ -170,6 +167,13 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                     imageView.setVisibility(View.GONE);
                 }
 
+                ImageView player = (ImageView) holder.getView(R.id.iv_player);
+                if ("视频".equals(bean.getArticleType())) {
+                    player.setVisibility(View.VISIBLE);
+                } else {
+                    player.setVisibility(View.GONE);
+                }
+
                 ((TextView) holder.getView(R.id.tv_name)).setText(bean.getTitle());
                 if (!TextUtils.isEmpty(bean.getTime()))
                     ((TextView) holder.getView(R.id.tv_time)).setText(bean.getTime().split(" ")[0]);
@@ -178,6 +182,7 @@ public class HomeAdapter extends BaseAdapter implements MyBanner.OnItemClickList
                     public void onClick(View v) {
                         Intent intent = new Intent(context, DetailActivity.class);
                         intent.putExtra(DetailActivity.TITLE_NAME, bean.getCname());
+                        intent.putExtra(DetailActivity.PARCELABLE, (Parcelable) bean);
                         intent.putExtra(DetailActivity.URL, bean.getUrl());
                         context.startActivity(intent);
                     }

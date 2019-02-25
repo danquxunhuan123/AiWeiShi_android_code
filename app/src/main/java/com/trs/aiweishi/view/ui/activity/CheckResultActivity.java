@@ -1,8 +1,6 @@
 package com.trs.aiweishi.view.ui.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
@@ -11,11 +9,10 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.trs.aiweishi.R;
-import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.presenter.IUserPresenter;
-import com.trs.aiweishi.view.IRegistView;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.presenter.IUserPresenter;
+import com.lf.http.view.IRegistView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,9 +43,15 @@ public class CheckResultActivity extends BaseActivity  implements IRegistView {
     }
 
     public void getCode(View view) {
+        String phone = etPhone.getText().toString().trim();
+        if (TextUtils.isEmpty(phone)){
+            ToastUtils.showShort(getResources().getString(R.string.phone));
+            return;
+        }
+
         Map<String, String> params = new HashMap<>();
         params.put("attributeName", Base64.encodeToString("mobile".getBytes(), Base64.DEFAULT));
-        params.put("attributeValue", Base64.encodeToString(etPhone.getText().toString().trim().getBytes(), Base64.DEFAULT));
+        params.put("attributeValue", Base64.encodeToString(phone.getBytes(), Base64.DEFAULT));
         presenter.getCode(0,params);
     }
 

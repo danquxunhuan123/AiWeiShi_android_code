@@ -9,7 +9,9 @@ import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.PhoneUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -25,13 +28,13 @@ import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.WorkTimeAdapter;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.bean.SearchBean;
-import com.trs.aiweishi.bean.Site;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.SearchBean;
+import com.lf.http.bean.Site;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.AlertDialogUtil;
 import com.trs.aiweishi.util.PopWindowUtil;
 import com.trs.aiweishi.util.RecycleviewUtil;
-import com.trs.aiweishi.view.ITimeView;
+import com.lf.http.view.ITimeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +52,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.trs.aiweishi.view.ui.activity.ReportDataActivity.MONITORING_SITE_NAME;
 
 public class CheckDetailActivity extends BaseActivity implements ITimeView, WorkTimeAdapter.OnTimeSelectListener {
 
@@ -83,6 +88,8 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
     RelativeLayout yyTime2;
     @BindView(R.id.tv_yy_time)
     TextView yyTime3;
+    @BindView(R.id.iv_suspension)
+    ImageView suspension;
 
     public static String TAG = "bean";
     public static String INTEXTRA = "extra";
@@ -94,8 +101,13 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
     private List<String> weeks = new ArrayList<>();
     private List<String> days = new ArrayList<>();
     private String selectTimes = "";
-    private String ngoId;
-    private String ngoName;
+    private String orgId;
+    private String orgName;
+    private String orgAddr;
+    private int downX;
+    private int downY;
+    private int l;
+    private int t;
 
     @Override
     protected String initToolBarName() {
@@ -113,9 +125,13 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
 
         String reservable = "0";
         if (extra == 0) {
-            Site.Monitor bean = (Site.Monitor) getIntent().getSerializableExtra(TAG);
-            tvName.setText(Html.fromHtml(bean.getOrgName()));
-            tvAddress.setText(Html.fromHtml(bean.getOrgAddr()));
+            Site.Monitor bean = getIntent().getParcelableExtra(TAG);
+            orgName = bean.getOrgName();
+            orgAddr = bean.getOrgAddr();
+            orgId = bean.getOrgId();
+
+            tvName.setText(Html.fromHtml(orgName));
+            tvAddress.setText(Html.fromHtml(orgAddr));
             tvPhone.setText(bean.getTel());
 
             if (TextUtils.isEmpty(bean.getDetectionWay()))
@@ -127,13 +143,12 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
                 tvCheckNote.setText("暂无");
             else
                 tvCheckNote.setText(bean.getDescription());
-            ngoId = bean.getOrgId();
+
             reservable = bean.getReservable();
-            ngoName = bean.getOrgName();
 
             lat = bean.getLat();
             lon = bean.getLon();
-            title = String.valueOf(Html.fromHtml(bean.getOrgAddr()));
+            title = String.valueOf(Html.fromHtml(orgAddr));
         } else {
             SearchBean.SearchData searBean = getIntent().getParcelableExtra(TAG);
             tvName.setText(Html.fromHtml(searBean.getORGNAME()));
@@ -141,8 +156,8 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
             tvPhone.setText(searBean.getTEL());
             tvCheckWay.setText("暂无");
             tvCheckNote.setText("暂无");
-//            ngoName = searBean.getORGNAME();
-            ngoId = searBean.getID();
+//            orgName = searBean.getORGNAME();
+            orgId = searBean.getID();
 
             lat = searBean.getLAT();
             lon = searBean.getLON();
@@ -159,9 +174,91 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
 //        presenter.getNgoInfo(AppConstant.GET_NGO_INFO);
 
             Map<String, String> param = new HashMap<>();
-            param.put("monitoringPointId", ngoId);
+            param.put("monitoringPointId", orgId);
             presenter.getYuYueTime(AppConstant.FIND_NGO_BYID, param);
+
+//            RelativeLayout.LayoutParams pa = (RelativeLayout.LayoutParams) suspension.getLayoutParams();
+//            int l = ScreenUtils.getScreenWidth() - suspension.getWidth() + SizeUtils.dp2px(10);
+//            int t = ScreenUtils.getScreenHeight() - yyTime1.getHeight() + SizeUtils.dp2px(10);
+//            pa.leftMargin = l;
+//            pa.topMargin = t;
+//            suspension.setLayoutParams(pa);
+            suspension.setVisibility(View.VISIBLE);
+            suspension.setOnTouchListener(shopCarSettleTouch);
         }
+    }
+
+    private View.OnTouchListener shopCarSettleTouch = new View.OnTouchListener() {
+        int lastX, lastY;
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            int ea = event.getAction();
+            DisplayMetrics dm = getResources().getDisplayMetrics();
+            int screenWidth = dm.widthPixels;
+//            int screenHeight = dm.heightPixels - 100;//需要减掉图片的高度
+            int screenHeight = dm.heightPixels;//需要减掉图片的高度
+            switch (ea) {
+                case MotionEvent.ACTION_DOWN:
+                    lastX = (int) event.getRawX();//获取触摸事件触摸位置的原始X坐标
+                    lastY = (int) event.getRawY();
+                    downX = lastX;
+                    downY = lastY;
+                    return false;
+                case MotionEvent.ACTION_MOVE:
+                    //event.getRawX();获得移动的位置
+                    int dx = (int) event.getRawX() - lastX;
+                    int dy = (int) event.getRawY() - lastY;
+                    l = v.getLeft() + dx;
+                    t = v.getTop() + dy;
+                    int r = v.getRight() + dx;
+                    int b = v.getBottom() + dy;
+
+                    //下面判断移动是否超出屏幕
+                    if (l < 0) {
+                        l = 0;
+                        r = l + v.getWidth();
+                    }
+//                    if (t < 0) { //屏幕顶部
+//                        t = 0;
+//                        b = t + v.getHeight();
+//                    }
+                    if (t < BarUtils.getStatusBarHeight()) { //以状态栏高度为界限
+                        t = BarUtils.getStatusBarHeight();
+                        b = t + v.getHeight();
+                    }
+                    if (r > screenWidth) {
+                        r = screenWidth;
+                        l = r - v.getWidth();
+                    }
+                    if (b > screenHeight) {
+                        b = screenHeight;
+                        t = b - v.getHeight();
+                    }
+                    v.layout(l, t, r, b);
+                    lastX = (int) event.getRawX();
+                    lastY = (int) event.getRawY();
+//                    v.postInvalidate();
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    // 解决当父布局发生改变冲毁则移动的view会回到原来的位置
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                    params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    params.removeRule(RelativeLayout.ABOVE);
+                    params.setMargins(l, t - BarUtils.getStatusBarHeight(), 0, 0);
+                    v.setLayoutParams(params);
+
+                    return (Math.abs(event.getRawX() - downX) > 3 || Math.abs(event.getRawY() - downY) > 3)
+                            ? true : false;
+            }
+            return false;
+        }
+    };
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+//        suspension.layout(upLeft, upTop, upRight, upBottom);
     }
 
     @Override
@@ -169,9 +266,28 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
         return R.layout.activity_check_detail;
     }
 
-    @OnClick({R.id.iv_back, R.id.tv_phone, R.id.tv_address, R.id.tv_yuyue_sure})
+    @OnClick({R.id.iv_back, R.id.tv_phone, R.id.tv_address, R.id.tv_yuyue_sure
+            , R.id.iv_suspension, R.id.tv_fankui}) //
     public void back(View view) {
         switch (view.getId()) {
+            case R.id.tv_fankui:
+                Intent fankui = new Intent(this, CheckFanKuiActivity.class);
+                fankui.putExtra(MONITORING_SITE_NAME, orgName);
+//                fankui.putExtra(LOCATION_DATA, getIntent().getParcelableExtra(LOCATION_DATA));
+                startActivity(fankui);
+                break;
+            case R.id.iv_suspension:
+                if (spUtils.getBoolean(AppConstant.IS_LOGIN)) {
+//                    showCheckDialog();
+                    Intent intent = new Intent(this, DetailActivity.class);
+                    intent.putExtra(DetailActivity.TYPE, DetailActivity.CHECK_APPLAY_TYPE);
+                    intent.putExtra(DetailActivity.URL, AppConstant.APPLAY_CHECK_PACKAGE + orgId);
+                    startActivity(intent);
+                } else {
+                    ToastUtils.showShort(getResources().getString(R.string.login_warn));
+                    startActivity(new Intent(CheckDetailActivity.this, LoginActivity.class));
+                }
+                break;
             case R.id.iv_back:
                 finish();
                 break;
@@ -190,6 +306,68 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
                 } else
                     ToastUtils.showShort(getResources().getString(R.string.check_time_warn));
                 break;
+        }
+    }
+
+//    private void showCheckDialog() {
+//        final AlertDialogUtil dialogUtil = new AlertDialogUtil(this);
+//        dialogUtil.setContentView(R.layout.check_dialog_layout)
+//                .setViewClickListener(R.id.dialog_btn_sure, new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        dialogUtil.dismiss();
+//                        EditText viewText = (EditText) dialogUtil.getViewText(R.id.dialog_content);
+//                        submitPack(viewText.getText().toString().trim());
+//                    }
+//                })
+//                .setViewClickListener(R.id.dialog_btn_cancel
+//                        , new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                dialogUtil.dismiss();
+//                            }
+//                        })
+//                .create();
+//    }
+
+    private void submitPack(String sendAddress) {
+        if (TextUtils.isEmpty(sendAddress)) {
+            ToastUtils.showShort("请输入地址！");
+            return;
+        }
+        if (!TextUtils.isEmpty(yuyueTime.getText().toString().trim())
+                && yuyueTime.getText().toString().split(" ").length == 3) {
+            String[] split = yuyueTime.getText().toString().split(" ");
+            String bookingTime = split[0] + " " + split[2].split("-")[0];
+
+            Map<String, String> param = new HashMap<>();
+            param.put("mobile", spUtils.getString(AppConstant.USER_PHONE));
+            if (!TextUtils.isEmpty(spUtils.getString(AppConstant.USER_NAME)))
+                param.put("nickName", spUtils.getString(AppConstant.USER_NAME));
+            else
+                param.put("nickName", spUtils.getString(AppConstant.USER_PHONE));
+            param.put("monitoringPoint", orgName);
+            param.put("way", "1");
+            param.put("bookingTime", bookingTime);
+            param.put("jiancedian", orgId);
+            param.put("sendAddress", sendAddress);
+            presenter.submitPackage(AppConstant.SUBMIT_PACKAGE, param);
+
+            MProgressDialog.showProgress(this, config);
+        } else
+            ToastUtils.showShort(getResources().getString(R.string.check_time_warn));
+    }
+
+    @Override
+    public void submitPackage(String string) {
+        MProgressDialog.dismissProgress();
+
+        try {
+            JSONObject result = new JSONObject(string);
+//            int code = result.getInt("code");
+            ToastUtils.showShort(result.getString("msg"));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -253,8 +431,8 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
             param.put("nickName", spUtils.getString(AppConstant.USER_PHONE));
         param.put("way", "0");
         param.put("bookingTime", bookingTime);
-        param.put("jiancedian", ngoId);
-        param.put("monitoringPoint", ngoName);
+        param.put("jiancedian", orgId);
+        param.put("monitoringPoint", orgName);
         param.put("remarks", "");
         presenter.submitBooking(AppConstant.SUBMIT_BOOKING, param);
 
@@ -416,10 +594,10 @@ public class CheckDetailActivity extends BaseActivity implements ITimeView, Work
         JSONObject data = null;
         try {
             data = new JSONObject(json).getJSONArray("data").getJSONObject(0);
-            ngoId = data.getString("NGOid");
-//            ngoName = data.getString("NGOName");
+            orgId = data.getString("NGOid");
+//            orgName = data.getString("NGOName");
             Map<String, String> param = new HashMap<>();
-            param.put("monitoringPointId", ngoId);
+            param.put("monitoringPointId", orgId);
             presenter.getYuYueTime(AppConstant.FIND_NGO_BYID, param);
         } catch (JSONException e) {
             e.printStackTrace();

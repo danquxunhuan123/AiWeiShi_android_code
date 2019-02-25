@@ -1,5 +1,6 @@
 package com.trs.aiweishi.view.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
@@ -7,19 +8,17 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.baidu.location.BDLocation;
-import com.blankj.utilcode.util.LogUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.CheckAdapter;
-import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.base.BaseBean;
+import com.lf.http.bean.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
-import com.trs.aiweishi.bean.Site;
-import com.trs.aiweishi.bean.SiteBean;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.Site;
+import com.lf.http.bean.SiteBean;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.DataHelper;
 import com.trs.aiweishi.util.RecycleviewUtil;
-import com.trs.aiweishi.view.ui.activity.CheckActivity;
+import com.trs.aiweishi.view.ui.activity.CheckDetailActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
-public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMoreListener {
+public class CheckFragment extends BaseFragment implements
+        BaseAdapter.OnLoadMoreListener,CheckAdapter.OnCheckClickListener {
     @Inject
     IHomePresenter presenter;
     @BindView(R.id.recycleview)
@@ -76,6 +76,7 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
         if (adapter == null) {
             adapter = new CheckAdapter(monitors, context);
             adapter.setOnLoadMoreListener(this);
+            adapter.setOnCheckClickListener(this);
             RecycleviewUtil.initLinearRecycleView(recyclerView, adapter, context);
         } else {
             adapter.updateData(monitors);
@@ -151,5 +152,13 @@ public class CheckFragment extends BaseFragment implements BaseAdapter.OnLoadMor
             pageNum++;
             requestLocation();
         }
+    }
+
+    @Override
+    public void onCheckClick(Parcelable parcelable) {
+        Intent intent = new Intent(context, CheckDetailActivity.class);
+        intent.putExtra(CheckDetailActivity.TAG, parcelable);
+//        intent.putExtra(LOCATION_DATA, location);
+        context.startActivity(intent);
     }
 }

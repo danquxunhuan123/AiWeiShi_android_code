@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="10dp">
+
+    <include layout="@layout/yuyue_item_layout" />
+
+    <LinearLayout
+        android:id="@+id/ll_upload_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:background="@android:color/white"
+        android:gravity="right"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/but_upload_img"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/corner_blue_shape"
+            android:text="上传图片"
+            android:textColor="@color/color_3970e7"
+            android:textSize="@dimen/text_commen_size" />
+    </LinearLayout>
+
+</LinearLayout>

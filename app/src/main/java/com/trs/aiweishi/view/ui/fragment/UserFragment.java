@@ -17,22 +17,22 @@ import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
-import com.trs.aiweishi.base.BaseBean;
+import com.lf.http.bean.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
-import com.trs.aiweishi.bean.UserData;
-import com.trs.aiweishi.presenter.IUserPresenter;
+import com.lf.http.bean.UserData;
+import com.lf.http.presenter.IUserPresenter;
 import com.trs.aiweishi.util.AlertDialogUtil;
 import com.trs.aiweishi.util.DataCleanManager;
 import com.trs.aiweishi.util.GlideUtils;
 import com.trs.aiweishi.util.PopWindowUtil;
 import com.trs.aiweishi.util.UMShareUtil;
-import com.trs.aiweishi.view.IUserCenterView;
+import com.lf.http.view.IUserCenterView;
 import com.trs.aiweishi.view.ui.activity.AboutUsActivity;
-import com.trs.aiweishi.view.ui.activity.CheckInfosActivity;
 import com.trs.aiweishi.view.ui.activity.CheckResultActivity;
 import com.trs.aiweishi.view.ui.activity.FeedBackActivity;
 import com.trs.aiweishi.view.ui.activity.LoginActivity;
 import com.trs.aiweishi.view.ui.activity.MyBookingActivity;
+import com.trs.aiweishi.view.ui.activity.MyCheckHistoryActivity;
 import com.trs.aiweishi.view.ui.activity.MyQuestionActivity;
 import com.trs.aiweishi.view.ui.activity.UserConfigActivity;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -70,7 +70,7 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
     TextView versionWarn;
     @BindView(R.id.tv_cache)
     TextView cache;
-//    @BindView(R.id.tv_collect)
+    //    @BindView(R.id.tv_collect)
 //    TextView tvCollect;
 //    @BindView(R.id.tv_news_center)
 //    TextView tvNewsCenter;
@@ -154,17 +154,21 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
 
     @OnClick({R.id.ib_config, R.id.ll_clear_cache, R.id.tv_feedback,
             R.id.tv_share, R.id.ll_check_version, R.id.iv_my_yy,
-            R.id.iv_my_dbsx, R.id.ll_user, R.id.tv_about,R.id.tv_checks,R.id.tv_check_result})
+            R.id.iv_my_dbsx, R.id.ll_user, R.id.tv_about, R.id.tv_checks, R.id.tv_check_result})
     public void toConfig(View view) {
         switch (view.getId()) {
             case R.id.tv_checks:
-                ToastUtils.showShort("敬请期待~");
-//                startActivity(new Intent(context, CheckInfosActivity.class));
+//                ToastUtils.showShort("敬请期待~");
+                if (sp.getBoolean(AppConstant.IS_LOGIN)) {
+                    startActivity(new Intent(context, MyCheckHistoryActivity.class));
+                } else {
+                    startActivityForResult(new Intent(context, LoginActivity.class), RESULT_USER);
+                }
                 break;
             case R.id.tv_check_result:
                 if (sp.getBoolean(AppConstant.IS_LOGIN)) {
                     startActivity(new Intent(context, CheckResultActivity.class));
-                }else {
+                } else {
                     startActivityForResult(new Intent(context, LoginActivity.class), RESULT_USER);
                 }
                 break;
@@ -186,7 +190,8 @@ public class UserFragment extends BaseFragment implements IUserCenterView, UMSha
                 if (sp.getBoolean(AppConstant.IS_LOGIN))
                     startActivity(new Intent(context, FeedBackActivity.class));
                 else
-                    ToastUtils.showShort(getResources().getString(R.string.login_warn));
+                    startActivityForResult(new Intent(context, LoginActivity.class), RESULT_USER);
+//                    ToastUtils.showShort(getResources().getString(R.string.login_warn));
                 break;
             case R.id.ll_check_version:
                 //有版本点击应用宝页面

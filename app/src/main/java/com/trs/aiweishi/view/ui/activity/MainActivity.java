@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,14 +15,14 @@ import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
+import com.lf.http.bean.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
-import com.trs.aiweishi.bean.HomeBean;
-import com.trs.aiweishi.bean.UpdateBean;
-import com.trs.aiweishi.controller.FragmentController;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.HomeBean;
+import com.lf.http.bean.UpdateBean;
+import com.trs.aiweishi.controller.FragmentManager;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.AlertDialogUtil;
-import com.trs.aiweishi.view.IMainView;
+import com.lf.http.view.IMainView;
 import com.trs.aiweishi.view.ui.fragment.DocFragment;
 import com.trs.aiweishi.view.ui.fragment.HomeFragment;
 import com.trs.aiweishi.view.ui.fragment.NgoFragment;
@@ -49,10 +48,9 @@ public class MainActivity extends BaseActivity implements IMainView {
     @BindView(R.id.ll_bottom)
     LinearLayout llBottom;
 
-    private FragmentController controller = null;
+    private FragmentManager controller = null;
     private View lastSelectedText = null;
     private long mExitTime = 0;
-
     private int lastShowIndex;
     private HomeBean bean = null;
     private BaseFragment homeFragment = null;
@@ -101,10 +99,11 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     private void initSelect(int defaultSelect) {
         if (controller == null)
-            controller = FragmentController.getInstance(this, R.id.fl_content);
+            controller = FragmentManager.getInstance(this, R.id.fl_content);
 
         controller.setCurrentShowIndex(defaultSelect);
-        for (int a = 0; a < llBottom.getChildCount(); a++) {
+        int childCount = llBottom.getChildCount();
+        for (int a = 0; a < childCount; a++) {
             if (a == controller.getCurrentShowIndex()) {
                 setSelectIcon(llBottom.getChildAt(a));//默认选中首页
             }
@@ -182,7 +181,6 @@ public class MainActivity extends BaseActivity implements IMainView {
         homeFragment = HomeFragment.newInstance(bean.getChannel_list().get(0));
         controller.addFragment(homeFragment, 0);
         lastShowIndex = 0;
-
         homeFragPresenter.updateInfo(AppConstant.UPDATE);
     }
 
@@ -196,6 +194,40 @@ public class MainActivity extends BaseActivity implements IMainView {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void update(final UpdateBean obj) {
+        spUtils.put(AppConstant.YINGYONGBAO, obj.getAndroid_url()); //应用宝地址
+        spUtils.put(AppConstant.VERSION_NAME, obj.getAndroid_CurrentVersion()); //服务器版本号
+        if (!AppUtils.getAppVersionName().equals(obj.getAndroid_CurrentVersion())) {
+            spUtils.put(AppConstant.IS_UPDATE, true); //版本更新标记，true 需要更新
+            //如果取消过版本更新，就不再提示。
+            boolean update = spUtils.getBoolean(AppConstant.CANCLE_UPDATE, false);
+            if (update) return;
+
+            new AlertDialogUtil(this)
+                    .setDialogView()
+                    .setSureColor(Color.RED)
+                    .setCancleColor(Color.BLUE)
+                    .setDialogTitle(obj.getAndroid_CurrentVersion() + "版本更新")
+                    .setDialogContent(obj.getAndroid_boxmsg().replace("\\n", "\n"))
+                    .setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                        @Override
+                        public void OnSureClick() {
+                            Uri uri = Uri.parse(obj.getAndroid_url());
+                            startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                        }
+
+                        @Override
+                        public void OnCancleClick() {
+                            spUtils.put(AppConstant.CANCLE_UPDATE, true);
+                        }
+                    })
+                    .create();
+        } else {
+            spUtils.put(AppConstant.IS_UPDATE, false);  //版本更新标记，不需要更新
+        }
     }
 
     @Override
@@ -221,50 +253,8 @@ public class MainActivity extends BaseActivity implements IMainView {
             mExitTime = System.currentTimeMillis();
         } else {
             finish();
-            System.exit(0);
-        }
-    }
-
-    @Override
-    public void update(final UpdateBean obj) {
-        spUtils.put(AppConstant.YINGYONGBAO, obj.getAndroid_url()); //应用宝地址
-        spUtils.put(AppConstant.VERSION_NAME,obj.getAndroid_CurrentVersion()); //服务器版本号
-        if (!AppUtils.getAppVersionName().equals(obj.getAndroid_CurrentVersion())) {
-            spUtils.put(AppConstant.IS_UPDATE, true); //版本更新标记，true 需要更新
-            //如果取消过版本更新，就不再提示。
-            boolean update = spUtils.getBoolean(AppConstant.CANCLE_UPDATE, false);
-            if (update) {
-                //当前app版本与记录的版本不一样，说明更新了app
-//                String versionName = spUtils.getString(AppConstant.APP_LAST_VERSION);
-//                if (TextUtils.isEmpty(versionName))
-//                    spUtils.put(AppConstant.APP_LAST_VERSION, AppUtils.getAppVersionName());
-//                if (!AppUtils.getAppVersionName().equals(spUtils.getString(AppConstant.APP_LAST_VERSION))) {
-//                    spUtils.put(AppConstant.APP_LAST_VERSION, AppUtils.getAppVersionName());
-//                } else
-                    return;
-            }
-
-            new AlertDialogUtil(this)
-                    .setDialogView()
-                    .setSureColor(Color.RED)
-                    .setCancleColor(Color.BLUE)
-                    .setDialogTitle(obj.getAndroid_CurrentVersion() + "版本更新")
-                    .setDialogContent(obj.getAndroid_boxmsg().replace("\\n", "\n"))
-                    .setOnClickListener(new AlertDialogUtil.OnClickListener() {
-                        @Override
-                        public void OnSureClick() {
-                            Uri uri = Uri.parse(obj.getAndroid_url());
-                            startActivity(new Intent(Intent.ACTION_VIEW, uri));
-                        }
-
-                        @Override
-                        public void OnCancleClick() {
-                            spUtils.put(AppConstant.CANCLE_UPDATE, true);
-                        }
-                    })
-                    .create();
-        } else {
-            spUtils.put(AppConstant.IS_UPDATE, false);  //版本更新标记，不需要更新
+            overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
+//            System.exit(0);
         }
     }
 }

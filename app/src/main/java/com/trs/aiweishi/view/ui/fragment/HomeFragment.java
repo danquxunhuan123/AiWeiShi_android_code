@@ -12,14 +12,14 @@ import com.blankj.utilcode.util.ObjectUtils;
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.HomeAdapter;
-import com.trs.aiweishi.base.BaseBean;
+import com.lf.http.bean.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
-import com.trs.aiweishi.bean.ListData;
-import com.trs.aiweishi.bean.ListDataBean;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.ListData;
+import com.lf.http.bean.ListDataBean;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.DataHelper;
 import com.trs.aiweishi.util.RecycleviewUtil;
-import com.trs.aiweishi.view.IHomeView;
+import com.lf.http.view.IHomeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,18 +45,16 @@ public class HomeFragment extends BaseFragment implements IHomeView,
     private final int listCount = 5;
     private int list1 = 0;
     private final int SPAN_COUNT = 3;
-    public static String mParam1 = "param1";
+    public static String BEAN = "bean";
     private List<ListData> bannerDatas = new ArrayList<>();
     private List<ListData> list = new ArrayList<>();
     private List<ListData> channel_list;
-    List<ListData> hudong_datas;
-
-    private HomeAdapter adapter;
+//    private List<ListData> hudong_datas;
 
     public static BaseFragment newInstance(ListData channelBean) {
         BaseFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(mParam1, channelBean);
+        args.putParcelable(BEAN, channelBean);
         fragment.setArguments(args);
         return fragment;
     }
@@ -110,7 +108,7 @@ public class HomeFragment extends BaseFragment implements IHomeView,
         refreshLayout.setOnRefreshListener(this);
         ListData bean = null;
         if (getArguments() != null) {
-            bean = getArguments().getParcelable(mParam1);
+            bean = getArguments().getParcelable(BEAN);
         }
 
         channel_list = bean.getChannel_list();
@@ -132,18 +130,6 @@ public class HomeFragment extends BaseFragment implements IHomeView,
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-//        banner.stopAutoPlay();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-//        banner.startAutoPlay();
-    }
-
-    @Override
     public void onRefresh() {
         homePresenter.getBannerData(channel_list.get(0).getUrl());
     }
@@ -157,7 +143,7 @@ public class HomeFragment extends BaseFragment implements IHomeView,
         list.add(new ListData());
         List<ListData> ld = ((ListDataBean) baseBean).getList_datas();
         if (ObjectUtils.isNotEmpty(ld)) {
-            for (int a = 0; a < (ld.size() > 5 ? 5 : ld.size()); a++) {
+            for (int a = 0; a < (ld.size() > listCount ? listCount : ld.size()); a++) {
                 bannerDatas.add(ld.get(a));
             }
         }
@@ -186,14 +172,14 @@ public class HomeFragment extends BaseFragment implements IHomeView,
 
     @Override
     public void showHuoDong(BaseBean baseBean) {
-        hudong_datas = ((ListDataBean) baseBean).getList_datas();
+        List<ListData> hudong_datas = ((ListDataBean) baseBean).getList_datas();
         ListData title = new ListData();
         title.setCname(channel_list.get(1).getCname());
         title.setUrl(channel_list.get(1).getUrl());
         list.add(title);  //最新活动
 
         list1 = hudong_datas.size() > listCount ? listCount : hudong_datas.size();
-        for (int i = 0; i < (hudong_datas.size() > listCount ? listCount : hudong_datas.size()); i++) {
+        for (int i = 0; i < list1; i++) {
             list.add(hudong_datas.get(i));
         }
 
@@ -210,13 +196,26 @@ public class HomeFragment extends BaseFragment implements IHomeView,
         title.setUrl(channel_list.get(2).getUrl());
         list.add(title); //最新新闻
 
-        for (int i = 0; i < (list_datas.size() > listCount ? listCount : list_datas.size()); i++) {
+        int i1 = list_datas.size() > listCount ? listCount : list_datas.size();
+        for (int i = 0; i < i1; i++) {
             list.add(list_datas.get(i));
         }
 
         List<ListData> listData = DataHelper.initHomeList(list, list1);
-        adapter = new HomeAdapter(listData, context, bannerDatas);
+        HomeAdapter adapter = new HomeAdapter(listData, context, bannerDatas);
         RecycleviewUtil.initGridRecycleView(recycleview, adapter, context, SPAN_COUNT);
     }
 
+
+    @Override
+    public void onStop() {
+        super.onStop();
+//        banner.stopAutoPlay();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+//        banner.startAutoPlay();
+    }
 }

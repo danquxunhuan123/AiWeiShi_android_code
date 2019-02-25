@@ -11,9 +11,8 @@ import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.bean.ListData;
+import com.lf.http.bean.ListData;
 import com.trs.aiweishi.util.GlideUtils;
-import com.trs.aiweishi.view.ui.activity.CheckDetailActivity;
 import com.trs.aiweishi.view.ui.activity.DetailActivity;
 
 import java.util.List;

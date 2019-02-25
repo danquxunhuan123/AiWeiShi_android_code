@@ -1,10 +1,8 @@
 package com.trs.aiweishi.view.ui.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -12,14 +10,14 @@ import com.blankj.utilcode.util.BarUtils;
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.NgoAdapter;
-import com.trs.aiweishi.base.BaseBean;
+import com.lf.http.bean.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
-import com.trs.aiweishi.bean.ListData;
-import com.trs.aiweishi.bean.ListDataBean;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.ListData;
+import com.lf.http.bean.ListDataBean;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.DataHelper;
 import com.trs.aiweishi.util.RecycleviewUtil;
-import com.trs.aiweishi.view.INgoView;
+import com.lf.http.view.INgoView;
 
 import java.util.ArrayList;
 import java.util.List;

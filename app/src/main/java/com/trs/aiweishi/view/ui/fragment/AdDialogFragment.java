@@ -53,6 +53,8 @@ public class AdDialogFragment extends BaseDialogFragment {
         //广告倒计时
         progressView.setCurrentProgress(0);
         handler.postDelayed(runnable, 1000);
+
+        setCancelable(false);
     }
 
     Runnable runnable = new Runnable() {
@@ -111,4 +113,5 @@ public class AdDialogFragment extends BaseDialogFragment {
         handler.removeMessages(what_1);
         handler.removeMessages(what_3);
     }
+
 }

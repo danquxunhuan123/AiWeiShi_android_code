@@ -43,8 +43,7 @@ public class RoundImageView extends AppCompatImageView {
     private int currRound = dp2px(10);
 
     public RoundImageView(Context context) {
-        super(context);
-        initViews();
+        this(context, null);
     }
 
     public RoundImageView(Context context, AttributeSet attrs) {
@@ -54,7 +53,6 @@ public class RoundImageView extends AppCompatImageView {
     public RoundImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         obtainStyledAttrs(context, attrs, defStyleAttr);
-        initViews();
     }
 
     private void obtainStyledAttrs(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -62,10 +60,8 @@ public class RoundImageView extends AppCompatImageView {
         currMode = a.hasValue(R.styleable.RoundImageView_type) ? a.getInt(R.styleable.RoundImageView_type, MODE_NONE) : MODE_NONE;
         currRound = a.hasValue(R.styleable.RoundImageView_radius) ? a.getDimensionPixelSize(R.styleable.RoundImageView_radius, currRound) : currRound;
         a.recycle();
-    }
 
-    public void setCurrMode(int currMode) {
-        this.currMode = currMode;
+        initViews();
     }
 
     private void initViews() {
@@ -77,12 +73,10 @@ public class RoundImageView extends AppCompatImageView {
         /**
          * 当模式为圆形模式的时候，我们强制让宽高一致
          */
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (currMode == MODE_CIRCLE) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             int result = Math.min(getMeasuredHeight(), getMeasuredWidth());
             setMeasuredDimension(result, result);
-        } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }
 
@@ -131,6 +125,10 @@ public class RoundImageView extends AppCompatImageView {
             }
             canvas.restoreToCount(saveCount);
         }
+    }
+
+    public void setCurrMode(int currMode) {
+        this.currMode = currMode;
     }
 
     /**

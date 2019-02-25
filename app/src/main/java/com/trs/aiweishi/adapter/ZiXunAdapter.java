@@ -3,8 +3,6 @@ package com.trs.aiweishi.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,7 +11,7 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.bean.ListData;
+import com.lf.http.bean.ListData;
 import com.trs.aiweishi.util.GlideUtils;
 import com.trs.aiweishi.view.ui.activity.DetailActivity;
 
@@ -72,6 +70,10 @@ public class ZiXunAdapter extends BaseAdapter {
                 intent.putExtra(DetailActivity.PARCELABLE, (Parcelable) bean);
                 intent.putExtra(DetailActivity.URL, bean.getUrl());
                 context.startActivity(intent);
+
+                if("作品展示".equals(bean.getCname())){
+                    listener.onZiXunItemClick(bean.getDocid());
+                }
             }
         });
     }
@@ -80,4 +82,11 @@ public class ZiXunAdapter extends BaseAdapter {
         this.cname = cname;
     }
 
+    private OnZiXunItemClickListener listener;
+    public void setOnZiXunItemClickListener(OnZiXunItemClickListener listener){
+        this.listener = listener;
+    }
+    public interface OnZiXunItemClickListener{
+        void onZiXunItemClick(String docid);
+    }
 }

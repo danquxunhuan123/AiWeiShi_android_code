@@ -22,13 +22,14 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.maning.mndialoglibrary.MProgressDialog;
 import com.tencent.liteav.demo.play.SuperPlayerView;
 import com.trs.aiweishi.R;
+import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.bean.AdBean;
-import com.trs.aiweishi.bean.DetailBean;
-import com.trs.aiweishi.bean.ListData;
-import com.trs.aiweishi.helper.SuperPlayerHelper;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.bean.AdBean;
+import com.lf.http.bean.DetailBean;
+import com.lf.http.bean.ListData;
+import com.trs.aiweishi.controller.SuperPlayerManager;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.AndroidBug5497Workaround_1;
 import com.trs.aiweishi.util.PopWindowUtil;
 import com.trs.aiweishi.util.ReadFromFile;
@@ -36,21 +37,28 @@ import com.trs.aiweishi.util.RegularConversionUtil;
 import com.trs.aiweishi.util.UMShareUtil;
 import com.trs.aiweishi.util.Utils;
 import com.trs.aiweishi.util.WebViewUtils;
+import com.lf.http.view.IDetailView;
 import com.trs.aiweishi.view.ui.fragment.ChannelDialogFragment;
 import com.trs.aiweishi.view.ui.fragment.ImgsDialogFragment;
 import com.trs.aiweishi.view.ui.fragment.PdfDialogFragment;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareSuccessListener {
+public class DetailActivity extends BaseActivity implements IDetailView, UMShareUtil.OnShareSuccessListener {
 
     @Inject
     IHomePresenter presenter;
@@ -67,27 +75,32 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
     @BindView(R.id.vs_player)
     ViewStub viewStub;
 
-//    private String playerTitle = "测试视频-720P";
-//    private String playerUrl = "http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/68e3febf4564972819220421305/v.f30.mp4";
-
-    public static final String PARCELABLE = "parcelable";
-    public static final String TITLE_NAME = "title_name";
-    public static final String URL = "url";
-    public static final String TYPE = "type";
-    private SuperPlayerHelper playerHelper;
+    public static final int CHECK_APPLAY_TYPE = 0;  //检测包申请
+    public static final int AD_TYPE = -1;  //广告
+    public static final int XIAOSI_TYPE = 3;  //小思
+    public static final int DEFAULT_NEW_TYPE = 2;  //默认详情类型
+    public static final String PARCELABLE = "parcelable";  //详情对象
+    public static final String TITLE_NAME = "title_name";  //详情标题
+    public static final String URL = "url";  //详情链接
+    public static final String TYPE = "type";  //详情类型
+    private SuperPlayerManager playerHelper;
+    private ListData detailBean;
     private UMShareUtil shareUtil;
     private PopWindowUtil sharePopUtil;
     private String toolbarName = "";
     private int type;
+    private String id;
     private List<String> imgs = new ArrayList<>();
     private String imgUrl;
     private String thumbUrl;
     private String shareUrl;
     private String title;
+    private String readingnum = "0";
+    private String localHtmlModel;
 
     @Override
     protected boolean isFitsSystemWindows() {
-        if (getIntent().getIntExtra(TYPE, 2) == 3)
+        if (getIntent().getIntExtra(TYPE, DEFAULT_NEW_TYPE) == XIAOSI_TYPE)
             return false;
         else
             return super.isFitsSystemWindows();
@@ -95,7 +108,9 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
 
     @Override
     protected String initToolBarName() {
-        AndroidBug5497Workaround_1.assistActivity(this);
+        if (getIntent().getIntExtra(TYPE, DEFAULT_NEW_TYPE) == XIAOSI_TYPE)
+            AndroidBug5497Workaround_1.assistActivity(this);
+
         toolbarName = getIntent().getStringExtra(TITLE_NAME);
         return toolbarName;
     }
@@ -123,21 +138,25 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setLoadsImagesAutomatically(true);//自动加载图片
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+
+        shareUtil = UMShareUtil.getInstance().setOnShareSuccessListener(this);
     }
 
     @Override
     protected void initData() {
-        shareUtil = UMShareUtil.getInstance().setOnShareSuccessListener(this);
+        getFromAssets();
         sharePopUtil = new PopWindowUtil(this);
         String url = getIntent().getStringExtra(URL);
-        type = getIntent().getIntExtra(TYPE, 2);
+        type = getIntent().getIntExtra(TYPE, DEFAULT_NEW_TYPE);
 
-        if (type == 2) {  //新闻详情
+        if (type == DEFAULT_NEW_TYPE) {  //新闻详情
             ListData listData = getIntent().getParcelableExtra(PARCELABLE);
             if (listData != null) {
                 if ("视频".equals(listData.getArticleType())) {
                     initPlayer(listData.getTitle(), listData.getVideoURL());
                 }
+
+                id = listData.getDocid();
             }
 
             if (url.contains(".json")) {
@@ -148,7 +167,11 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
             } else {
                 WebViewUtils.load(webView, new MyWebViewClient(), url, type);
             }
-        } else if (type == 3) {  //小思问答
+
+//            if("作品展示".equals(toolbarName)){
+//                getRead();
+//            }
+        } else if (type == XIAOSI_TYPE) {  //小思问答
             share.setVisibility(View.GONE);
             toolName.setTextColor(Color.WHITE);
             toolbar.setBackground(getResources().getDrawable(R.mipmap.bg_xiaosi));
@@ -157,7 +180,7 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
             toolbar.setLayoutParams(params);
             toolbar.setPadding(0, BarUtils.getStatusBarHeight() + 10, 0, 10);
             WebViewUtils.load(webView, new MyWebViewClient(), url, type);
-        } else if (type == -1) {//广告详情
+        } else if (type == AD_TYPE) {//广告详情
             AdBean adBean = getIntent().getParcelableExtra(PARCELABLE);
             share.setVisibility(View.VISIBLE);
             title = adBean.getAdTitle();
@@ -165,9 +188,17 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
             thumbUrl = adBean.getImageUrl();
             shareUrl = adBean.getAdUrl();
             WebViewUtils.load(webView, new MyWebViewClient(), url, type);
+        } else if (type == CHECK_APPLAY_TYPE) {//检测包申请
+            share.setVisibility(View.GONE);
+            WebViewUtils.load(webView, new MyWebViewClient(), url, type);
         }
 
         MProgressDialog.showProgress(this, config);
+    }
+
+    private void getFromAssets() {
+        localHtmlModel = ReadFromFile.getFromAssets(this, "xhwDetailedView.html");
+        localHtmlModel = localHtmlModel.replace("#SHUXIAN#", "来源:");
     }
 
     @Override
@@ -175,20 +206,51 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
         return R.layout.activity_detail;
     }
 
-    @OnClick(R.id.iv_back)
-    public void onViewClicked() {
-        finish();
+    @Override
+    public void showSuccess(BaseBean baseBean) {
+        detailBean = ((DetailBean) baseBean).getDatas();
+
+        if ("作品展示".equals(toolbarName)) {
+            getRead();
+        } else
+            loadUrl(detailBean);
+    }
+
+    private void getRead() {
+        Map<String, String> param = new HashMap<>();
+        param.put("docid", id);
+        presenter.getRead(AppConstant.GET_READING, param);
     }
 
     @Override
-    public void showSuccess(BaseBean baseBean) {
-        ListData detailBean = ((DetailBean) baseBean).getDatas();
+    public void getRead(String result) {
+//        {"code":"200","msg":"获取阅读量成功","readingnum":"0"}
+        try {
+            JSONObject json = new JSONObject(result);
+            if (json.getInt("code") == 200)
+                readingnum = json.getString("readingnum");
+//            else
+//                ToastUtils.showShort(json.getString("msg"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         loadUrl(detailBean);
     }
 
     private void initPlayer(String palyerTitle, String playerUrl) {
         toolbar.setVisibility(View.GONE);
         SuperPlayerView playerView = viewStub.inflate().findViewById(R.id.spv);
+//        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) playerView.getLayoutParams();
+//        layoutParams.width = ScreenUtils.getScreenWidth();
+//        layoutParams.height = layoutParams.width * 3 / 4;
+//        playerView.setLayoutParams(layoutParams);
+        playerView.setShareListener(new SuperPlayerView.OnShareListener() {
+            @Override
+            public void share() {
+                shareNew();
+            }
+        });
         playerView.setPlayerViewCallback(new SuperPlayerView.PlayerViewCallback() {
             @Override
             public void hideViews() {
@@ -205,11 +267,15 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
                 finish();
             }
         });
-        playerHelper = new SuperPlayerHelper(playerView);
+        playerHelper = new SuperPlayerManager(playerView);
         playerHelper.playWithMode(palyerTitle, playerUrl);
     }
 
     public void share(View view) {
+        shareNew();
+    }
+
+    private void shareNew() {
         sharePopUtil.setContentView(R.layout.share_layout)
                 .getView(R.id.tv_qq, new View.OnClickListener() {
                     @Override
@@ -269,51 +335,75 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
     public void loadUrl(ListData listData) {
         shareUrl = listData.getShareurl();
         title = listData.getTitle();
+        UMengTongJi();
         String source = listData.getSource();
         String updatedate = listData.getTime().split(" ")[0];
         String body = listData.getBody();
 
         List<String> imgSrcList = Utils.getImgSrcList(body);
-        for (int a = 0; a < imgSrcList.size(); a++) {
+        int imgSize = imgSrcList.size();
+
+        StringBuilder builder = new StringBuilder(imgUrl);
+        for (int a = 0; a < imgSize; a++) {
             String img = imgSrcList.get(a);
-            String url = imgUrl + img.substring(1);
+            String url = builder.append(img.substring(1)).toString();
             imgs.add(url);
             body = body.replace(img, url);
 
             if (a == 0)
                 thumbUrl = url;
+
+            builder.delete(imgUrl.length(), url.length());
         }
 
         body = RegularConversionUtil.removeHtmlTag(body);
-        String str = ReadFromFile.getFromAssets(this, "xhwDetailedView.html");
 
         if (!TextUtils.isEmpty(body)) {
-            str = str.replace("#CONTENT#", body);
+            localHtmlModel = localHtmlModel.replace("#CONTENT#", body);
         } else {
-            str = str.replace("#CONTENT#", "");
+            localHtmlModel = localHtmlModel.replace("#CONTENT#", "");
         }
+
         if (!TextUtils.isEmpty(title)) {
-            str = str.replaceAll("#TITLE#", title.replace("&amp;nbsp;", " "));
+            localHtmlModel = localHtmlModel.replaceAll("#TITLE#", title.replace("&amp;nbsp;", " "));
         } else {
-            str = str.replaceAll("#TITLE#", "");
+            localHtmlModel = localHtmlModel.replaceAll("#TITLE#", "");
         }
 
         if (!TextUtils.isEmpty(source)) {
-            str = str.replaceAll("#SOURCE#", source);
-            str = str.replace("#SHUXIAN#", "来源:");
+            localHtmlModel = localHtmlModel.replaceAll("#SOURCE#", source);
         } else {
-            str = str.replace("#SHUXIAN#", "");
-            str = str.replaceAll("#SOURCE#", "");
+//            localHtmlModel = localHtmlModel.replace("#SHUXIAN#", "");
+            localHtmlModel = localHtmlModel.replaceAll("#SOURCE#", "");
         }
+
         if (!TextUtils.isEmpty(updatedate))
-            str = str.replaceAll("#TIME#", updatedate);
+            localHtmlModel = localHtmlModel.replaceAll("#TIME#", updatedate);
         else
-            str = str.replaceAll("#TIME#", "");
+            localHtmlModel = localHtmlModel.replaceAll("#TIME#", "");
+
+        if ("作品展示".equals(toolbarName)) {
+            localHtmlModel = localHtmlModel.replaceAll("#READ#", "阅读:");
+            localHtmlModel = localHtmlModel.replaceAll("#READ_COUNT#", readingnum);
+        } else {
+            localHtmlModel = localHtmlModel.replaceAll("#READ#", "");
+            localHtmlModel = localHtmlModel.replaceAll("#READ_COUNT#", "");
+        }
+
 
         // webview加载html标签
-        webView.loadDataWithBaseURL(null, str, "text/html", "utf-8", null);
+        webView.loadDataWithBaseURL(null, localHtmlModel, "text/html", "utf-8", null);
 
         MProgressDialog.dismissProgress();
+    }
+
+    private void UMengTongJi() {
+        if (!TextUtils.isEmpty(id) && !TextUtils.isEmpty(title)) {
+            Map<String, String> map = new HashMap();
+            map.put("id", id);
+            map.put("new_title", title);
+            MobclickAgent.onEvent(this, "new_click_event", map);
+        }
     }
 
 
@@ -321,7 +411,7 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (type == -1) {
+            if (type == AD_TYPE) {
                 view.loadUrl(url);
                 return true;
             }
@@ -409,5 +499,10 @@ public class DetailActivity extends BaseActivity implements UMShareUtil.OnShareS
             playerHelper.release();
         }
         super.onDestroy();
+    }
+
+    @OnClick(R.id.iv_back)
+    public void onViewClicked() {
+        finish();
     }
 }

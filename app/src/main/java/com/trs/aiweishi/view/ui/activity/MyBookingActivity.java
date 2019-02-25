@@ -2,7 +2,6 @@ package com.trs.aiweishi.view.ui.activity;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,9 +12,9 @@ import com.trs.aiweishi.adapter.YuYueAdapter;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
 import com.trs.aiweishi.bean.YuYueItem;
-import com.trs.aiweishi.presenter.IUserPresenter;
+import com.lf.http.presenter.IUserPresenter;
 import com.trs.aiweishi.util.RecycleviewUtil;
-import com.trs.aiweishi.view.IBookView;
+import com.lf.http.view.IBookView;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -44,8 +44,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getItemPosition(@NonNull Object object) {
-        return POSITION_NONE;
+    public List<BaseFragment> getFragments(){
+        return fragments;
     }
+
+//    @Override
+//    public int getItemPosition(@NonNull Object object) {
+//        return POSITION_NONE;
+//    }
 }

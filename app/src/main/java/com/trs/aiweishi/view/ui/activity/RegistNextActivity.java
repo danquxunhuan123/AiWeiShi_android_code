@@ -6,15 +6,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.trs.aiweishi.R;
-import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.presenter.IUserPresenter;
-import com.trs.aiweishi.view.IBaseView;
-import com.trs.aiweishi.view.IUserView;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.presenter.IUserPresenter;
 
 import java.util.HashMap;
 import java.util.Map;

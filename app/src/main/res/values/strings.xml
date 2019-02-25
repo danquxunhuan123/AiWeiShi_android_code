@@ -3,6 +3,7 @@
     <string name="app_exit">再次点击退出应用</string>
     <string name="load_more">加载更多...</string>
     <string name="no_more">没有更多数据</string>
+    <string name="no_data">暂无数据</string>
     <string name="loading">加载中...</string>
     <string name="parse_location_desc">数据准备中...</string>
 
@@ -96,7 +97,7 @@
     <string name="share_sina">微博</string>
     <string name="share_success">分享成功</string>
     <string name="tab_ngo">NGO</string>
-    <string name="search_text">请输入关键词</string>
+    <string name="search_text">请输入关键字</string>
     <string name="find_psd">找回密码</string>
     <string name="ngo">NGO</string>
     <string name="feed_back">用户反馈</string>
@@ -120,4 +121,7 @@
     <string name="check_info_result">检测结果：%1s</string>
     <string name="check_info_address">检测地点：%1s</string>
     <string name="check_result_search">%1s检测结果查询</string>
+    <string name="upload_pic_warn">请拍摄清晰的试纸图片，我们将于一周内进行判定</string>
+    <string name="upload_pic">上传图片</string>
+    <string name="check_judge_success">感谢您的反馈！审核后我们会更新信息</string>
 </resources>

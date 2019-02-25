@@ -10,10 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.ObjectUtils;
+import com.lf.http.bean.BaseBean;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.MyHolder;
-import com.trs.aiweishi.bean.ListData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +30,12 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<MyHolder> {
     private BaseBean loadMorebean = new BaseBean();
 
     @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler()
-    {
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == what_0){
+            if (msg.what == what_0) {
                 listMore = null;
-                notifyItemRangeChanged(getItemCount() - 1,getItemCount());
+                notifyItemRangeChanged(getItemCount() - 1, getItemCount());
             }
         }
     };
@@ -49,9 +47,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<MyHolder> {
         else
             list = listData;
         this.context = context;
-
-//        loadMorebean.setType(BaseBean.ITEM_LOAD_MORE);
-//        list.add((T) loadMorebean);
     }
 
     public void updateData(List<T> listData) {
@@ -78,13 +73,13 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<MyHolder> {
         if (listData != null && listData.size() > 0) {
             list.addAll(list.size() - 1, listData);
             notifyDataSetChanged();
-        }else {
-            notifyItemRangeChanged(getItemCount() - 1,getItemCount()); //更新最后一个加载更多布局
+        } else {
+            notifyItemRangeChanged(getItemCount() - 1, getItemCount()); //更新最后一个加载更多布局
         }
     }
 
-    public void loadMoreEnd(){
-        handler.sendEmptyMessageDelayed(what_0,500);
+    public void loadMoreEnd() {
+        handler.sendEmptyMessageDelayed(what_0, 500);
     }
 
     @Override
@@ -118,13 +113,16 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<MyHolder> {
                     (holder.getView(R.id.progress_bar)).setVisibility(View.VISIBLE);
                     listener.OnLoadMore();
                 } else {//如果为空，隐藏加载布局。
-                    ((TextView) holder.getView(R.id.tv_load_more)).setText(context.getResources().getString(R.string.no_more));
                     (holder.getView(R.id.progress_bar)).setVisibility(View.GONE);
+                    if (list.size() > 1) {
+                        ((TextView) holder.getView(R.id.tv_load_more))
+                                .setText(context.getResources().getString(R.string.no_more));
+                    } else {
+                        ((TextView) holder.getView(R.id.tv_load_more))
+                                .setText(context.getResources().getString(R.string.no_data));
+                    }
                 }
             }
-//            else {
-//                holder.getItemView().setVisibility(View.GONE);
-//            }
         } else {
             bindMyViewHolder(holder, position);
         }

@@ -26,25 +26,24 @@ import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.blankj.utilcode.util.ToastUtils;
-import com.google.gson.Gson;
-import com.nanchen.compresshelper.CompressHelper;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.bean.LoginBean;
+import com.lf.http.bean.UserBean;
+import com.lf.http.bean.UserData;
+import com.lf.http.presenter.IUserPresenter;
+import com.lf.http.utils.GsonParse;
+import com.lf.http.view.IUserEditerView;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.app.AppConstant;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
 import com.trs.aiweishi.bean.JsonBean;
-import com.trs.aiweishi.bean.LoginBean;
-import com.trs.aiweishi.bean.UserBean;
-import com.trs.aiweishi.bean.UserData;
 import com.trs.aiweishi.listener.MyUMAuthListener;
-import com.trs.aiweishi.presenter.IUserPresenter;
 import com.trs.aiweishi.util.AlbumUtil;
 import com.trs.aiweishi.util.AlertDialogUtil;
 import com.trs.aiweishi.util.GetJsonDataUtil;
 import com.trs.aiweishi.util.GlideUtils;
 import com.trs.aiweishi.util.PopWindowUtil;
 import com.trs.aiweishi.util.Utils;
-import com.trs.aiweishi.view.IUserEditerView;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -52,7 +51,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,9 +63,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 
 public class UserConfigActivity extends BaseActivity implements IUserEditerView, MyUMAuthListener.OnLoginSuccessListener {
@@ -97,6 +92,7 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     private TimePickerView pvTime;
     private UserData.User user;
 
+    private final String userHeadName = "image.jpeg";
     private Uri cropUri;
     private Uri imageUriFromCamera;
     private Thread thread;
@@ -107,9 +103,9 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     private boolean isChanged = false;  //是否修改过信息
     //    private int currOptions1 = 0, currOptions2 = 0, currOptions3 = 0;
     public static String USER = "user";
-    private final int TAKE_PHOTO = 1;
-    private final int SHOW_PHOTO = 2;
-    private final int PHOTO_ALBUM = 3;
+    public static final int TAKE_PHOTO = 1;
+    public static final int SHOW_PHOTO = 2;
+    public static final int PHOTO_ALBUM = 3;
     private static final int MSG_LOAD_DATA = 0x0001;
     private static final int MSG_LOAD_SUCCESS = 0x0002;
     public static final int MSG_LOAD_FAILED = 0x0003;
@@ -307,12 +303,12 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
             case PHOTO_ALBUM:
                 if (resultCode == RESULT_OK) {
                     imageUriFromCamera = data.getData();
-                    cropUri = AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO);
+                    cropUri = AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO, userHeadName);
                 }
                 break;
             case TAKE_PHOTO:
                 if (resultCode == RESULT_OK) {
-                    cropUri = AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO);
+                    cropUri = AlbumUtil.startCrop(this, imageUriFromCamera, SHOW_PHOTO, userHeadName);
                 }
                 break;
             case SHOW_PHOTO:
@@ -369,33 +365,11 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
     private void saveEdit() {
         back.setClickable(false);
         try {
-            File file = new File(getExternalCacheDir().getPath() + "/image.jpeg");
-            file = new CompressHelper.Builder(this)
-//                    .setMaxWidth(720)  // 默认最大宽度为720
-//                    .setMaxHeight(960) // 默认最大高度为960
-//                    .setQuality(80)
-                    .setFileName("compress_user_head")
-                    .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                    .setDestinationDirectoryPath(getExternalCacheDir().getPath())
-                    .build()
-                    .compressToFile(file);
-
-            RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-
-            StringBuffer buffer = new StringBuffer();
-            buffer.append(AppConstant.BASE_URL)
-                    .append("admin/user/editHeadImg.jsp?")
-                    .append("loginUserName=")
-                    .append(spUtils.getString(AppConstant.USER_PHONE))
-                    .append("&appName=")
-                    .append(AppConstant.APP_NAME)
-                    .append("&coSessionId=")
-                    .append(spUtils.getString(AppConstant.SESSION_ID))
-                    .append("&fileName=")
-                    .append(file);
-
-            presenter.editHeadImg(buffer.toString(), part);
+            String path = getExternalCacheDir().getPath();
+            String pathName = path + "/" + userHeadName;
+            String userPhone = spUtils.getString(AppConstant.USER_PHONE);
+            String sessionId = spUtils.getString(AppConstant.SESSION_ID);
+            presenter.editHeadImg(this,path,pathName, userPhone,sessionId);
         } catch (Exception e) {
             saveInfo();
         }
@@ -458,13 +432,13 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
                 .getView(R.id.tv_select_1, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlbumUtil.openAlbum(UserConfigActivity.this, PHOTO_ALBUM);
+                        AlbumUtil.openAlbum(UserConfigActivity.this, PHOTO_ALBUM, userHeadName);
                     }
                 })
                 .getView(R.id.tv_select_2, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        imageUriFromCamera = AlbumUtil.takePhone(UserConfigActivity.this, TAKE_PHOTO);
+                        imageUriFromCamera = AlbumUtil.takePhone(UserConfigActivity.this, TAKE_PHOTO, userHeadName);
                     }
                 })
                 .showAtLocation(content);
@@ -555,9 +529,9 @@ public class UserConfigActivity extends BaseActivity implements IUserEditerView,
         ArrayList<JsonBean> detail = new ArrayList<>();
         try {
             JSONArray data = new JSONArray(result);
-            Gson gson = new Gson();
             for (int i = 0; i < data.length(); i++) {
-                JsonBean entity = gson.fromJson(data.optJSONObject(i).toString(), JsonBean.class);
+                JsonBean entity = GsonParse.parse(data.optJSONObject(i).toString(), JsonBean.class);
+//                JsonBean entity = gson.fromJson(data.optJSONObject(i).toString(), JsonBean.class);
                 detail.add(entity);
             }
         } catch (Exception e) {

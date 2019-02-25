@@ -7,10 +7,10 @@ import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.ListDataAdapter;
 import com.trs.aiweishi.base.BaseActivity;
 import com.trs.aiweishi.base.BaseAdapter;
-import com.trs.aiweishi.base.BaseBean;
-import com.trs.aiweishi.bean.ListData;
-import com.trs.aiweishi.bean.ListDataBean;
-import com.trs.aiweishi.presenter.IHomePresenter;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.bean.ListData;
+import com.lf.http.bean.ListDataBean;
+import com.lf.http.presenter.IHomePresenter;
 import com.trs.aiweishi.util.RecycleviewUtil;
 
 import java.util.List;
@@ -97,7 +97,17 @@ public class ListDataActivity extends BaseActivity implements BaseAdapter.OnLoad
     public void OnLoadMore() {
         if ((dataBean.getNowPage() + 1) < dataBean.getCountPage()) {
             //当前页数小于总页数，加载更多
-            url = url.replace(".json", "_" + page + ".json");
+            if (page == 1)
+                url = url.replace("documents", "documents" + "_" + page);
+            else {
+                String url_1 = url.substring(0, url.indexOf("documents_"));
+                url = new StringBuilder(url_1)
+                        .append("documents")
+                        .append("_")
+                        .append(page)
+                        .append(".json")
+                        .toString();
+            }
             page++;
             presenter.getChannelData(url);
         } else {

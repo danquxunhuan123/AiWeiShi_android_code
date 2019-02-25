@@ -7,12 +7,26 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.compileSdkVersion
         multiDexEnabled true //解决方法数超过65536的问题
-        versionCode 122
-        versionName "1.2.2"
+        versionCode 124
+        versionName "1.2.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters "armeabi", "armeabi-v7a"
+            abiFilters "armeabi", "armeabi-v7a", "x86", "x86_64"
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file('aiweishi.jks')
+            storePassword "123456"
+            keyAlias "aiweishi"
+            keyPassword "123456"
+        }
+        debug {
+            storeFile file('aiweishi.jks')
+            storePassword "123456"
+            keyAlias "aiweishi"
+            keyPassword "123456"
         }
     }
     buildTypes {
@@ -29,28 +43,13 @@ android {
             proguardFiles 'proguard-rules.pro'
         }
     }
-
-    signingConfigs {
-        release {
-            storeFile file('aiweishi.jks')
-            storePassword "123456"
-            keyAlias "aiweishi"
-            keyPassword "123456"
-        }
-        debug {
-            storeFile file('aiweishi.jks')
-            storePassword "123456"
-            keyAlias "aiweishi"
-            keyPassword "123456"
-        }
-    }
-
     sourceSets {
         main {
             jniLibs.srcDirs 'libs'
             jni.srcDirs = []
         }
     }
+    buildToolsVersion '27.0.0'
 }
 
 dependencies {
@@ -77,19 +76,6 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$rootProject.ext.daggerVersion"
     annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
 
-    //rxjava
-    implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxjavaVersion"
-    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxAndroidVersion"
-
-    //retrofit
-    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit2Version"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.ext.retrofit2Version"
-    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.converterGsonVersion"
-
-    //okhttp
-    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.okhttp3LoggingVersion"
-    implementation "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttp3LoggingVersion"
-
     //glide
     implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.ext.glideVersion"
@@ -105,9 +91,6 @@ dependencies {
 
     //progress
     compile "com.github.maning0303:MNProgressHUD:$rootProject.ext.progressVerison"
-
-    //compress
-    compile "com.github.nanchen2251:CompressHelper:$rootProject.ext.compressHelperVerison"
 
     //baiduLocation
     implementation files('libs/BaiduLBS_Android.jar')
@@ -127,14 +110,37 @@ dependencies {
     implementation files('libs/umeng-share-wechat-simplify-6.9.2.jar')
     implementation files('libs/umeng-sharetool-6.9.2.jar')
 
+    //推送
+
+    //PushSDK必须依赖基础组件库，所以需要加入对应依赖
+
+    //    implementation 'com.umeng.sdk:common:1.5.3'
+
+    //PushSDK必须依赖utdid库，所以需要加入对应依赖
+    implementation 'com.umeng.sdk:utdid:1.1.5.3'
+
+    //PushSDK
+    implementation 'com.umeng.sdk:push:4.2.0'
+
     //腾讯超级播放器
-    compile(name: 'LiteAVSDK_Player_5.3.6001', ext: 'aar')
-    compile(name: 'lib_tcsuperplayer', ext: 'aar')
-    compile "com.github.ctiao:DanmakuFlameMaster:$rootProject.ext.danmakuFlameVerison"
+    implementation project(':lib_tcsuperplayer')
+    implementation 'com.tencent.bugly:crashreport:latest.release'
+
+    //bugly     $rootProject.ext.buglyVersion
+
     // 超级播放器弹幕集成的第三方库
 
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
-//    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
-////    // Optional, if you use support library fragments:
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
+    //    compile "com.github.ctiao:DanmakuFlameMaster:$rootProject.ext.danmakuFlameVerison"
+
+    //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+
+    //    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
+
+    ////    // Optional, if you use support library fragments:
+
+    //    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
+
+    //eventbus
+//    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation project(':net_work')
 }

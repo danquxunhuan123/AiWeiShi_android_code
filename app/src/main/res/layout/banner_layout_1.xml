@@ -9,73 +9,73 @@
         android:layout_height="wrap_content"
         android:background="@mipmap/bg_aiyi" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/view_padding"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_margin="10dp"
+        android:background="@drawable/trans_corner_shape"
+        android:drawableLeft="@mipmap/icon_search"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:text="@string/search_text"
+        android:textColor="@color/color_white_trans"
+        android:textSize="@dimen/text_commen_size" />
 
-        <TextView
-            android:id="@+id/tv_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/trans_corner_shape"
-            android:drawableLeft="@mipmap/icon_search"
-            android:drawablePadding="10dp"
-            android:padding="10dp"
-            android:text="@string/search_text"
-            android:textColor="@color/color_white_trans"
-            android:textSize="@dimen/text_commen_size" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_search"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:clipToPadding="false" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+    <TextView
+        android:id="@+id/tv_banner_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/viewpager"
+        android:layout_alignRight="@id/viewpager"
+        android:layout_alignBottom="@id/viewpager"
+        android:background="@mipmap/bg_banner_title"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_commen_size"
+        android:textStyle="bold" />
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false" />
+    <LinearLayout
+        android:id="@+id/ll_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/viewpager"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:orientation="horizontal" />
 
-            <TextView
-                android:id="@+id/tv_banner_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/viewpager"
-                android:background="@mipmap/bg_banner_title"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_commen_size"
-                android:textStyle="bold" />
-        </RelativeLayout>
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/ll_indicator"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/color_eeeeee" />
 
-        <LinearLayout
-            android:id="@+id/ll_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:orientation="horizontal" />
-
-        <include layout="@layout/line_layout" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:paddingRight="10dp"
-            android:text="艾医"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_title_size"
-            android:textStyle="bold" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_line"
+        android:layout_margin="10dp"
+        android:paddingRight="10dp"
+        android:text="艾医"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_title_size"
+        android:textStyle="bold" />
 
 </RelativeLayout>

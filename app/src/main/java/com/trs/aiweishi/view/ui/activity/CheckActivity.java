@@ -16,14 +16,14 @@ import com.baidu.location.BDLocation;
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
-import com.google.gson.Gson;
+import com.lf.http.bean.BaseBean;
+import com.lf.http.utils.GsonParse;
 import com.trs.aiweishi.R;
 import com.trs.aiweishi.adapter.FragmentAdapter;
 import com.trs.aiweishi.base.BaseActivity;
-import com.trs.aiweishi.base.BaseBean;
 import com.trs.aiweishi.base.BaseFragment;
 import com.trs.aiweishi.bean.JsonBean;
-import com.trs.aiweishi.helper.LocationHelper;
+import com.trs.aiweishi.controller.LocationManager;
 import com.trs.aiweishi.util.GetJsonDataUtil;
 import com.trs.aiweishi.view.ui.fragment.CheckFragment;
 
@@ -38,10 +38,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class CheckActivity extends BaseActivity implements
-        LocationHelper.OnLocationListener {
+        LocationManager.OnLocationListener {
 
     @Inject
-    LocationHelper locationHelper;
+    LocationManager locationManager;
     @BindView(R.id.tv_location)
     TextView tvLocation;
     @BindView(R.id.tab_layout)
@@ -49,12 +49,12 @@ public class CheckActivity extends BaseActivity implements
     @BindView(R.id.vp_check)
     ViewPager viewPager;
 
+    private BDLocation location;
     private int[] siteTypeArry = new int[]{999, 2, 1, 0, 6, 5};
     private List<BaseFragment> fragments = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
     private FragmentAdapter adapter;
     private boolean isLoaded = false;
-    private Thread thread;
     private ArrayList<JsonBean> options1Items = new ArrayList<>();
     private ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
     private ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
@@ -67,16 +67,13 @@ public class CheckActivity extends BaseActivity implements
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_LOAD_DATA:
-                    if (thread == null) {
-                        thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // 子线程中解析省市区数据
-                                initJsonData();
-                            }
-                        });
-                        thread.start();
-                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 子线程中解析省市区数据
+                            initJsonData();
+                        }
+                    }).start();
                     break;
 
                 case MSG_LOAD_SUCCESS:
@@ -101,7 +98,7 @@ public class CheckActivity extends BaseActivity implements
         titles.add("社会组织");
         titles.add("医院");
         titles.add("其他");
-        locationHelper.startLocation();
+        locationManager.startLocation();
         mHandler.sendEmptyMessage(MSG_LOAD_DATA);
     }
 
@@ -118,13 +115,13 @@ public class CheckActivity extends BaseActivity implements
 
     @Override
     protected void initListener() {
-        locationHelper.setOnLocationListener(this);
+        locationManager.setOnLocationListener(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationHelper.stopLocation();
+        locationManager.stopLocation();
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
@@ -177,9 +174,14 @@ public class CheckActivity extends BaseActivity implements
 //                            .append(",").append(city)
 //                            .append(",").append(area).toString();
 
-                for (int i = 0; i < adapter.getCount(); i++) {
-                    ((CheckFragment)adapter.getItem(i)).setLocation(null, buffer.toString());
+                List<BaseFragment> fragments = adapter.getFragments();
+                for (BaseFragment fragment : fragments){
+                    ((CheckFragment)fragment).setLocation(null, buffer.toString());
                 }
+                //                int count = adapter.getCount();
+//                for (int i = 0; i < count; i++) {
+//                    ((CheckFragment) adapter.getItem(i)).setLocation(null, buffer.toString());
+//                }
             }
         })
 
@@ -198,6 +200,7 @@ public class CheckActivity extends BaseActivity implements
 
     @Override
     public void onLocation(BDLocation location) {
+        this.location = location;
         if (TextUtils.isEmpty(location.getProvince())) {
 //            String addr = "北京市市辖区全部";
             tvLocation.setText("北京市,市辖区,全部");
@@ -225,12 +228,13 @@ public class CheckActivity extends BaseActivity implements
             adapter.update(fragments);
         }
 
-        locationHelper.stopLocation();
+        locationManager.stopLocation();
     }
 
     private void initFragment(BDLocation location, String addr) {
         fragments.clear();
-        for (int i = 0; i < titles.size(); i++) {
+        int length = siteTypeArry.length;
+        for (int i = 0; i < length; i++) {
             fragments.add(CheckFragment.newInstance(location, siteTypeArry[i], addr));
         }
     }
@@ -272,7 +276,7 @@ public class CheckActivity extends BaseActivity implements
             ArrayList<String> allList = new ArrayList<>();
             allList.add("全部");
             areaList.addAll(allList);  //添加全部区域
-            Province_AreaList.add(0,areaList); //添加全部区域集合
+            Province_AreaList.add(0, areaList); //添加全部区域集合
 
             /**
              * 添加城市数据
@@ -290,9 +294,8 @@ public class CheckActivity extends BaseActivity implements
         ArrayList<JsonBean> detail = new ArrayList<>();
         try {
             JSONArray data = new JSONArray(result);
-            Gson gson = new Gson();
             for (int i = 0; i < data.length(); i++) {
-                JsonBean entity = gson.fromJson(data.optJSONObject(i).toString(), JsonBean.class);
+                JsonBean entity = GsonParse.parse(data.optJSONObject(i).toString(), JsonBean.class);
                 detail.add(entity);
             }
         } catch (Exception e) {
@@ -305,5 +308,13 @@ public class CheckActivity extends BaseActivity implements
     @Override
     public void showSuccess(BaseBean baseBean) {
 
+    }
+
+    public BDLocation getLocation() {
+        return location;
+    }
+
+    public LocationManager getLocationManager() {
+        return locationManager;
     }
 }
